@@ -1,3 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+}
+
+/* @Typography */
+/* - Heading */
+.h1 {
+  font-size: 54px;
+  line-height: 59.4px;
+}
+
+.h2 {
+  font-size: 42px;
+  line-height: 46.2px;
+}
+
+.h3 {
+  font-size: 32px;
+  line-height: 35.2px;
+}
+
+.h4 {
+  font-size: 24px;
+  line-height: 26.4px;
+}
+
+.h5 {
+  font-size: 20px;
+  line-height: 22px;
+}
+
+.h6 {
+  font-size: 18px;
+  line-height: 19.8px;
+}
+
+/* - Subtitle */
+.sub-m {
+  font-size: 16px;
+  line-height: 17.6px;
+}
+
+.sub-s {
+  font-size: 14px;
+  line-height: 15.4px;
+}
+
+/* - Body */
+.body-l {
+  font-size: 18px;
+  line-height: 25.2px;
+}
+
+.body-m {
+  font-size: 18px;
+  line-height: 22.4px;
+}
+
+.body-s {
+  font-size: 14px;
+  line-height: 19.6px;
+}
+
+.body-xs {
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+.body-xxs {
+  font-size: 10px;
+  line-height: 14px;
+}
+
+/* - Caption */
+.caption {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+/* - Button text */
+.btn-l {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.btn-m {
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.btn-s {
+  font-size: 14px;
+  line-height: 14px;
+}
+
+/* - Menu Text */
+.menu {
+  font-size: 16px;
+  line-height: 16px;
+}
