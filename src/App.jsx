@@ -4,15 +4,18 @@ import { Dashboard, ManageReport } from './pages/admin'
 import Playground from './pages/Playground';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DashboardLayout from './layouts/DashboardLayout';
 
 function App() {
   return (
     <div>
       <ToastContainer />
       <Routes>
-        <Route path='/' element={<Dashboard />} />
-        <Route path='/report' element={<ManageReport />} />
-        <Route path='/playground' element={<Playground />} />
+        <Route element={<DashboardLayout />}>
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/report' element={<ManageReport />} />
+          <Route path='/playground' element={<Playground />} />
+        </Route>
       </Routes>
     </div>
   )
