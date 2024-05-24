@@ -79,18 +79,20 @@ export default {
           800: '#761626',  // AAA
           900: '#5a111d',  // AAA
         },
-        white: {
+        light: {
           50: '#fdfdfd',   // AAA
           100: '#f7f7f7',  // AAA
           200: '#f4f4f4',  // AAA
           300: '#eeeeee',  // AAA
           400: '#ebebeb',  // AAA
+        },
+        dark: {
           500: '#e6e6e6',  // AAA
           600: '#d1d1d1',  // AAA
           700: '#a3a3a3',  // AA
           800: '#7f7f7f',  // AA
           900: '#616161',  // AA
-        },
+        }
       },
       container: {
         center: true,
