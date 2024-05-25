@@ -1,4 +1,5 @@
 import './App.css'
+import './CustomAnt.css'
 import { Routes, Route } from 'react-router-dom'
 import { Dashboard, ManageReport } from './pages/admin'
 import Playground from './pages/Playground';
