@@ -1,7 +1,8 @@
 import React from 'react'
 import Sidebar from '../components/global/Sidebar'
+import { Outlet } from 'react-router-dom'
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = () => {
   return (
     <div className='h-screen flex text-black'>
       <Sidebar />
@@ -12,8 +13,8 @@ const DashboardLayout = ({ children }) => {
             {/* <IoMdNotificationsOutline className='text-3xl' /> */}
           </div>
         </div>
-        <main className='overflow-y-auto flex-1 bg-tertiary text-white'>
-          {children}
+        <main className='overflow-y-auto flex-1 bg-tertiary text-[#444A6D]'>
+          <Outlet />
         </main>
       </div>
     </div>
