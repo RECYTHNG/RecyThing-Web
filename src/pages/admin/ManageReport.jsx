@@ -3,7 +3,7 @@ import DashboardLayout from '../../layouts/DashboardLayout'
 
 const ManageReport = () => {
   return (
-    <div>ManageReport</div>
+    <div>asd</div>
   )
 }
 
