@@ -12,7 +12,7 @@ const DashboardLayout = () => {
             <div className='h-10 w-10 bg-gray-400 rounded-full'></div>
           </div>
         </div>
-        <main className='overflow-y-auto flex-1 bg-tertiary text-[#444A6D]'>
+        <main className='overflow-y-auto flex-1 bg-tertiary text-[#444A6D] bg-white'>
           <Outlet />
         </main>
       </div>

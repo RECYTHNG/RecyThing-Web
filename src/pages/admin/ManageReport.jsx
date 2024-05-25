@@ -1,21 +1,12 @@
-import { useMemo } from 'react';
-import { useTable } from 'react-table';
-import { MdOutlineFilterAlt } from "react-icons/md";
-
-const getStatusClass = (status) => {
-  switch (status) {
-    case 'Need Review':
-      return 'bg-yellow-500 text-white';
-    case 'Rejected':
-      return 'bg-red-500 text-white';
-    case 'Accepted':
-      return 'bg-green-500 text-white';
-    default:
-      return '';
-  }
-}
+import React, { useMemo, useState } from 'react';
+import { Tag } from 'antd';
+import Filters from '../../components/Report/Filters';
+import Tables from '../../components/global/Table';
 
 const ManageReport = () => {
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [filters, setFilters] = useState({ category: '', status: '', date: null });
+
   const data = useMemo(
     () => [
       { id: 'RPT001', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Need Review', date: '12/12/2022', location: 'Cimahi, Jawa Barat' },
@@ -34,76 +25,52 @@ const ManageReport = () => {
 
   const columns = useMemo(
     () => [
-      { Header: 'Report ID', accessor: 'id' },
-      { Header: 'Name', accessor: 'name' },
-      { Header: 'Report Category', accessor: 'category' },
-      { Header: 'Status', accessor: 'status' },
-      { Header: 'Date', accessor: 'date' },
-      { Header: 'Location', accessor: 'location' },
+      { title: 'Report ID', dataIndex: 'id', key: 'id' },
+      { title: 'Name', dataIndex: 'name', key: 'name' },
+      { title: 'Report Category', dataIndex: 'category', key: 'category' },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (status) => (
+          <Tag className={`${getStatusColor(status)} rounded-full border-none px-5 py-[2px] text-base`}>{status}</Tag>
+        ),
+      },
+      { title: 'Date', dataIndex: 'date', key: 'date' },
+      { title: 'Location', dataIndex: 'location', key: 'location' },
     ],
     []
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Need Review':
+        return 'bg-yellow-500 text-white';
+      case 'Rejected':
+        return 'bg-red-500 text-white';
+      case 'Accepted':
+        return 'bg-green-500 text-white';
+      default:
+        return '';
+    }
+  };
+
+  const toggleFilter = () => setFilterVisible(!filterVisible);
+
+  const handleFilterChange = (name, value) => {
+    setFilters({ ...filters, [name]: value });
+  };
 
   return (
     <div className="px-6 py-9">
       <div className='flex items-end justify-between text-[#414141]'>
         <h1 className="h4 font-semibold mb-4">Manage Report</h1>
-        <button className='px-9 flex items-center body-m'>
-          Filter
-          <MdOutlineFilterAlt className="w-5 h-5 ml-2" />
-        </button>
+        <Filters />
       </div>
-      <div className="overflow-x-scroll">
-        <table {...getTableProps()} className="w-full table-auto">
-          <thead>
-            {headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                {headerGroup.headers.map(column => (
-                  <th
-                    {...column.getHeaderProps()}
-                    className={`px-6 py-3 ${column.id == 'status' ? "text-center" : "text-left"} whitespace-nowrap text-neutral-900 body-m`}
-                    key={column.id}
-                  >
-                    {column.render('Header')}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map(row => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} key={row.id} className="hover:bg-gray-100">
-                  {row.cells.map(cell => (
-                    <td
-                      {...cell.getCellProps()}
-                      className={`border px-6 py-3 whitespace-nowrap body-m text-[#444A6D] ${cell.column.id == 'status' && "text-center"}`}
-                      key={cell.column.id}
-                      style={{ minWidth: '150px' }}
-                    >
-                      {cell.column.id === 'status' ? (
-                        <span className={`rounded-full px-5 py-px ${getStatusClass(cell.value)}`}>
-                          {cell.value}
-                        </span>
-                      ) : (
-                        cell.render('Cell')
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+        
+        <Tables data={data} columns={columns}/>
     </div>
   );
 };
 
-export default ManageReport
+export default ManageReport;
