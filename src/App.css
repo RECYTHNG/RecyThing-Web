@@ -60,7 +60,7 @@ body {
 }
 
 .body-m {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 22.4px;
 }
 
@@ -105,4 +105,22 @@ body {
 .menu {
   font-size: 16px;
   line-height: 16px;
+}
+
+/* @Scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #00476d;
 }
