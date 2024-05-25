@@ -13,7 +13,7 @@ const DashboardLayout = () => {
             {/* <IoMdNotificationsOutline className='text-3xl' /> */}
           </div>
         </div>
-        <main className='overflow-y-auto flex-1 bg-tertiary text-black'>
+        <main className='overflow-y-auto flex-1 bg-tertiary text-[#444A6D]'>
           <Outlet />
         </main>
       </div>
