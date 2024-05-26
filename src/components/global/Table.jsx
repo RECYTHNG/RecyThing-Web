@@ -1,7 +1,7 @@
 import { ConfigProvider, Table } from 'antd'
 import React from 'react'
 
-const Tables = ({data, columns}) => {
+const Tables = ({data, columns, showModal}) => {
   return (
     <ConfigProvider
       theme={{
@@ -21,6 +21,12 @@ const Tables = ({data, columns}) => {
         columns={columns}
         pagination={{ pageSize: 10 }}
         scroll={{ x: 'max-content' }}
+        rowKey="id"
+        onRow={(record) => ({
+          onClick: () => {
+            showModal(record)
+          }
+        })}
       />
     </ConfigProvider>
   )
