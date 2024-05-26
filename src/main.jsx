@@ -15,6 +15,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <QueryClientProvider client={queryClient}>
         <ConfigProvider
           theme={{
+            components: {
+              Button: {
+                defaultBorderColor: "transparent",
+                defaultHoverColor: "",
+                defaultHoverBg: ""
+              }
+            },
             token: {
               fontFamily: "Nunito",
             }

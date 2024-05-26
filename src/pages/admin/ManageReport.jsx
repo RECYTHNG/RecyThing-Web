@@ -1,11 +1,70 @@
 import React, { useMemo, useState } from 'react';
-import { Tag } from 'antd';
+import { Modal, Tag, Button } from 'antd';
 import Filters from '../../components/Report/Filters';
 import Tables from '../../components/global/Table';
+import LabeledValue from '../../components/Report/LabeledValue';
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'Need Review':
+      return 'bg-yellow-500 text-white';
+    case 'Rejected':
+      return 'bg-red-500 text-white';
+    case 'Accepted':
+      return 'bg-green-500 text-white';
+    default:
+      return '';
+  }
+};
+
+const ModalContent = ({ selectedReport }) => (
+  <div>
+    <div className='flex items-start justify-between'>
+      <div className='flex gap-5'>
+        <div className='aspect-square w-[65px] rounded-full'>
+          <img src="https://placehold.co/65x65" alt="profile" className='w-full object-cover object-center rounded-full' />
+        </div>
+        <div className='flex flex-col gap-3 body-m'>
+          <LabeledValue label="Full Name" value={selectedReport.name} />
+          <LabeledValue label="User ID" value={selectedReport.id} />
+        </div>
+      </div>
+    </div>
+    <div className='mt-14'>
+      <div className='grid grid-cols-2 gap-4'>
+        <div className='flex flex-col gap-2'>
+          <LabeledValue labelWidth={135} label="Report ID" value={selectedReport.id} />
+          <LabeledValue labelWidth={135} label="Report Category" value={selectedReport.category} />
+          <LabeledValue labelWidth={135} label="Status" value={<Tag className={`${getStatusColor(selectedReport.status)} rounded-full border-none px-5 py-[2px]`}>{selectedReport.status}</Tag>} />
+          <LabeledValue labelWidth={135} label="Reporting Date" value={selectedReport.date} />
+          <LabeledValue labelWidth={135} label="Reporting Time" value="19:00" />
+          <LabeledValue labelWidth={135} label="Location" value={selectedReport.location} />
+          <LabeledValue labelWidth={135} label="Detail Location" value="Jl. Kolonel Masturi No.246, Cipageran, Kec. Cimahi Utara, Kota Cimahi, Jawa Barat 40511" />
+        </div>
+        <div className='flex flex-col gap-3'>
+          <LabeledValue labelWidth={135} label="Report ID" value="I found rubbish piled up in the Kolmas area. To be precise, the Kolmas Regency complex. The pile of rubbish is near the security guard's office" />
+          <LabeledValue labelWidth={135} label="Report ID" value={
+            <div className='grid grid-cols-3 gap-2'>
+              <div className='aspect-square w-[78px]'>
+                <img src="https://placehold.co/78x78" alt="img1" className='w-full object-cover object-center' />
+              </div>
+              <div className='aspect-square w-[78px]'>
+                <img src="https://placehold.co/95x95" alt="img1" className='w-full object-cover object-center' />
+              </div>
+              <div className='aspect-square w-[78px]'>
+                <img src="https://placehold.co/100x100" alt="img1" className='w-full object-cover object-center' />
+              </div>
+            </div>
+          } />
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const ManageReport = () => {
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [filters, setFilters] = useState({ category: '', status: '', date: null });
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const data = useMemo(
     () => [
@@ -27,11 +86,17 @@ const ManageReport = () => {
     () => [
       { title: 'Report ID', dataIndex: 'id', key: 'id' },
       { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Report Category', dataIndex: 'category', key: 'category' },
+      {
+        title: 'Report Category',
+        dataIndex: 'category',
+        key: 'category',
+        width: 150,
+      },
       {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
+        align: "center",
         render: (status) => (
           <Tag className={`${getStatusColor(status)} rounded-full border-none px-5 py-[2px] text-base`}>{status}</Tag>
         ),
@@ -42,33 +107,54 @@ const ManageReport = () => {
     []
   );
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Need Review':
-        return 'bg-yellow-500 text-white';
-      case 'Rejected':
-        return 'bg-red-500 text-white';
-      case 'Accepted':
-        return 'bg-green-500 text-white';
-      default:
-        return '';
-    }
+  const showModal = (report) => {
+    console.log(report)
+    setSelectedReport(report);
+    setIsModalVisible(true);
   };
 
-  const toggleFilter = () => setFilterVisible(!filterVisible);
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
 
-  const handleFilterChange = (name, value) => {
-    setFilters({ ...filters, [name]: value });
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   return (
     <div className="px-6 py-9">
-      <div className='flex items-end justify-between text-[#414141]'>
+      <div className="flex items-end justify-between text-[#414141]">
         <h1 className="h4 font-semibold mb-4">Manage Report</h1>
         <Filters />
       </div>
-        
-        <Tables data={data} columns={columns}/>
+      <Tables
+        data={data}
+        columns={columns}
+        showModal={showModal}
+      />
+      <Modal
+        open={isModalVisible}
+        width={890}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        styles={{
+          content: {
+            padding: '40px'
+          },
+        }}
+        footer={[
+          <Button key="submit" className='text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
+            Approve
+          </Button>,
+          <Button key="submit" className='text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
+            Reject
+          </Button>,
+        ]}
+      >
+        {selectedReport && (
+          <ModalContent selectedReport={selectedReport} />
+        )}
+      </Modal>
     </div>
   );
 };
