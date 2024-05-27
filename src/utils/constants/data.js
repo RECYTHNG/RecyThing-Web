@@ -17,6 +17,12 @@ import openaiWhite from "/assets/svg/sidebar/openaiWhite.svg"
 
 export const nav_item = [
   {
+    name: "Dashboard",
+    url: "/",
+    iconActive: missionWhite,
+    icon: mission,
+  },
+  {
     name: "Manajemen Pelaporan",
     url: "/report",
     iconActive: reportWhite,
