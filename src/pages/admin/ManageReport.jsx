@@ -129,6 +129,8 @@ const ManageReport = () => {
           <Filters />
         </div>
         <Tables
+          pagination={true}
+          initialPageSize={10}
           data={data}
           columns={columns}
           showModal={showModal}
