@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Modal, Tag, Button } from 'antd';
 import Filters from '../../components/Report/Filters';
 import Tables from '../../components/global/Table';
