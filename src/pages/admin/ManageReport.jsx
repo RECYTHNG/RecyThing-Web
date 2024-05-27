@@ -8,11 +8,11 @@ import ContentLayout from '../../layouts/ContentLayout';
 const getStatusColor = (status) => {
   switch (status) {
     case 'Need Review':
-      return 'bg-yellow-500 text-white';
+      return 'bg-warning-500 text-white';
     case 'Rejected':
-      return 'bg-red-500 text-white';
+      return 'bg-danger-500 text-white';
     case 'Accepted':
-      return 'bg-green-500 text-white';
+      return 'bg-success-500 text-white';
     default:
       return '';
   }
