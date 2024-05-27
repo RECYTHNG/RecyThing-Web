@@ -104,7 +104,13 @@ export default {
           xxl: '90rem',
         },
       },
+      boxShadow: {
+        'filter': '0px 0px 4px 0px rgba(0, 0, 0, 0.25)', // custom shadow
+      }
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: ["light"],
+  },
 }
