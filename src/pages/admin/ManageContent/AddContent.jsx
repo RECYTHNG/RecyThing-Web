@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AddImageIcon } from "../../../assets/icons";
 import { toast } from "react-toastify";
 import { RxCheck } from "react-icons/rx";
+import { useNavigate } from "react-router";
 
 export default function AddContent() {
   const [isFocused, setIsFocused] = useState({
@@ -12,6 +13,7 @@ export default function AddContent() {
   const [deskripsi, setDeskripsi] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const navigate = useNavigate()
 
   const categories = [
     "Organik",
@@ -73,6 +75,7 @@ export default function AddContent() {
     };
     console.log("Artikel Submitted: ", formData);
     toast.success("Artikel berhasil diunggah");
+    navigate("/content")
   };
 
   return (
@@ -107,7 +110,7 @@ export default function AddContent() {
                 <textarea
                   id="deskripsi"
                   name="deskripsi"
-                  className="w-full peer bg-transparent h-[601px] rounded-lg text-gray-700 ring-1 px-3 py-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
+                  className="w-full peer bg-transparent h-[691px] rounded-lg text-gray-700 ring-1 px-3 py-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
                   placeholder={isFocused.deskripsi ? "Masukan Deskripsi" : ""}
                   onFocus={() => handleFocus("deskripsi")}
                   onBlur={() => handleBlur("deskripsi")}
