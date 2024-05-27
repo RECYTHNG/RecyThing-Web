@@ -20,6 +20,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 defaultBorderColor: "transparent",
                 defaultHoverColor: "",
                 defaultHoverBg: ""
+              },
+              Input: {
+                activeBg: "",
+                activeShadow: "",
+                activeBorderColor: "",
+                hoverBg: "",
+                colorTextPlaceholder: ""
               }
             },
             token: {

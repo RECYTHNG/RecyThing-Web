@@ -3,6 +3,7 @@ import { Modal, Tag, Button } from 'antd';
 import Filters from '../../components/Report/Filters';
 import Tables from '../../components/global/Table';
 import LabeledValue from '../../components/Report/LabeledValue';
+import ContentLayout from '../../layouts/ContentLayout';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -122,40 +123,41 @@ const ManageReport = () => {
   };
 
   return (
-    <div className="px-6 py-9">
-      <div className="flex items-end justify-between text-[#414141]">
-        <h1 className="h4 font-semibold mb-4">Manage Report</h1>
-        <Filters />
+    <ContentLayout title={"Manage Report"}>
+      <div className="px-6 py-9">
+        <div className="flex items-end justify-end text-[#414141]">
+          <Filters />
+        </div>
+        <Tables
+          data={data}
+          columns={columns}
+          showModal={showModal}
+        />
+        <Modal
+          open={isModalVisible}
+          width={890}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          styles={{
+            content: {
+              padding: '40px'
+            },
+          }}
+          footer={[
+            <Button key="submit" className='text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
+              Approve
+            </Button>,
+            <Button key="submit" className='text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
+              Reject
+            </Button>,
+          ]}
+        >
+          {selectedReport && (
+            <ModalContent selectedReport={selectedReport} />
+          )}
+        </Modal>
       </div>
-      <Tables
-        data={data}
-        columns={columns}
-        showModal={showModal}
-      />
-      <Modal
-        open={isModalVisible}
-        width={890}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        styles={{
-          content: {
-            padding: '40px'
-          },
-        }}
-        footer={[
-          <Button key="submit" className='text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
-            Approve
-          </Button>,
-          <Button key="submit" className='text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
-            Reject
-          </Button>,
-        ]}
-      >
-        {selectedReport && (
-          <ModalContent selectedReport={selectedReport} />
-        )}
-      </Modal>
-    </div>
+    </ContentLayout>
   );
 };
 
