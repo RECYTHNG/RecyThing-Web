@@ -1,12 +1,14 @@
-import "./App.css";
-import { Routes, Route } from "react-router-dom";
-import { Dashboard, ManageContent, ManageReport } from "./pages/admin";
-import Playground from "./pages/Playground";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import DashboardLayout from "./layouts/DashboardLayout";
-import AddContent from "./pages/admin/ManageContent/AddContent";
+import './App.css'
+import './CustomAnt.css'
+import { Routes, Route } from 'react-router-dom'
+import { Dashboard, ManageContent, ManageReport } from './pages/admin'
+import Playground from './pages/Playground';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import DashboardLayout from './layouts/DashboardLayout';
+import AddContent from './pages/admin/ManageContent/AddContent';
 import EditContent from "./pages/admin/ManageContent/EditContent";
+
 
 function App() {
   return (
