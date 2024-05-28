@@ -116,6 +116,7 @@ export default function EditContent() {
       selectedCategories,
     });
     toast.success("Article Updated");
+    navigate("/content")
   };
 
   const handleDelete = () => {

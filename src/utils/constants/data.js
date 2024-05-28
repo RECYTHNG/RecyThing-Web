@@ -48,7 +48,7 @@ export const nav_item = [
   },
   {
     name: "Manajemen Penacapaian",
-    url: "/achievment",
+    url: "/achievement",
     iconActive: achievmentWhite,
     icon: achievment,
   },

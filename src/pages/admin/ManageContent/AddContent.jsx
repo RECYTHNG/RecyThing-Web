@@ -166,7 +166,7 @@ export default function AddContent() {
                   <label className="block text-gray-700 body-l font-bold mb-5">
                     Kategori
                   </label>
-                  <div className="grid grid-cols-2 gap-x-[30px] gap-y-5">
+                  <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
                     {categories.map((category) => (
                       <div key={category} className="flex gap-2 items-center">
                         <input
@@ -178,7 +178,7 @@ export default function AddContent() {
                           onChange={() => handleCategoryChange(category)}
                           className="relative peer shrink-0 appearance-none w-4 h-4 border-2 border-primary-500 rounded-sm bg-white mt-1 checked:bg-primary-500 checked:border-0"
                         />
-                        <label className="body-m" htmlFor={category}>
+                        <label className="body-m cursor-pointer" htmlFor={category}>
                           {category}
                         </label>
                         <RxCheck className="absolute w-4 h-4 mt-1 text-white hidden peer-checked:block" />
