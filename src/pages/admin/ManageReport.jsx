@@ -130,7 +130,13 @@ const ManageReport = () => {
         <div className="flex items-end justify-end text-[#414141]">
           <Filters />
         </div>
-        <Tables data={data} columns={columns} showModal={showModal} />
+        <Tables
+          pagination={true}
+          initialPageSize={10}
+          data={data}
+          columns={columns}
+          showModal={showModal}
+        />
         <Modal
           open={isModalVisible}
           width={890}
