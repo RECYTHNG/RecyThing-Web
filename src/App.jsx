@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import DashboardLayout from './layouts/DashboardLayout';
 import AddContent from './pages/admin/ManageContent/AddContent';
 import EditContent from "./pages/admin/ManageContent/EditContent";
+import ManageUserAchivements from './pages/admin/ManageUserAchievements';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/content" element={<ManageContent />} />
           <Route path="/content/add" element={<AddContent />} />
           <Route path="/content/edit/:id" element={<EditContent />} />
+          <Route path='/achievement' element={<ManageUserAchivements/>}/>
           <Route path="/playground" element={<Playground />} />
         </Route>
       </Routes>
