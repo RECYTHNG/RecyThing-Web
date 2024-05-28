@@ -20,20 +20,20 @@ const getStatusColor = (status) => {
 
 const ModalContent = ({ selectedReport }) => (
   <div>
-    <div className='flex items-start justify-between'>
-      <div className='flex gap-5'>
-        <div className='aspect-square w-[65px] rounded-full'>
-          <img src="https://placehold.co/65x65" alt="profile" className='w-full object-cover object-center rounded-full' />
+    <div className="flex items-start justify-between">
+      <div className="flex gap-5">
+        <div className="aspect-square w-[65px] rounded-full">
+          <img src="https://placehold.co/65x65" alt="profile" className="w-full object-cover object-center rounded-full" />
         </div>
-        <div className='flex flex-col gap-3 body-m'>
+        <div className="flex flex-col gap-3 body-m">
           <LabeledValue label="Full Name" value={selectedReport.name} />
           <LabeledValue label="User ID" value={selectedReport.id} />
         </div>
       </div>
     </div>
-    <div className='mt-14'>
-      <div className='grid grid-cols-2 gap-4'>
-        <div className='flex flex-col gap-2'>
+    <div className="mt-14">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
           <LabeledValue labelWidth={135} label="Report ID" value={selectedReport.id} />
           <LabeledValue labelWidth={135} label="Report Category" value={selectedReport.category} />
           <LabeledValue labelWidth={135} label="Status" value={<Tag className={`${getStatusColor(selectedReport.status)} rounded-full border-none px-5 py-[2px]`}>{selectedReport.status}</Tag>} />
@@ -42,21 +42,25 @@ const ModalContent = ({ selectedReport }) => (
           <LabeledValue labelWidth={135} label="Location" value={selectedReport.location} />
           <LabeledValue labelWidth={135} label="Detail Location" value="Jl. Kolonel Masturi No.246, Cipageran, Kec. Cimahi Utara, Kota Cimahi, Jawa Barat 40511" />
         </div>
-        <div className='flex flex-col gap-3'>
+        <div className="flex flex-col gap-3">
           <LabeledValue labelWidth={135} label="Report ID" value="I found rubbish piled up in the Kolmas area. To be precise, the Kolmas Regency complex. The pile of rubbish is near the security guard's office" />
-          <LabeledValue labelWidth={135} label="Report ID" value={
-            <div className='grid grid-cols-3 gap-2'>
-              <div className='aspect-square w-[78px]'>
-                <img src="https://placehold.co/78x78" alt="img1" className='w-full object-cover object-center' />
+          <LabeledValue
+            labelWidth={135}
+            label="Report ID"
+            value={
+              <div className="grid grid-cols-3 gap-2">
+                <div className="aspect-square w-[78px]">
+                  <img src="https://placehold.co/78x78" alt="img1" className="w-full object-cover object-center" />
+                </div>
+                <div className="aspect-square w-[78px]">
+                  <img src="https://placehold.co/95x95" alt="img1" className="w-full object-cover object-center" />
+                </div>
+                <div className="aspect-square w-[78px]">
+                  <img src="https://placehold.co/100x100" alt="img1" className="w-full object-cover object-center" />
+                </div>
               </div>
-              <div className='aspect-square w-[78px]'>
-                <img src="https://placehold.co/95x95" alt="img1" className='w-full object-cover object-center' />
-              </div>
-              <div className='aspect-square w-[78px]'>
-                <img src="https://placehold.co/100x100" alt="img1" className='w-full object-cover object-center' />
-              </div>
-            </div>
-          } />
+            }
+          />
         </div>
       </div>
     </div>
@@ -97,10 +101,8 @@ const ManageReport = () => {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
-        align: "center",
-        render: (status) => (
-          <Tag className={`${getStatusColor(status)} rounded-full border-none px-5 py-[2px] text-base`}>{status}</Tag>
-        ),
+        align: 'center',
+        render: (status) => <Tag className={`${getStatusColor(status)} rounded-full border-none px-5 py-[2px] text-base`}>{status}</Tag>,
       },
       { title: 'Date', dataIndex: 'date', key: 'date' },
       { title: 'Location', dataIndex: 'location', key: 'location' },
@@ -109,7 +111,7 @@ const ManageReport = () => {
   );
 
   const showModal = (report) => {
-    console.log(report)
+    console.log(report);
     setSelectedReport(report);
     setIsModalVisible(true);
   };
@@ -123,7 +125,7 @@ const ManageReport = () => {
   };
 
   return (
-    <ContentLayout title={"Manage Report"}>
+    <ContentLayout title={'Manage Report'}>
       <div className="px-6 py-9">
         <div className="flex items-end justify-end text-[#414141]">
           <Filters />
@@ -142,21 +144,19 @@ const ManageReport = () => {
           onCancel={handleCancel}
           styles={{
             content: {
-              padding: '40px'
+              padding: '40px',
             },
           }}
           footer={[
-            <Button key="submit" className='text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
+            <Button key="submit" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={handleCancel}>
               Approve
             </Button>,
-            <Button key="submit" className='text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none' onClick={handleCancel}>
+            <Button key="submit" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={handleCancel}>
               Reject
             </Button>,
           ]}
         >
-          {selectedReport && (
-            <ModalContent selectedReport={selectedReport} />
-          )}
+          {selectedReport && <ModalContent selectedReport={selectedReport} />}
         </Modal>
       </div>
     </ContentLayout>

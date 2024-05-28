@@ -1,7 +1,8 @@
 import './App.css'
 import './CustomAnt.css'
 import { Routes, Route } from 'react-router-dom'
-import { Dashboard, ManageContent, ManageReport, MissionList } from './pages/admin'
+import { Dashboard, ManageAdmin, ManageContent, ManageReport, MissionList } from './pages/admin'
+import Playground from './pages/Playground';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -23,6 +24,7 @@ function App() {
           <Route path='/achievement' element={<ManageUserAchivements/>}/>
           <Route path='/mission/list' element={<MissionList />} />
           <Route path='/mission/approval' element={<MissionList />} />
+          <Route path="/admin" element={<ManageAdmin />} />
         </Route>
       </Routes>
     </div>
