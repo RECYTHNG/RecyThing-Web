@@ -1,22 +1,23 @@
-import { ConfigProvider, Table } from 'antd'
-import React from 'react'
+import { ConfigProvider, Table } from 'antd';
+import React from 'react';
 
-const Tables = ({data, columns, showModal}) => {
+const Tables = ({ data, columns, showModal }) => {
   return (
     <ConfigProvider
       theme={{
         components: {
           Table: {
-            fontSize: "1rem",
-            colorText: "#444A6D",
-            headerColor: "black",
-            padding: 10
+            fontSize: '1rem',
+            colorText: '#444A6D',
+            headerColor: 'black',
+            padding: 10,
           },
         },
-      }}>
+      }}
+    >
       <Table
-        className='mt-3'
-        tableLayout='auto'
+        className="mt-3"
+        tableLayout="auto"
         dataSource={data}
         columns={columns}
         pagination={{ pageSize: 10 }}
@@ -24,12 +25,12 @@ const Tables = ({data, columns, showModal}) => {
         rowKey="id"
         onRow={(record) => ({
           onClick: () => {
-            showModal(record)
-          }
+            showModal(record);
+          },
         })}
       />
     </ConfigProvider>
-  )
-}
+  );
+};
 
-export default Tables
+export default Tables;
