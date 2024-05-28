@@ -16,3 +16,7 @@ div::-webkit-scrollbar-thumb {
 div:hover::-webkit-scrollbar-thumb {
   background: #888;
 }
+
+.ant-spin-container .ant-pagination {
+  display: none;
+}
