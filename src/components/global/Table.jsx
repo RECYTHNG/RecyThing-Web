@@ -1,7 +1,7 @@
 import { ConfigProvider, Table, Select, Pagination } from 'antd';
 import React, { useState } from 'react';
 
-const Tables = ({ data, columns, showModal, initialPageSize = 10, pagination }) => {
+const Tables = ({ data, columns, onRowClick, initialPageSize = 10, pagination, enableRowClick = false }) => {
   const [pageSize, setPageSize] = useState(initialPageSize);
   const [current, setCurrent] = useState(1);
 
@@ -39,11 +39,13 @@ const Tables = ({ data, columns, showModal, initialPageSize = 10, pagination }) 
         pagination={paginationConfig}
         scroll={{ x: 'max-content' }}
         rowKey="id"
-        onRow={(record) => ({
-          onClick: () => {
-            showModal(record);
-          }
-        })}
+        onRow={enableRowClick ?
+          (record) => ({
+            onClick: () => {
+              onRowClick(record);
+            }
+          }) :
+          null}
       />
       {pagination &&
         <div className='flex items-center justify-between mt-10'>

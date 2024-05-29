@@ -111,7 +111,6 @@ const ManageReport = () => {
   );
 
   const showModal = (report) => {
-    console.log(report);
     setSelectedReport(report);
     setIsModalVisible(true);
   };
@@ -135,7 +134,8 @@ const ManageReport = () => {
           initialPageSize={10}
           data={data}
           columns={columns}
-          showModal={showModal}
+          enableRowClick
+          onRowClick={showModal}
         />
         <Modal
           open={isModalVisible}
