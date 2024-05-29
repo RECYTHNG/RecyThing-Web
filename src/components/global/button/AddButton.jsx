@@ -13,7 +13,7 @@ const AddButton = ({ text, to, onClick }) => {
           </button>
         </Link>
         :
-        <button onClick={onclick} className="btn-l font-bold px-[22px] py-3 bg-primary-500 text-white flex items-center gap-2 rounded-full shadow-md">
+        <button onClick={onClick} className="btn-l font-bold px-[22px] py-3 bg-primary-500 text-white flex items-center gap-2 rounded-full shadow-md">
           <AddCircleIcon />
           {text}
         </button>

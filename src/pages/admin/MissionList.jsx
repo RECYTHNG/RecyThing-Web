@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import ContentLayout from '../../layouts/ContentLayout';
 import AddButton from '../../components/global/button/AddButton';
 import Tables from '../../components/global/Table';
-import { Button, Dropdown, Menu, Tag, message, Space } from 'antd';
+import { Button, Dropdown, Menu, Tag, message, Space, Modal } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { HiDotsHorizontal } from 'react-icons/hi';
 
@@ -17,11 +17,18 @@ const getStatusColor = (status) => {
   }
 };
 
-const handleMenuClick = (e) => {
-  console.log('click', e.key);
-};
+const ModalContent = () => {
+  return(
+    <div>
+      oii
+    </div>
+  )
+}
 
 const MissionList = () => {
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const data = useMemo(
     () => [
       { id: 'TM01', name: 'Daur Ulang Plastik', creator: 'Admin 1', deadline: '01/01/2024', status: 'Selesai' },
@@ -93,11 +100,15 @@ const MissionList = () => {
     []
   );
 
+  const handleMenuClick = (e) => {
+    console.log('click', e.key);
+  };
+
   return (
     <ContentLayout title={"Management Task"}>
       <div className='py-9 px-4'>
         <div className='w-full flex justify-end pb-4'>
-          <AddButton text={"Tambah"} />
+          <AddButton text={"Tambah"} onClick={() => setIsModalVisible(true)}/>
         </div>
         <Tables
           pagination={true}
@@ -106,6 +117,29 @@ const MissionList = () => {
           columns={columns}
         />
       </div>
+      <Modal
+          open={isModalVisible}
+          width={890}
+          // onOk={handleOk}
+          onCancel={() => setIsModalVisible(false)}
+          closable={false}
+          title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
+          styles={{
+            content: {
+              padding: '20px 24px',
+            },
+          }}
+          footer={[
+            <Button key="submit" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
+              Approve
+            </Button>,
+            <Button key="submit" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
+              Reject
+            </Button>,
+          ]}
+        >
+          <ModalContent />
+        </Modal>
     </ContentLayout>
   );
 };

@@ -111,7 +111,6 @@ const ManageReport = () => {
   );
 
   const showModal = (report) => {
-    console.log(report);
     setSelectedReport(report);
     setIsModalVisible(true);
   };
