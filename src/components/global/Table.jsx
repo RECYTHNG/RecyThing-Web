@@ -23,17 +23,17 @@ const Tables = ({ data, columns, onRowClick, initialPageSize = 10, pagination, e
       theme={{
         components: {
           Table: {
-            fontSize: "1rem",
-            colorText: "#444A6D",
-            headerColor: "black",
-            padding: 10
+            fontSize: '1rem',
+            colorText: '#444A6D',
+            headerColor: 'black',
+            padding: 10,
           },
         },
       }}
     >
       <Table
-        className='mt-3'
-        tableLayout='auto'
+        className="mt-3"
+        tableLayout="auto"
         dataSource={data}
         columns={columns}
         pagination={paginationConfig}
