@@ -4,6 +4,7 @@ import Card from "../../../components/global/Card";
 import { Link } from "react-router-dom";
 import { Modal } from "antd";
 import articles from "./articles.json"
+import ContentLayout from "../../../layouts/ContentLayout";
 
 function ArticleModal({ article, isVisible, onOk, onCancel }) {
   return (
@@ -139,41 +140,43 @@ export default function ManageContent() {
   };
 
   return (
-    <section>
-      <div className="p-5 bg-[#F9FAFB]">
-        <div className="px-8 py-6 shadow-md flex flex-col gap-[30px] rounded-lg bg-white">
-          <div className="flex justify-between items-center">
-            <h5 className="h5 font-bold">Daftar Artikel</h5>
-            <Link to="/content/add">
-              <button className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md">
-                <AddCircleIcon /> Tambah
-              </button>
-            </Link>
+    <ContentLayout title={"Manajemen Konten"}>
+      <section>
+        <div className="p-5 bg-[#F9FAFB]">
+          <div className="px-8 py-6 shadow-md flex flex-col gap-[30px] rounded-lg bg-white">
+            <div className="flex justify-between items-center">
+              <h5 className="h5 font-bold">Daftar Artikel</h5>
+              <Link to="/content/add">
+                <button className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md">
+                  <AddCircleIcon /> Tambah
+                </button>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-[52px] gap-y-8 place-items-center">
+              {currentArticles.map((article) => (
+                <Card
+                  key={article.id}
+                  image={article.thumbnail}
+                  title={article.title}
+                  onClick={() => showModal(article)}
+                />
+              ))}
+            </div>
+            <ArticlePagination
+              currentPage={currentPage}
+              totalArticles={articles.length}
+              articlesPerPage={articlesPerPage}
+              paginate={paginate}
+            />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-[52px] gap-y-8 place-items-center">
-            {currentArticles.map((article) => (
-              <Card
-                key={article.id}
-                image={article.thumbnail}
-                title={article.title}
-                onClick={() => showModal(article)}
-              />
-            ))}
-          </div>
-          <ArticlePagination
-            currentPage={currentPage}
-            totalArticles={articles.length}
-            articlesPerPage={articlesPerPage}
-            paginate={paginate}
-          />
         </div>
-      </div>
-      <ArticleModal
-        article={selectedArticle}
-        isVisible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      />
-    </section>
+        <ArticleModal
+          article={selectedArticle}
+          isVisible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        />
+      </section>
+    </ContentLayout>
   );
 }
