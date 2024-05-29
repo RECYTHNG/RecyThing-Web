@@ -1,15 +1,17 @@
 import Dashboard from "./Dashboard";
 import ManageReport from "./ManageReport";
 import ManageContent from "./ManageContent";
-import ManageUserAchivements from "./ManageUserAchievements";
+import ManageUserAchievements from "./ManageUserAchievements";
 import MissionList from "./MissionList";
 import ManageAdmin from './ManageAdmin';
+import ManageApprovalTask from "./ManageApprovalTask";
 
 export {
   Dashboard,
   ManageReport,
   ManageContent,
-  ManageUserAchivements,
+  ManageUserAchievements,
   MissionList,
-  ManageAdmin
+  ManageAdmin,
+  ManageApprovalTask,
 }
