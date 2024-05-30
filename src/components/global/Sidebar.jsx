@@ -16,7 +16,7 @@ const Sidebar = () => {
           const isActive = location.pathname === nav.url;
           const isParentActive = location.pathname.includes(nav.url)
           return (
-            <>
+            <div key={nav.name}>
               {nav.children ?
                 <div>
                   <div className='flex flex-col'>
@@ -44,7 +44,6 @@ const Sidebar = () => {
                 </div>
                 :
                 <Link
-                  key={nav.name}
                   to={nav.url}
                   className={`flex items-center gap-4 p-4 rounded-lg ${isActive ? 'bg-primary-500 text-white' : 'bg-transparent'}`}
                 >
@@ -52,7 +51,7 @@ const Sidebar = () => {
                   {nav.name}
                 </Link>
               }
-            </>
+            </div>
           );
         })}
       </div>

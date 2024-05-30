@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import ContentLayout from '../../layouts/ContentLayout';
 import AddButton from '../../components/global/button/AddButton';
 import Tables from '../../components/global/Table';
-import { Button, Dropdown, Menu, Tag, message, Space, Modal } from 'antd';
-import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Menu, Tag, message, Space, Modal, Input, Form, Upload } from 'antd';
+import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { HiDotsHorizontal } from 'react-icons/hi';
+import FloatingLabelInput from '../../components/global/input/FloatingInput';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -18,12 +19,48 @@ const getStatusColor = (status) => {
 };
 
 const ModalContent = () => {
-  return(
+  const [stages, setStages] = useState([{ title: '', description: '' }]);
+
+  const addStage = () => {
+    setStages([...stages, { title: '', description: '' }]);
+  };
+
+  return (
     <div>
-      oii
+      <Form layout="vertical">
+        <Form.Item>
+          <Upload.Dragger name="files" accept=".jpg,.png" maxCount={1} beforeUpload={() => false}>
+            <p className="ant-upload-drag-icon">
+              <img src="your-image-url" alt="Uploaded" style={{ maxWidth: '100%' }} />
+            </p>
+            <p className="ant-upload-text">ubah gambar <a href="#">Browse</a></p>
+            <p className="ant-upload-hint">Max 200MB, JPG/PNG</p>
+          </Upload.Dragger>
+        </Form.Item>
+
+        {stages.map((stage, index) => (
+          <div key={index}>
+            <FloatingLabelInput
+              id="name"
+              label="Nama Misi"
+              placeholder="Masukan Misi"
+            />
+            <FloatingLabelInput
+              id="description"
+              label="Deskripsi"
+              placeholder="Masukan Deskripsi"
+              type='date'
+            />
+          </div>
+        ))}
+
+        <Button type="dashed" onClick={addStage} block icon={<PlusOutlined />}>
+          Tambah Tahapan Misi
+        </Button>
+      </Form>
     </div>
-  )
-}
+  );
+};
 
 const MissionList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -108,7 +145,7 @@ const MissionList = () => {
     <ContentLayout title={"Management Task"}>
       <div className='py-9 px-4'>
         <div className='w-full flex justify-end pb-4'>
-          <AddButton text={"Tambah"} onClick={() => setIsModalVisible(true)}/>
+          <AddButton text={"Tambah"} onClick={() => setIsModalVisible(true)} />
         </div>
         <Tables
           pagination={true}
@@ -118,28 +155,28 @@ const MissionList = () => {
         />
       </div>
       <Modal
-          open={isModalVisible}
-          width={890}
-          // onOk={handleOk}
-          onCancel={() => setIsModalVisible(false)}
-          closable={false}
-          title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
-          styles={{
-            content: {
-              padding: '20px 24px',
-            },
-          }}
-          footer={[
-            <Button key="submit" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
-              Approve
-            </Button>,
-            <Button key="submit" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
-              Reject
-            </Button>,
-          ]}
-        >
-          <ModalContent />
-        </Modal>
+        open={isModalVisible}
+        width={890}
+        // onOk={handleOk}
+        onCancel={() => setIsModalVisible(false)}
+        closable={false}
+        title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
+        styles={{
+          content: {
+            padding: '20px 24px',
+          },
+        }}
+        footer={[
+          <Button key="submit" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
+            Approve
+          </Button>,
+          <Button key="button" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
+            Reject
+          </Button>,
+        ]}
+      >
+        <ModalContent />
+      </Modal>
     </ContentLayout>
   );
 };
