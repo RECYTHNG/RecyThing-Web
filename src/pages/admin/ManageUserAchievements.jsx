@@ -1,8 +1,8 @@
-import { ActionIcons, AddCircleIcon } from "../../assets/icons";
+import { ActionIcons, AddCircleIcon } from "../../components/Icons/icons";
 import { useMemo, useState } from "react";
-import GoldBadge from "../../assets/image/GoldBadge.png"
-import SilverBadge from "../../assets/image/SilverBadge.png"
-import ClassicBadge from "../../assets/image/ClassicBadge.png"
+import GoldBadge from "/assets/images/GoldBadge.png"
+import SilverBadge from "/assets/images/SilverBadge.png"
+import ClassicBadge from "/assets/images/ClassicBadge.png"
 import Tables from "../../components/global/Table";
 import { formatNumber } from "../../utils/formatNumbers";
 import { Button, Dropdown, Menu } from "antd";
@@ -10,9 +10,7 @@ import { toast } from "react-toastify";
 import ContentLayout from "../../layouts/ContentLayout";
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
-import { AddModal } from "../../components/Achievement/AddModal";
-import { EditModal } from "../../components/Achievement/EditModal";
-import { DeleteModal } from "../../components/Achievement/DeleteModal";
+import { AddModal, DeleteModal, EditModal } from '../../components/Achievement/ModalAchievements';
 
 export default function ManageUserAchivements() {
   const badge = useMemo(
