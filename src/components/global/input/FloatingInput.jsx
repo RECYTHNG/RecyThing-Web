@@ -1,25 +1,26 @@
-import { DatePicker } from 'antd';
+import { ConfigProvider, DatePicker } from 'antd';
 import React, { useState } from 'react';
+import { MdOutlineCalendarMonth } from 'react-icons/md';
 
-const FloatingLabelInput = ({ label, placeholder, id, type = "text", className }) => {
+const FloatingLabelInput = ({ label, placeholder, id, type = "text", className, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [value, setValue] = useState("");
 
   return (
     <>
       {type === "desc" &&
-        <div className={`${className} relative mt-3`}>
+        <div className={`${className} relative mt-2`}>
           <textarea
             id={id}
+            rows={3}
             type={type}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
-            className={`block w-full px-3 py-4 text-base leading-6 placeholder:text-black/[0.38] border border-black/[0.23] rounded-[4px] focus:outline-none`}
+            onChange={onChange}
+            className={`block w-full px-3 py-3 text-base leading-6 text-black placeholder:text-black/[0.38] border border-black/[0.23] rounded-[4px] focus:outline-none`}
             placeholder={placeholder}
           />
           <label
             htmlFor={id}
-            className="absolute left-3 text-gray-500 transition-all duration-200 ease-in-out rounded-full top-[-8px] text-sm bg-white px-1"
+            className="absolute left-3 text-black/60 transition-all duration-200 ease-in-out rounded-full top-[-8px] text-sm bg-white px-1"
           >
             {label}
           </label>
@@ -27,18 +28,18 @@ const FloatingLabelInput = ({ label, placeholder, id, type = "text", className }
       }
 
       {type === 'text' &&
-        <div className={`${className} relative mt-3`}>
+        <div className={`${className} relative mt-2`}>
           <input
             id={id}
             type={type}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
-            className={`block w-full px-3 py-4 text-base leading-6 placeholder:text-black/[0.38] border border-black/[0.23] rounded-[4px] focus:outline-none`}
+            onChange={onChange}
+            className={`block w-full px-3 py-3 text-base leading-6 text-black placeholder:text-black/[0.38] border border-black/[0.23] rounded-[4px] focus:outline-none`}
             placeholder={placeholder}
           />
           <label
             htmlFor={id}
-            className="absolute left-3 text-gray-500 transition-all duration-200 ease-in-out rounded-full top-[-8px] text-sm bg-white px-1"
+            className="absolute left-3 text-black/60 transition-all duration-200 ease-in-out rounded-full top-[-8px] text-sm bg-white px-1"
           >
             {label}
           </label>
@@ -46,13 +47,42 @@ const FloatingLabelInput = ({ label, placeholder, id, type = "text", className }
       }
 
       {type === 'date' &&
-        <DatePicker
-          id={id}
-          value={value}
-          onChange={(date, dateString) => setValue(dateString)}
-          className={`block w-full px-3 py-4 text-base leading-6 placeholder:text-black/[0.38] border border-black/[0.23] rounded-[4px] focus:outline-none`}
-          placeholder={placeholder}
-        />
+        <div className={`${className} relative mt-2`}>
+          <ConfigProvider
+            theme={{
+              components: {
+                DatePicker: {
+                  colorTextPlaceholder: "rgb(0 0 0 / 0.38)",
+                  colorText: "black",
+                  fontSize: "",
+                  hoverBorderColor: "",
+                  activeBorderColor: "",
+                  activeShadow: ""
+                },
+              }
+            }}>
+            <DatePicker
+              id={id}
+              value={value}
+              onChange={onChange}
+              format={"DD/MM/YYYY"}
+              suffixIcon={<MdOutlineCalendarMonth className='text-dark-800 text-lg' />}
+              styles={{
+                popup: {
+                  accentColor: "red"
+                }
+              }}
+              className={`block w-full px-3 py-3 text-base leading-6 border border-black/[0.23] rounded-[4px] focus:outline-none focus:border-none`}
+              placeholder={placeholder}
+            />
+          </ConfigProvider>
+          <label
+            htmlFor={id}
+            className="absolute left-3 text-black/60 transition-all duration-200 ease-in-out rounded-full top-[-8px] text-sm bg-white px-1"
+          >
+            {label}
+          </label>
+        </div>
       }
 
     </>

@@ -5,7 +5,7 @@ import Tables from '../../components/global/Table';
 import { Button, Dropdown, Menu, Tag, message, Space, Modal, Input, Form, Upload } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { HiDotsHorizontal } from 'react-icons/hi';
-import FloatingLabelInput from '../../components/global/input/FloatingInput';
+import AddTaskModal from '../../components/task/management/AddTaskModal';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -18,53 +18,10 @@ const getStatusColor = (status) => {
   }
 };
 
-const ModalContent = () => {
-  const [stages, setStages] = useState([{ title: '', description: '' }]);
-
-  const addStage = () => {
-    setStages([...stages, { title: '', description: '' }]);
-  };
-
-  return (
-    <div>
-      <Form layout="vertical">
-        <Form.Item>
-          <Upload.Dragger name="files" accept=".jpg,.png" maxCount={1} beforeUpload={() => false}>
-            <p className="ant-upload-drag-icon">
-              <img src="your-image-url" alt="Uploaded" style={{ maxWidth: '100%' }} />
-            </p>
-            <p className="ant-upload-text">ubah gambar <a href="#">Browse</a></p>
-            <p className="ant-upload-hint">Max 200MB, JPG/PNG</p>
-          </Upload.Dragger>
-        </Form.Item>
-
-        {stages.map((stage, index) => (
-          <div key={index}>
-            <FloatingLabelInput
-              id="name"
-              label="Nama Misi"
-              placeholder="Masukan Misi"
-            />
-            <FloatingLabelInput
-              id="description"
-              label="Deskripsi"
-              placeholder="Masukan Deskripsi"
-              type='date'
-            />
-          </div>
-        ))}
-
-        <Button type="dashed" onClick={addStage} block icon={<PlusOutlined />}>
-          Tambah Tahapan Misi
-        </Button>
-      </Form>
-    </div>
-  );
-};
-
 const MissionList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [stages, setStages] = useState([{ title: '', description: '' }]);
 
   const data = useMemo(
     () => [
@@ -106,6 +63,7 @@ const MissionList = () => {
               label: <span type="text">Edit</span>,
               icon: <EditOutlined />,
               key: 'edit',
+              onClick: () => handleEdit(record),
             },
             {
               label: <span type="text">Detail</span>,
@@ -141,11 +99,39 @@ const MissionList = () => {
     console.log('click', e.key);
   };
 
+  const handleEdit = (record) => {
+    setSelectedTask(record);
+    setStages(record.stages || [{ title: '', description: '' }]);
+    setIsModalVisible(true);
+  };
+
+  const handleStageChange = (index, key, value) => {
+    const newStages = [...stages];
+    newStages[index][key] = value;
+    setStages(newStages);
+  };
+  
+  const handleAddData = () => {
+    setIsModalVisible(true)
+    setSelectedTask('')
+    setStages([{ title: '', description: '' }])
+  }
+
+  const addStage = () => {
+    setStages([...stages, { title: '', description: '' }]);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedTask(null);
+    setStages([{ title: '', description: '' }]);
+  };
+
   return (
     <ContentLayout title={"Management Task"}>
       <div className='py-9 px-4'>
         <div className='w-full flex justify-end pb-4'>
-          <AddButton text={"Tambah"} onClick={() => setIsModalVisible(true)} />
+          <AddButton text={"Tambah"} onClick={handleAddData} />
         </div>
         <Tables
           pagination={true}
@@ -158,7 +144,7 @@ const MissionList = () => {
         open={isModalVisible}
         width={890}
         // onOk={handleOk}
-        onCancel={() => setIsModalVisible(false)}
+        onCancel={handleCloseModal}
         closable={false}
         title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
         styles={{
@@ -167,15 +153,15 @@ const MissionList = () => {
           },
         }}
         footer={[
-          <Button key="submit" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
-            Approve
+          <Button key="close" className="btn-m font-bold text-primary-500 h-[42px] px-[22px] rounded-[5px] border border-primary-500" onClick={() => setIsModalVisible(false)}>
+            Kembali
           </Button>,
-          <Button key="button" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
-            Reject
+          <Button key="button" className="btn-m font-bold text-white h-[42px] px-[22px] rounded-[5px] bg-primary-500" onClick={() => setIsModalVisible(false)}>
+            {selectedTask ? 'Simpan' : 'Tambah'}
           </Button>,
         ]}
       >
-        <ModalContent />
+        <AddTaskModal isOpen={isModalVisible} selectedTask={selectedTask} onStageChange={handleStageChange} stages={stages} addStage={addStage} />
       </Modal>
     </ContentLayout>
   );
