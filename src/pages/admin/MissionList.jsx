@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import ContentLayout from '../../layouts/ContentLayout';
 import AddButton from '../../components/global/button/AddButton';
 import Tables from '../../components/global/Table';
-import { Button, Dropdown, Menu, Tag, message, Space, Modal } from 'antd';
-import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Menu, Tag, message, Space, Modal, Input, Form, Upload } from 'antd';
+import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { HiDotsHorizontal } from 'react-icons/hi';
+import AddTaskModal from '../../components/task/management/AddTaskModal';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -17,17 +18,10 @@ const getStatusColor = (status) => {
   }
 };
 
-const ModalContent = () => {
-  return(
-    <div>
-      oii
-    </div>
-  )
-}
-
 const MissionList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [stages, setStages] = useState([{ title: '', description: '' }]);
 
   const data = useMemo(
     () => [
@@ -69,6 +63,7 @@ const MissionList = () => {
               label: <span type="text">Edit</span>,
               icon: <EditOutlined />,
               key: 'edit',
+              onClick: () => handleEdit(record),
             },
             {
               label: <span type="text">Detail</span>,
@@ -104,11 +99,39 @@ const MissionList = () => {
     console.log('click', e.key);
   };
 
+  const handleEdit = (record) => {
+    setSelectedTask(record);
+    setStages(record.stages || [{ title: '', description: '' }]);
+    setIsModalVisible(true);
+  };
+
+  const handleStageChange = (index, key, value) => {
+    const newStages = [...stages];
+    newStages[index][key] = value;
+    setStages(newStages);
+  };
+  
+  const handleAddData = () => {
+    setIsModalVisible(true)
+    setSelectedTask('')
+    setStages([{ title: '', description: '' }])
+  }
+
+  const addStage = () => {
+    setStages([...stages, { title: '', description: '' }]);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedTask(null);
+    setStages([{ title: '', description: '' }]);
+  };
+
   return (
     <ContentLayout title={"Management Task"}>
       <div className='py-9 px-4'>
         <div className='w-full flex justify-end pb-4'>
-          <AddButton text={"Tambah"} onClick={() => setIsModalVisible(true)}/>
+          <AddButton text={"Tambah"} onClick={handleAddData} />
         </div>
         <Tables
           pagination={true}
@@ -118,28 +141,28 @@ const MissionList = () => {
         />
       </div>
       <Modal
-          open={isModalVisible}
-          width={890}
-          // onOk={handleOk}
-          onCancel={() => setIsModalVisible(false)}
-          closable={false}
-          title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
-          styles={{
-            content: {
-              padding: '20px 24px',
-            },
-          }}
-          footer={[
-            <Button key="submit" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
-              Approve
-            </Button>,
-            <Button key="submit" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={() => setIsModalVisible(false)}>
-              Reject
-            </Button>,
-          ]}
-        >
-          <ModalContent />
-        </Modal>
+        open={isModalVisible}
+        width={890}
+        // onOk={handleOk}
+        onCancel={handleCloseModal}
+        closable={false}
+        title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
+        styles={{
+          content: {
+            padding: '20px 24px',
+          },
+        }}
+        footer={[
+          <Button key="close" className="btn-m font-bold text-primary-500 h-[42px] px-[22px] rounded-[5px] border border-primary-500" onClick={() => setIsModalVisible(false)}>
+            Kembali
+          </Button>,
+          <Button key="button" className="btn-m font-bold text-white h-[42px] px-[22px] rounded-[5px] bg-primary-500" onClick={() => setIsModalVisible(false)}>
+            {selectedTask ? 'Simpan' : 'Tambah'}
+          </Button>,
+        ]}
+      >
+        <AddTaskModal isOpen={isModalVisible} selectedTask={selectedTask} onStageChange={handleStageChange} stages={stages} addStage={addStage} />
+      </Modal>
     </ContentLayout>
   );
 };
