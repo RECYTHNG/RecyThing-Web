@@ -1,8 +1,8 @@
-import { ActionIcons, AddCircleIcon } from "../../components/Icons/icons";
+import { ActionIcons } from "../../components/global/Icons/icons";
 import { useMemo, useState } from "react";
-import GoldBadge from "/assets/images/GoldBadge.png"
-import SilverBadge from "/assets/images/SilverBadge.png"
-import ClassicBadge from "/assets/images/ClassicBadge.png"
+import GoldBadge from "/assets/images/GoldBadge.png";
+import SilverBadge from "/assets/images/SilverBadge.png";
+import ClassicBadge from "/assets/images/ClassicBadge.png";
 import Tables from "../../components/global/Table";
 import { formatNumber } from "../../utils/formatNumbers";
 import { Button, Dropdown, Menu } from "antd";
@@ -10,14 +10,15 @@ import { toast } from "react-toastify";
 import ContentLayout from "../../layouts/ContentLayout";
 import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
-import { AddModal, DeleteModal, EditModal } from '../../components/Achievement/ModalAchievements';
+import { AddModal, DeleteModal, EditModal } from "../../components/Achievement/ModalAchievements";
+import AddButton from "../../components/global/button/AddButton";
 
 export default function ManageUserAchivements() {
   const badge = useMemo(
     () => ({
-      Gold: (<img src={GoldBadge} alt="Gold Badge" />),
-      Silver: (<img src={SilverBadge} alt="Silver Badge" />),
-      Classic: (<img src={ClassicBadge} alt="Bronze Badge" />),
+      Gold: <img src={GoldBadge} alt="Gold Badge" />,
+      Silver: <img src={SilverBadge} alt="Silver Badge" />,
+      Classic: <img src={ClassicBadge} alt="Bronze Badge" />,
     }),
     []
   );
@@ -185,25 +186,16 @@ export default function ManageUserAchivements() {
     <ContentLayout title={"Pencapaian"}>
       <section>
         <div className="p-5 bg-[#F9FAFB]">
-          <div className="px-8 py-6 shadow-md flex flex-col gap-6 rounded-lg bg-white">
+          <div className="flex flex-col gap-8">
             <div className="flex justify-between items-center">
               <h5 className="h5 font-bold">Daftar Pencapaian</h5>
-              <button
-                className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md"
-                onClick={showModal}
-              >
-                <AddCircleIcon /> Tambah
-              </button>
+              <AddButton text="Tambah" onClick={showModal} />
             </div>
-            <div>
+            <div className="px-8 py-4 shadow-md rounded-lg bg-white">
               <Tables data={dataAchievements} columns={columnAchievements} />
             </div>
-          </div>
-          <div className="px-8 py-6 mt-5 shadow-md flex flex-col gap-6 rounded-lg bg-white">
-            <div className="flex justify-between items-center">
-              <h5 className="h5 font-bold">Peringkat Pengguna</h5>
-            </div>
-            <div>
+            <h5 className="h5 font-bold">Peringkat Pengguna</h5>
+            <div className="px-8 py-4 shadow-md rounded-lg bg-white">
               <Tables
                 data={dataUserAchievements}
                 columns={columnUserAchievements}

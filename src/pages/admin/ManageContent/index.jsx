@@ -1,9 +1,8 @@
 import { useState } from "react";
 import ManageContentVideo from "./ManageContentVideo";
 import ManageContentArticle from "./ManageContentArticle";
-import { Link } from "react-router-dom";
-import { AddCircleIcon } from "../../../components/Icons/icons";
 import ContentLayout from "../../../layouts/ContentLayout";
+import AddButton from "../../../components/global/button/AddButton";
 
 export default function ManageContent() {
   const [activeTab, setActiveTab] = useState("article");
@@ -31,11 +30,7 @@ export default function ManageContent() {
                 Video
               </button>
             </div>
-            <Link to={activeTab === "article" ? "/content/add-article" : "/content/add-video"}>
-              <button className="btn-l font-bold px-6 py-2 bg-primary-500 text-white flex items-center gap-2 rounded-full shadow-md">
-                <AddCircleIcon /> Tambah
-              </button>
-            </Link>
+            <AddButton text="Tambah" to={activeTab === "article" ? "/content/add-article" : "/content/add-video"}/>
           </div>
           {activeTab === "article" ? <ManageContentArticle /> : <ManageContentVideo />}
         </div>
