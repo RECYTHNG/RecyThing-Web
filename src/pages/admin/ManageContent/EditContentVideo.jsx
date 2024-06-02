@@ -1,81 +1,88 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AddImageIcon } from "../../../assets/icons";
-import { RxCheck } from "react-icons/rx";
-import articles from "./articles.json";
-import { Modal } from "antd";
+import { AddImageIcon } from "../../../components/global/Icons/icons";
+import { FaCheck } from "react-icons/fa";
+import { videos } from "./dummyData.json";
 import ContentLayout from "../../../layouts/ContentLayout";
+import { Modal } from "antd";
 import DeleteModalChildren from "../../../components/Content/DeleteModalChild";
 
 const categories = [
-  "Organik",
-  "Plastik",
-  "Kertas",
-  "Kaca",
-  "Tekstil",
-  "Kaleng",
-  "Elektronik",
+  "Tips",
+  "Daur Ulang",
+  "Tutorial",
+  "Edukasi",
+  "Kampanye",
   "Lainnya",
 ];
 
-export default function EditContent() {
+export default function EditContentVideo() {
   const { id } = useParams();
-  const article = articles.find((article) => article.id === Number(id));
+  const video = videos.find((video) => video.id === Number(id));
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [judul, setJudul] = useState(article ? article.title : "");
-  const [deskripsi, setDeskripsi] = useState(article ? article.desc : "");
-  const [thumbnail, setThumbnail] = useState(article ? article.thumbnail : "");
+  const [judul, setJudul] = useState(video ? video.title : "");
+  const [deskripsi, setDeskripsi] = useState(video ? video.desc : "");
+  const [linkVideo, setLinkVideo] = useState(video ? video.linkVideo : "");
+  const [thumbnail, setThumbnail] = useState(video ? video.thumbnail : null);
   const [selectedCategories, setSelectedCategories] = useState(
-    article ? article.category : []
+    video ? video.kategori : []
   );
   const [isFocused, setIsFocused] = useState({
     judul: false,
     deskripsi: false,
+    linkVideo: false,
   });
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleFocus = (field) => {
-    setIsFocused({ ...isFocused, [field]: true });
+  const handleFocus = (inputId) => {
+    setIsFocused((prev) => ({ ...prev, [inputId]: true }));
   };
 
-  const handleBlur = (field) => {
-    setIsFocused({ ...isFocused, [field]: false });
+  const handleBlur = (inputId) => {
+    setIsFocused((prev) => ({ ...prev, [inputId]: false }));
   };
 
   const handleThumbnailChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setThumbnail(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (e.target.files && e.target.files[0]) {
+      setThumbnail(URL.createObjectURL(e.target.files[0]));
     }
   };
 
   const handleCategoryChange = (category) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(
-        selectedCategories.filter((item) => item !== category)
-      );
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
+    setSelectedCategories((prev) => {
+      if (prev.some((item) => item === category)) {
+        return prev.filter((item) => item !== category);
+      } else {
+        return [...prev, category];
+      }
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Updated Article: ", {
+    if (
+      !judul ||
+      !deskripsi ||
+      !linkVideo ||
+      !thumbnail ||
+      selectedCategories.length === 0
+    ) {
+      toast.error("Semua field harus diisi!");
+      return;
+    }
+    const formData = {
       id,
       judul,
       deskripsi,
+      linkVideo,
       thumbnail,
-      selectedCategories,
-    });
-    toast.success("Article Updated");
-    navigate("/content")
+      kategori: selectedCategories,
+    };
+    console.log("Video Updated: ", formData);
+    toast.success("Video berhasil diperbarui");
+    navigate("/content");
   };
 
   const handleDelete = () => {
@@ -85,8 +92,8 @@ export default function EditContent() {
   const handleConfirmDelete = () => {
     console.log("Item deleted");
     setIsModalVisible(false);
-    toast.success("Article Deleted");
-    navigate("/content")
+    toast.success("Video berhasil dihapus!");
+    navigate("/content");
   };
 
   const handleCancelDelete = () => {
@@ -94,9 +101,9 @@ export default function EditContent() {
   };
 
   return (
-    <ContentLayout title={"Edit Artikel"}>
+    <ContentLayout title={"Edit Video"}>
       <section>
-        <div className="p-[30px] bg-[#F9FAFB] h-[calc(100vh-80px)]">
+        <div className="p-[30px] bg-[#F9FAFB] h-auto">
           <form className="grid grid-cols-4 gap-5" onSubmit={handleSubmit}>
             {/* LEFT INPUT */}
             <div className="col-span-3 flex flex-col">
@@ -117,28 +124,50 @@ export default function EditContent() {
                     htmlFor="judul"
                     className="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary-500 peer-focus:text-sm transition-all"
                   >
-                    Judul Artikel
+                    Judul Video
                   </label>
                 </div>
               </div>
-              <div className="bg-white px-4 py-5 rounded-b-lg shadow-md">
+              <div className="bg-white px-4 shadow-md">
                 <div className="relative bg-inherit">
                   <textarea
                     id="deskripsi"
                     name="deskripsi"
-                    className="w-full peer bg-transparent h-[621px] rounded-lg text-gray-700 ring-1 px-3 py-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
+                    className="w-full peer bg-transparent h-[568px] rounded-lg text-gray-700 ring-1 px-3 py-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
                     placeholder={isFocused.deskripsi ? "Masukan Deskripsi" : ""}
                     onFocus={() => handleFocus("deskripsi")}
                     onBlur={() => handleBlur("deskripsi")}
                     onChange={(e) => setDeskripsi(e.target.value)}
                     value={deskripsi}
-                    rows={10}
                   />
                   <label
                     htmlFor="deskripsi"
                     className="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary-500 peer-focus:text-sm transition-all"
                   >
                     Deskripsi
+                  </label>
+                </div>
+              </div>
+              <div className="bg-white px-4 py-5 rounded-b-lg shadow-md">
+                <div className="relative bg-inherit">
+                  <input
+                    type="text"
+                    id="linkVideo"
+                    name="linkVideo"
+                    className="w-full peer bg-transparent h-10 rounded-lg text-gray-700 ring-1 px-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
+                    placeholder={
+                      isFocused.linkVideo ? "Masukan Link Video" : ""
+                    }
+                    onFocus={() => handleFocus("linkVideo")}
+                    onBlur={() => handleBlur("linkVideo")}
+                    onChange={(e) => setLinkVideo(e.target.value)}
+                    value={linkVideo}
+                  />
+                  <label
+                    htmlFor="linkVideo"
+                    className="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary-500 peer-focus:text-sm transition-all"
+                  >
+                    Link Video
                   </label>
                 </div>
               </div>
@@ -155,7 +184,7 @@ export default function EditContent() {
             {/* RIGHT INPUT */}
             <div className="flex flex-col justify-between">
               <div className="flex flex-col gap-5">
-                <div className="bg-white py-5 px-4 rounded-lg boxShadow">
+                <div className="bg-white py-5 px-4 rounded-lg shadow-md">
                   <div>
                     <label
                       className="block text-gray-700 body-l font-bold mb-5"
@@ -186,12 +215,12 @@ export default function EditContent() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white py-5 px-4 rounded-lg boxShadow">
+                <div className="bg-white py-5 px-4 rounded-lg shadow-md">
                   <div>
                     <label className="block text-gray-700 body-l font-bold mb-5">
                       Kategori
                     </label>
-                    <div className="grid grid-cols-2 gap-x-[30px] gap-y-5">
+                    <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
                       {categories.map((category) => (
                         <div key={category} className="flex gap-2 items-center">
                           <input
@@ -203,10 +232,13 @@ export default function EditContent() {
                             onChange={() => handleCategoryChange(category)}
                             className="relative peer shrink-0 appearance-none w-4 h-4 border-2 border-primary-500 rounded-sm bg-white mt-1 checked:bg-primary-500 checked:border-0"
                           />
-                          <label className="body-m" htmlFor={category}>
+                          <label
+                            className="body-m cursor-pointer"
+                            htmlFor={category}
+                          >
                             {category}
                           </label>
-                          <RxCheck className="absolute w-4 h-4 mt-1 text-white hidden peer-checked:block" />
+                          <FaCheck className="absolute w-4 h-4 text-white hidden peer-checked:block" />
                         </div>
                       ))}
                     </div>
@@ -214,7 +246,7 @@ export default function EditContent() {
                 </div>
               </div>
               <div className="flex gap-2 px-5">
-                <Link to={"/content"} className="flex-1">
+                <Link to="/content" className="flex-1">
                   <button
                     type="button"
                     className="w-full rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4"
@@ -225,7 +257,6 @@ export default function EditContent() {
                 <button
                   type="submit"
                   className="flex-1 rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4"
-                  onClick={handleSubmit}
                 >
                   Simpan
                 </button>
@@ -240,7 +271,11 @@ export default function EditContent() {
           width={518}
           footer={null}
         >
-          <DeleteModalChildren onOk={handleConfirmDelete} onCancel={handleCancelDelete} />
+          <DeleteModalChildren
+            onOk={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+            type="video"
+          />
         </Modal>
       </section>
     </ContentLayout>

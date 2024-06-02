@@ -1,14 +1,14 @@
-import DeleteImage from "../../assets/image/DeleteImage.png"
+import DeleteImage from "/assets/images/DeleteImage.png";
 
-export default function DeleteModalChildren({onOk, onCancel}) {
+export default function DeleteModalChildren({ onOk, onCancel, type = "item" }) {
   return (
     <div className="flex flex-col p-2 gap-2 justify-center items-center">
       <div className="w-[307px]">
-        <img src={DeleteImage} alt="Delete Image" />
+        <img src={DeleteImage} alt="Delete" />
       </div>
-      <h4 className="h4 font-bold">Anda yakin ingin menghapus artikel ini?</h4>
+      <h4 className="h4 font-bold">Anda yakin ingin menghapus {type} ini?</h4>
       <p className="body-m text-center text-[#959595]">
-        Jika Anda menghapus artikel ini, Anda tidak dapat
+        Jika Anda menghapus {type} ini, Anda tidak dapat
         <br />
         memulihkannya.
       </p>
@@ -21,7 +21,7 @@ export default function DeleteModalChildren({onOk, onCancel}) {
           Batal
         </button>
         <button
-          type="submit"
+          type="button"
           className="flex-1 rounded-[5px] bg-danger-500 text-white btn-l font-bold py-4"
           onClick={onOk}
         >
