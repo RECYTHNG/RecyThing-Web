@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AddImageIcon } from "../../../components/Icons/icons";
+import { AddImageIcon } from "../../../components/global/Icons/icons";
 import { articles } from "./dummyData.json";
 import { Modal } from "antd";
 import ContentLayout from "../../../layouts/ContentLayout";

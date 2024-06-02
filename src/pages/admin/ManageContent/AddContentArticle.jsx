@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AddCircleIcon, AddImageIcon } from "../../../components/Icons/icons";
+import { AddCircleIcon, AddImageIcon } from "../../../components/global/Icons/icons";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import ContentLayout from "../../../layouts/ContentLayout";
