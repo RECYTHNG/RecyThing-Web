@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { AddCircleIcon } from '../../../assets/icons'
+import { AddCircleIcon } from '../Icons/icons'
 
 const AddButton = ({ text, to, onClick }) => {
   return (
