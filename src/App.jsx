@@ -10,6 +10,7 @@ import AddContentArticle from './pages/admin/ManageContent/AddContentArticle';
 import EditContentArticle from "./pages/admin/ManageContent/EditContentArticle";
 import AddContentVideo from './pages/admin/ManageContent/AddContentVideo';
 import EditContentVideo from './pages/admin/ManageContent/EditContentVideo';
+import NotFound from './pages/404';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path='/mission/list' element={<MissionList />} />
           <Route path='/mission/approval' element={<ManageApprovalTask/>} />
           <Route path="/admin" element={<ManageAdmin />} />
+          <Route path='*' element={<NotFound />} />
         </Route>
       </Routes>
     </div>
