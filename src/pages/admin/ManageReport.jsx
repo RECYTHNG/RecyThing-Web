@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Modal, Tag, Button } from 'antd';
+import { Modal, Tag, Button, Input } from 'antd';
 import Filters from '../../components/Report/Filters';
 import Tables from '../../components/global/Table';
 import LabeledValue from '../../components/Report/LabeledValue';
 import ContentLayout from '../../layouts/ContentLayout';
+import FloatingLabelInput from '../../components/global/input/FloatingInput';
+
+const { TextArea } = Input;
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -70,6 +73,7 @@ const ModalContent = ({ selectedReport }) => (
 const ManageReport = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
 
   const data = useMemo(
     () => [
@@ -116,11 +120,27 @@ const ManageReport = () => {
   };
 
   const handleOk = () => {
+    // Call api approve
     setIsModalVisible(false);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const handleReject = () => {
+    setIsModalVisible(false);
+    setIsRejectModalVisible(true);
+  };
+
+  const handleRejectCancel = () => {
+    setIsRejectModalVisible(false);
+    setIsModalVisible(true);
+  };
+
+  const handleRejectOk = () => {
+    // Call api reject
+    setIsRejectModalVisible(false);
   };
 
   return (
@@ -140,6 +160,7 @@ const ManageReport = () => {
         <Modal
           open={isModalVisible}
           width={890}
+          centered
           onOk={handleOk}
           onCancel={handleCancel}
           styles={{
@@ -148,15 +169,36 @@ const ManageReport = () => {
             },
           }}
           footer={[
-            <Button key="submit" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={handleCancel}>
+            <Button key="approve" className="text-base rounded-[4px] bg-success-400 hover:bg-success-500 py-1 px-[6px] text-white border-none" onClick={handleOk}>
               Approve
             </Button>,
-            <Button key="submit" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={handleCancel}>
+            <Button key="reject" className="text-base rounded-[4px] bg-danger-500 hover:bg-danger-600 py-1 px-[6px] text-white border-none" onClick={handleReject}>
               Reject
             </Button>,
           ]}
         >
           {selectedReport && <ModalContent selectedReport={selectedReport} />}
+        </Modal>
+
+        <Modal
+          open={isRejectModalVisible}
+          onOk={handleRejectOk}
+          onCancel={handleRejectCancel}
+          centered
+          closeIcon={false}
+          width={633}
+        >
+          <h3 className='h4 font-bold'>Are you sure you want to reject this report?</h3>
+          <FloatingLabelInput 
+          type='desc'
+          label={"Type Your Reason Here"}
+          placeholder={""}
+          className="mt-[30px]"
+          />
+          <div className='flex flex-col gap-3 mt-11 btn-m font-bold'>
+            <button className='py-3 w-full bg-primary-500 text-white rounded-[5px]'>Reject</button>
+            <button className='py-3 w-full border border-primary-500 text-primary-500 rounded-[5px]'>Cancel</button>
+          </div>
         </Modal>
       </div>
     </ContentLayout>
