@@ -1,16 +1,16 @@
-import "./App.css";
-import "./CustomAnt.css";
-import { Routes, Route } from "react-router-dom";
-import { Dashboard, ManageAdmin, ManageContent, ManageReport, MissionList, ManageUserAchievements, ManageApprovalTask } from "./pages/admin";
-import Playground from "./pages/Playground";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import DashboardLayout from "./layouts/DashboardLayout";
-import AddContentArticle from "./pages/admin/ManageContent/AddContentArticle";
-import EditContentArticle from "./pages/admin/ManageContent/EditContentArticle";
-import AddContentVideo from "./pages/admin/ManageContent/AddContentVideo";
-import EditContentVideo from "./pages/admin/ManageContent/EditContentVideo";
-import LandingPage from "./pages/landing/LandingPage";
+import './App.css';
+import './CustomAnt.css';
+import { Routes, Route } from 'react-router-dom';
+import { Dashboard, ManageAdmin, ManageContent, ManageReport, MissionList, ManageUserAchievements, ManageApprovalTask, ManageOpenAI, LoginPage } from './pages/admin';
+import Playground from './pages/Playground';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import DashboardLayout from './layouts/DashboardLayout';
+import AddContentArticle from './pages/admin/ManageContent/AddContentArticle';
+import EditContentArticle from './pages/admin/ManageContent/EditContentArticle';
+import AddContentVideo from './pages/admin/ManageContent/AddContentVideo';
+import EditContentVideo from './pages/admin/ManageContent/EditContentVideo';
+import LandingPage from './pages/landing/LandingPage';
 import NotFound from './pages/404';
 
 function App() {
@@ -19,6 +19,7 @@ function App() {
       <ToastContainer />
       <Routes>
         <Route path="/landing-page" element={<LandingPage />}></Route>
+        <Route path="/login" element={<LoginPage />} />
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/report" element={<ManageReport />} />
@@ -31,7 +32,8 @@ function App() {
           <Route path="/mission/list" element={<MissionList />} />
           <Route path="/mission/approval" element={<ManageApprovalTask />} />
           <Route path="/admin" element={<ManageAdmin />} />
-          <Route path='*' element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/openai" element={<ManageOpenAI />} />
         </Route>
       </Routes>
     </div>

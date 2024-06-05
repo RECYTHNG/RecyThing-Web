@@ -7,7 +7,7 @@ import Eye from '../../assets/eye.svg';
 import EyeOff from '../../assets/eye-off.svg';
 import CameraIcon from '../../assets/camera.svg';
 
-const EditAdminForm = ({ admin }) => {
+const EditAdminForm = ({ admin, onEdit, onCancel }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -27,7 +27,8 @@ const EditAdminForm = ({ admin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Admin Data:', { fullName, email, oldPassword, newPassword, role, avatar });
+    const newEdit = { id: `AD${Math.floor(Math.random() * 1000)}`, fullName, email, oldPassword, newPassword, role, avatar };
+    onEdit(newEdit);
   };
 
   const handleAvatarChange = (e) => {
@@ -133,7 +134,9 @@ const EditAdminForm = ({ admin }) => {
             <div className="text-white text-base font-normal leading-relaxed">{admin ? 'Save Data' : 'Update Data'}</div>
           </button>
           <button type="button" className="w-[306px] h-[38px] px-2 py-1.5 bg-neutral-300 rounded-[7px] justify-center items-center gap-[98px] inline-flex">
-            <div className="text-white text-base font-normal leading-relaxed">Cancel</div>
+            <div className="text-white text-base font-normal leading-relaxed" onClick={onCancel}>
+              Cancel
+            </div>
           </button>
         </div>
       </form>
