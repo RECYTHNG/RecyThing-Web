@@ -47,7 +47,7 @@ const LoginPage = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-sky-900 relative overflow-hidden">
       <img src={Rectangle1} alt="Rectangle1" className="absolute w-[569.80px] h-[569.80px] left-[-650px] top-[99.91px] origin-top-left transform rotate-[-45deg] opacity-20 bg-gradient-to-b from-[#FFFFFF00] to-[#FFFFFF66] rounded-[50px]" />
-      <img src={Rectangle2} alt="Rectangle2" className="absolute w-[569.80px] h-[569.80px] left-[-550px] top-[99.91px] origin-top-left transform rotate-[-45deg] opacity-15 bg-gradient-to-b from-[#FFFFFF00] via-blue-200  rounded-[50px]" />
+      <img src={Rectangle2} alt="Rectangle2" className="absolute w-[569.80px] h-[569.80px] left-[-550px] top-[99.91px] origin-top-left transform rotate-[-45deg] opacity-15 bg-gradient-to-b from-[#FFFFFF00] via-blue-300 rounded-[50px]" />
 
       <img
         src={Rectangle3}
