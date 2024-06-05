@@ -5,7 +5,6 @@ import AddAdminForm from '../../components/admin/addform'; // Sesuaikan path imp
 import EditAdminForm from '../../components/admin/editform'; // Sesuaikan path import sesuai kebutuhan
 import ContentLayout from '../../layouts/ContentLayout';
 import { toast } from 'react-toastify';
-import { AddCircleIcon } from '../../assets/icons';
 import HorizontalDotsIcon from '../../assets/moreicons';
 import Edit from '../../assets/edit.svg';
 import Delete from '../../assets/trash.svg';
@@ -152,9 +151,7 @@ const ManageAdmin = () => {
       <div className="px-6 py-9">
         <div className="flex items-end justify-end text-[#414141]">
           <button onClick={showAddModal}>
-            <div className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md mb-4">
-              <AddCircleIcon /> Tambah
-            </div>
+            <div className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md mb-4">{/* Tambah */}</div>
           </button>
         </div>
         <div className=" px-6 py-3 rounded-lg shadow">

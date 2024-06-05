@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { Button, Dropdown, Menu, Tooltip, Modal, message } from 'antd';
 import Tables from '../../components/global/Table';
 import ContentLayout from '../../layouts/ContentLayout';
-import { AddCircleIcon } from '../../assets/icons';
 import Edit from '../../assets/edit.svg';
 import Delete from '../../assets/trash.svg';
 import HorizontalDotsIcon from '../../assets/moreicons';
@@ -165,7 +164,7 @@ const ManageOpenAI = () => {
       <div className="px-6 py-9 bg-[#F4F4F4]">
         <div className="flex items-end justify-end text-[#414141]">
           <div className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md mb-7 cursor-pointer" onClick={showModal}>
-            <AddCircleIcon /> Tambah
+            {/* <AddCircleIcon /> Tambah */}
           </div>
         </div>
         <div className="px-6 py-3 shadow-md flex flex-col gap-6 rounded-lg bg-white">

@@ -1,0 +1,193 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "thumbnail": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "Exploring the Wonders of the Universe",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 2,
+      "thumbnail": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "The Future of Artificial Intelligence",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 3,
+      "thumbnail": "https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "Top 10 Travel Destinations in 2024",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 4,
+      "thumbnail": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "Healthy Eating: Tips and Tricks",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 5,
+      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "The Evolution of Web Development",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 6,
+      "thumbnail": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "Understanding Climate Change",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 7,
+      "thumbnail": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "Innovations in Renewable Energy",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 8,
+      "thumbnail": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "The Rise of Electric Vehicles",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 9,
+      "thumbnail": "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "A Guide to Mindfulness Meditation Test panjang banget parah nih asli coi widiwwww",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    },
+    {
+      "id": 10,
+      "thumbnail": "https://images.unsplash.com/photo-1560807707-8cc77767d783?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&q=80&w=400",
+      "title": "Advancements in Biotechnology",
+      "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum id nesciunt quam rem corporis ipsam hic ratione similique incidunt rerum temporibus facilis quidem maxime expedita a, animi necessitatibus debitis minima! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae alias architecto minus distinctio illum at quas suscipit. Quo ab esse iure numquam sit, ad sint reprehenderit vitae, doloremque, maxime voluptatibus! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptates, veritatis aliquam? Corrupti, possimus! Ipsum architecto perspiciatis nostrum debitis cumque vel magni amet! Ducimus ut soluta commodi perferendis magni quam sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus esse quas, porro ut vel quasi atque. Alias delectus nisi nesciunt, perspiciatis sequi labore nihil! Aliquam sint quidem possimus dolores distinctio? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, nostrum commodi eveniet ea obcaecati pariatur, ipsum quaerat voluptates, corporis molestiae iure minus expedita eligendi voluptatibus id dolore impedit error ducimus!",
+      "createdAt": "05 Mei 2024",
+      "category": [
+        "Organik",
+        "Plastik"
+      ]
+    }
+  ],
+  "videos": [
+    {
+      "id": 1,
+      "title": "Exploring the Depths of the Ocean",
+      "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.",
+      "linkVideo": "https://www.youtube.com/embed/xvFZjo5PgG0?si=mJ2FXjSmWVY1v_6w",
+      "thumbnail": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+      "kategori": [
+        "Tips",
+        "Daur Ulang"
+      ],
+      "watch": "11"
+    }
+    ,
+    {
+      "id": 2,
+      "title": "Hiking Adventures in the Swiss Alps",
+      "desc": "Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, at eleifend quam arcu eget nulla.",
+      "linkVideo": "https://www.youtube.com/embed/9ftXTR1CzNM?si=4GX_vQeKD89DzBkU",
+      "thumbnail": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+      "kategori": [
+        "Tips",
+        "Daur Ulang"
+      ],
+      "watch": "11"
+    }
+    ,
+    {
+      "id": 3,
+      "title": "Culinary Delights: A Tour of Italian Cuisines",
+      "desc": "Fusce lacinia arcu et nulla. Nulla vitae mauris non felis mollis faucibus. Nunc ultricies nunc non dolor.",
+      "linkVideo": "https://www.youtube.com/embed/d2MiIWe2tWU?si=XYouSOdrDT_6XOIs",
+      "thumbnail": "https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1149&q=80",
+      "kategori": [
+        "Tips",
+        "Daur Ulang"
+      ],
+      "watch": "11"
+    }
+    ,
+    {
+      "id": 4,
+      "title": "The Art of Bonsai: Cultivating Miniature Trees",
+      "desc": "Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos.",
+      "linkVideo": "https://www.instagram.com/p/Cz2zvqVLkEd/?utm_source=ig_embed&amp;utm_campaign=loading",
+      "thumbnail": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+      "kategori":[
+        "Tips",
+        "Daur Ulang"
+      ],
+      "watch": "11"
+    }
+    ,
+    {
+      "id": 5,
+      "title": "Exploring Ancient Civilizations: The Wonders of Egypt",
+      "desc": "Nam eget dui. Etiam rhoncus. Fusce aliquet pede non pede. Suspendisse dapibus lorem pellentesque magna.",
+      "linkVideo": "https://www.youtube.com/embed/gicPUkckBVk?si=tiCWoBFml7RNu5hB",
+      "thumbnail": "https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1176&q=80",
+      "kategori": [
+        "Tips",
+        "Daur Ulang"
+      ],
+      "watch": "11"
+    }
+    ,
+    {
+      "id": 6,
+      "title": "The World of Artificial Intelligence: Exploring Its Impact",
+      "desc": "Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius.",
+      "linkVideo": "https://www.youtube.com/embed/xvFZjo5PgG0?si=mJ2FXjSmWVY1v_6w",
+      "thumbnail": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+      "kategori": [
+        "Tips",
+        "Daur Ulang"
+      ],
+      "watch": "11"
+    }
+  ]
+}

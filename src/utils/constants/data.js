@@ -5,6 +5,8 @@ import content from "/assets/svg/sidebar/content.svg"
 import admin from "/assets/svg/sidebar/admin.svg"
 import achievment from "/assets/svg/sidebar/achievment.svg"
 import openai from "/assets/svg/sidebar/openai.svg"
+import missionList from "/assets/svg/sidebar/missionList.svg"
+import missionApproval from "/assets/svg/sidebar/missionApproval.svg"
 
 // Hover
 import reportWhite from "/assets/svg/sidebar/reportWhite.svg"
@@ -30,9 +32,21 @@ export const nav_item = [
   },
   {
     name: "Manajemen Misi",
-    url: "/mission",
     iconActive: missionWhite,
+    url: "/mission",
     icon: mission,
+    children: [
+      {
+        name: "Daftar Misi",
+        url: "/mission/list",
+        icon: missionList,
+      },
+      {
+        name: "Persetujuan Misi",
+        url: "/mission/approval",
+        icon: missionApproval,
+      },
+    ]
   },
   {
     name: "Manajemen Konten",
@@ -54,7 +68,7 @@ export const nav_item = [
   },
   {
     name: "Manajemen Penacapaian",
-    url: "/achievment",
+    url: "/achievement",
     iconActive: achievmentWhite,
     icon: achievment,
   },
