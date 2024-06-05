@@ -1,7 +1,7 @@
 import './App.css';
 import './CustomAnt.css';
 import { Routes, Route } from 'react-router-dom';
-import { Dashboard, ManageAdmin, ManageContent, ManageReport } from './pages/admin';
+import { Dashboard, LoginPage, ManageAdmin, ManageContent, ManageOpenAI, ManageReport } from './pages/admin';
 import Playground from './pages/Playground';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +12,9 @@ function App() {
   return (
     <div>
       <ToastContainer />
+
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/report" element={<ManageReport />} />
@@ -20,6 +22,7 @@ function App() {
           <Route path="/content/add" element={<AddContent />} />
           <Route path="/playground" element={<Playground />} />
           <Route path="/admin" element={<ManageAdmin />} />
+          <Route path="/openai" element={<ManageOpenAI />} />
         </Route>
       </Routes>
     </div>
