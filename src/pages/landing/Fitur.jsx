@@ -2,7 +2,7 @@ import CardFunction from "../../components/landing/cardFitur";
 
 export default function Fitur() {
   return (
-    <div>
+    <section id="fitur">
       <div className="flex text-center justify-center w-full px-[110px] py-[50px] ">
         <div className="flex-col">
           <div className="">
@@ -21,6 +21,6 @@ export default function Fitur() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

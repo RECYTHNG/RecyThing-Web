@@ -43,7 +43,7 @@ export default function FAQ() {
   };
 
   return (
-    <div className="bg-[#E6F4FC]">
+    <section id="faq" className="bg-[#E6F4FC]">
       <div className="flex p-[85px] space-x-36">
         <div className="w-1/3 flex justify-center items-center">
           <h1 className="text-[54px] text-secondary-500 font-bold">
@@ -72,6 +72,6 @@ export default function FAQ() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

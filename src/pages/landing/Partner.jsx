@@ -11,7 +11,7 @@ import excelso from "../../assets/image/partner-excelso.png";
 
 export default function Partner() {
   return (
-    <div>
+    <section id="partner">
       <div className="px-[244px] py-[115px]">
         <h1 className="flex justify-center pb-10 text-[54px] text-secondary-500 font-bold ">Partner&nbsp;<span className="text-primary-500">Kami</span></h1>
         <div className="gap-[62px]" style={{display:"flex", justifyContent:"center", alignItems:"center", flexWrap:"wrap"}}>
@@ -27,6 +27,6 @@ export default function Partner() {
             <img src={excelso} alt="excelso" />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
