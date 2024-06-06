@@ -10,6 +10,11 @@ body {
   font-family: "Nunito", sans-serif !important;
 }
 
+
+.html {
+  scroll-behavior: smooth !important;
+}
+
 /* @Typography */
 /* - Heading */
 .h1 {

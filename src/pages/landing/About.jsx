@@ -2,7 +2,7 @@ import AboutLogo from "../../assets/image/about-image.png";
 
 export default function About() {
   return (
-    <div className="hero-container w-full py-[150px] px-[35px] ">
+    <section id="about-us" className="hero-container w-full py-[150px] px-[35px] ">
       <div className="flex flex-row justify-between item-center px-[60px] space-x-16">
         <div className="left">
           <img src={AboutLogo} alt="about-us" className="w-[1500px] h-auto  mt-[-70px]" />
@@ -28,6 +28,6 @@ export default function About() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
