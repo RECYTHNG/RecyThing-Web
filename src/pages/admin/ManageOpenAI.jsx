@@ -10,6 +10,8 @@ import AddDataForm from '../../components/customedata/addform';
 import EditDataForm from '../../components/customedata/editform';
 import DetailModal from '../../components/customedata/detailmodal';
 import { toast } from 'react-toastify';
+import { DeleteModal } from '../../components/customedata/modaldelete';
+import AddButton from '../../components/global/button/AddButton';
 
 const ManageOpenAI = () => {
   const [admins, setAdmins] = useState([
@@ -29,8 +31,10 @@ const ManageOpenAI = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [editData, setEditData] = useState(null);
   const [detailData, setDetailData] = useState(null);
+  const [recordToDelete, setRecordToDelete] = useState(null);
 
   const truncateText = (text, length) => {
     if (text.length <= length) return text;
@@ -102,19 +106,26 @@ const ManageOpenAI = () => {
   };
 
   const confirmDelete = (record) => {
-    Modal.confirm({
-      title: 'Konfirmasi Penghapusan',
-      content: `Apakah Anda yakin ingin menghapus topik "${record.topik}"?`,
-      okText: 'Hapus',
-      okType: 'danger',
-      cancelText: 'Batal',
-      onOk: () => handleDelete(record),
-    });
+    setRecordToDelete(record);
+    setIsDeleteModalVisible(true);
   };
 
-  const handleDelete = (record) => {
-    setAdmins((prevAdmins) => prevAdmins.filter((admin) => admin.id !== record.id));
-    message.success('Topik berhasil dihapus.');
+  const handleDeleteOk = (id) => {
+    setAdmins((prevAdmins) => prevAdmins.filter((admin) => admin.id !== id));
+    toast.success('Topik berhasil dihapus.', {
+      position: 'top-right',
+      autoClose: 2000,
+      style: {
+        marginTop: '90px',
+      },
+    });
+    setIsDeleteModalVisible(false);
+    setRecordToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteModalVisible(false);
+    setRecordToDelete(null);
   };
 
   const showModal = () => {
@@ -163,12 +174,10 @@ const ManageOpenAI = () => {
     <ContentLayout title={'Manajemen OpenAI'}>
       <div className="px-6 py-9 bg-[#F4F4F4]">
         <div className="flex items-end justify-end text-[#414141]">
-          <div className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md mb-7 cursor-pointer" onClick={showModal}>
-            {/* <AddCircleIcon /> Tambah */}
-          </div>
+          <AddButton text="Tambah" onClick={showModal} />
         </div>
-        <div className="px-6 py-3 shadow-md flex flex-col gap-6 rounded-lg bg-white">
-          <Tables data={admins} columns={columns} />
+        <div className="px-6 py-3 shadow-md flex flex-col gap-6 rounded-lg bg-white mt-6">
+          <Tables data={admins} columns={columns} pagination={true} initialPageSize={10} />
         </div>
       </div>
       <Modal open={isAddModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null} width={640}>
@@ -178,6 +187,7 @@ const ManageOpenAI = () => {
         <EditDataForm id={editData?.id} initialTopic={editData?.topik} initialDescription={editData?.deskripsi} onSubmit={handleEditSubmit} onCancel={handleCancel} />
       </Modal>
       <DetailModal visible={isDetailModalVisible} onCancel={handleCancel} data={detailData} />
+      <DeleteModal isVisible={isDeleteModalVisible} onOk={handleDeleteOk} onCancel={handleDeleteCancel} record={recordToDelete} />
     </ContentLayout>
   );
 };

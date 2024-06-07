@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLogin } from '../../hooks/useFetch'; // Adjust the import path as needed
 import Rectangle1 from '../../assets/rectangle1.svg';
 import Rectangle2 from '../../assets/rectangle2.svg';
 import Rectangle3 from '../../assets/rectangle3.svg';
@@ -12,6 +14,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { mutateAsync, isPending, isError, isLoading } = useLogin();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -25,7 +29,7 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -35,20 +39,17 @@ const LoginPage = () => {
       return;
     }
 
-    // Perform login logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
-
-    // Clear the form
-    setEmail('');
-    setPassword('');
+    mutateAsync({ endpoint: '/admin/login', loginData: { email, password } }).then((res) => {
+      console.log(res.data.token);
+      localStorage.setItem('token', res.data.token);
+      navigate('/');
+    });
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-sky-900 relative overflow-hidden">
       <img src={Rectangle1} alt="Rectangle1" className="absolute w-[569.80px] h-[569.80px] left-[-650px] top-[99.91px] origin-top-left transform rotate-[-45deg] opacity-20 bg-gradient-to-b from-[#FFFFFF00] to-[#FFFFFF66] rounded-[50px]" />
       <img src={Rectangle2} alt="Rectangle2" className="absolute w-[569.80px] h-[569.80px] left-[-550px] top-[99.91px] origin-top-left transform rotate-[-45deg] opacity-15 bg-gradient-to-b from-[#FFFFFF00] via-blue-300 rounded-[50px]" />
-
       <img
         src={Rectangle3}
         alt="Rectangle3"
@@ -80,7 +81,7 @@ const LoginPage = () => {
               </button>
             </div>
           </div>
-          {error && <div className="text-red-500 text-sm ">{error}</div>}
+          {error && <div className="text-red-500 text-sm">{error}</div>}
           <button type="submit" className="py-3 bg-sky-900 text-white font-bold rounded hover:bg-sky-800 transition duration-300">
             Sign In
           </button>
