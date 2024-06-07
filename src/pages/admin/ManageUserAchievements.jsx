@@ -189,7 +189,7 @@ export default function ManageUserAchivements() {
           <div className="flex flex-col gap-8">
             <div className="flex justify-between items-center">
               <h5 className="h5 font-bold">Daftar Pencapaian</h5>
-              <AddButton text="Tambah" onClick={showModal} />
+              {/* <AddButton text="Tambah" onClick={showModal} /> */}
             </div>
             <div className="px-8 py-4 shadow-md rounded-lg bg-white">
               <Tables data={dataAchievements} columns={columnAchievements} />
