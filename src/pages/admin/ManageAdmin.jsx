@@ -1,17 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { Modal, Tag, Dropdown, Menu, Button } from 'antd';
 import Tables from '../../components/global/Table';
-import AddAdminForm from '../../components/admin/addform'; // Sesuaikan path import sesuai kebutuhan
-import EditAdminForm from '../../components/admin/editform'; // Sesuaikan path import sesuai kebutuhan
+import AddAdminForm from '../../components/admin/addform';
+import EditAdminForm from '../../components/admin/editform';
 import ContentLayout from '../../layouts/ContentLayout';
 import { toast } from 'react-toastify';
 import HorizontalDotsIcon from '../../assets/moreicons';
 import Edit from '../../assets/edit.svg';
 import Delete from '../../assets/trash.svg';
+import { DeleteModal } from '../../components/admin/modaldelete';
+import AddButton from '../../components/global/button/AddButton';
 
 const ManageAdmin = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [admins, setAdmins] = useState([
     { id: 'AD001', name: 'Dono Torreto', email: 'donotorreto77@gmail.com', status: 'Super Admin' },
@@ -65,7 +68,7 @@ const ManageAdmin = () => {
                   </div>
                 </Menu.Item>
 
-                <Menu.Item key="delete" onClick={() => handleDelete(record)}>
+                <Menu.Item key="delete" onClick={() => showDeleteModal(record)}>
                   <div className="w-[80px] h-[30px] px-1.5 py-0.5 rounded gap-2.5 inline-flex items-center">
                     <img src={Delete} alt="Delete" className="w-4 h-4" />
                     <div className="text-black text-base font-normal leading-relaxed">Hapus</div>
@@ -135,8 +138,14 @@ const ManageAdmin = () => {
     showEditModal(record);
   };
 
-  const handleDelete = (record) => {
-    setAdmins(admins.filter((admin) => admin.id !== record.id));
+  const showDeleteModal = (record) => {
+    setSelectedAdmin(record);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleDelete = (adminId) => {
+    setAdmins(admins.filter((admin) => admin.id !== adminId));
+    setIsDeleteModalVisible(false);
     toast.error('Data has been deleted', {
       position: 'top-right',
       autoClose: 2000,
@@ -146,16 +155,19 @@ const ManageAdmin = () => {
     });
   };
 
+  const handleCancelDelete = () => {
+    setIsDeleteModalVisible(false);
+    setSelectedAdmin(null);
+  };
+
   return (
     <ContentLayout title={'Manage Admin'}>
       <div className="px-6 py-9">
         <div className="flex items-end justify-end text-[#414141]">
-          <button onClick={showAddModal}>
-            <div className="btn-l font-bold px-[22px] py-2 bg-primary-500 text-white flex items-center gap-2 rounded-[20px] shadow-t-md mb-4">{/* Tambah */}</div>
-          </button>
+          <AddButton text="Tambah" onClick={showAddModal} />
         </div>
-        <div className=" px-6 py-3 rounded-lg shadow">
-          <Tables data={admins} columns={columns} />
+        <div className=" px-6 py-3 rounded-lg shadow mt-6">
+          <Tables data={admins} columns={columns} pagination={true} initialPageSize={10} />
         </div>
         <Modal open={isAddModalVisible} onCancel={handleAddCancel} footer={null} width={730}>
           <AddAdminForm onAdd={handleAddOk} onCancel={handleAddCancel} />
@@ -163,6 +175,7 @@ const ManageAdmin = () => {
         <Modal open={isEditModalVisible} onCancel={handleEditCancel} footer={null} width={730}>
           <EditAdminForm admin={selectedAdmin} onEdit={handleEditOk} onCancel={handleCancelEdit} />
         </Modal>
+        <DeleteModal isVisible={isDeleteModalVisible} onOk={handleDelete} onCancel={handleCancelDelete} record={selectedAdmin} />
       </div>
     </ContentLayout>
   );
