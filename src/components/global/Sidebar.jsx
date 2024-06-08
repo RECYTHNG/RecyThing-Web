@@ -47,8 +47,8 @@ const Sidebar = () => {
           );
         })}
       </div>
-      <div className="flex-1 flex items-end justify-start px-7 min-h-12">
-        <button onClick={() => localStorage.removeItem('token')} className="flex items-center gap-4">
+      <div className="flex-1 flex items-end justify-start min-h-12">
+        <button onClick={() => localStorage.removeItem('token')} className="hover:bg-danger-500 hover:text-white flex items-center gap-4 px-7 py-1 rounded-lg transition-all duration-300">
           <MdOutlineLogout />
           Keluar
         </button>

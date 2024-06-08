@@ -5,6 +5,7 @@ import Tables from '../../components/global/Table';
 import LabeledValue from '../../components/Report/LabeledValue';
 import ContentLayout from '../../layouts/ContentLayout';
 import FloatingLabelInput from '../../components/global/input/FloatingInput';
+import { useFetch } from '../../hooks/useFetch';
 
 const { TextArea } = Input;
 
@@ -74,6 +75,8 @@ const ManageReport = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
+  const { data: reportData } = useFetch('/reports')
+  // console.log(reportData)
 
   const data = useMemo(
     () => [

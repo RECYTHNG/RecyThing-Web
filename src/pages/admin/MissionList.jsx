@@ -6,6 +6,7 @@ import { Button, Dropdown, Menu, Tag, message, Space, Modal, Input, Form, Upload
 import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { HiDotsHorizontal } from 'react-icons/hi';
 import AddTaskModal from '../../components/task/management/AddTaskModal';
+import { useFetch } from '../../hooks/useFetch';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -22,22 +23,20 @@ const MissionList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [stages, setStages] = useState([{ title: '', description: '' }]);
+  const { data: taskData, isLoading, isError } = useFetch('/tasks?page=1&limit=10', 'task')
 
   const data = useMemo(
-    () => [
-      { id: 'TM01', name: 'Daur Ulang Plastik', creator: 'Admin 1', deadline: '01/01/2024', status: 'Aktif' },
-      { id: 'TM02', name: 'Pengumpulan Kertas', creator: 'Admin 2', deadline: '05/01/2024', status: 'Melewati' },
-      { id: 'TM03', name: 'Pemisahan sampah', creator: 'Admin 3', deadline: '10/01/2024', status: 'Aktif' },
-      { id: 'TM04', name: 'Edukasi Lingkungan', creator: 'Admin 2', deadline: '15/01/2024', status: 'Aktif' },
-      { id: 'TM05', name: 'Pengurangan Limbah', creator: 'Admin 2', deadline: '20/01/2024', status: 'Aktif' },
-      { id: 'TM06', name: 'Daur Ulang Kaca', creator: 'Admin 3', deadline: '25/01/2024', status: 'Aktif' },
-      { id: 'TM07', name: 'Daur Ulang Baterai', creator: 'Admin 1', deadline: '30/01/2024', status: 'Aktif' },
-      { id: 'TM08', name: 'Pengolahan Limbah Industri', creator: 'Admin 1', deadline: '01/02/2024', status: 'Aktif' },
-      { id: 'TM09', name: 'Daur Ulang Elektronik', creator: 'Admin 3', deadline: '05/02/2024', status: 'Aktif' },
-      { id: 'TM10', name: 'Pemanfaatan Limbah Organik', creator: 'Admin 3', deadline: '10/02/2024', status: 'Aktif' },
-    ],
-    []
+    () => 
+      taskData?.data?.map((task) => ({
+        id: task.id,
+        name: task.title,
+        creator: task.task_creator.name,
+        deadline: new Date(task.end_date).toLocaleDateString('id-ID'),
+        status: task.status ? 'Aktif' : 'Tidak Aktif',
+      })) || [],
+    [taskData]
   );
+
 
   const columns = useMemo(
     () => [
@@ -110,7 +109,7 @@ const MissionList = () => {
     newStages[index][key] = value;
     setStages(newStages);
   };
-  
+
   const handleAddData = () => {
     setIsModalVisible(true)
     setSelectedTask('')
@@ -140,30 +139,7 @@ const MissionList = () => {
           columns={columns}
         />
       </div>
-      <Modal
-        open={isModalVisible}
-        width={890}
-        centered
-        // onOk={handleOk}
-        onCancel={handleCloseModal}
-        closable={false}
-        title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
-        styles={{
-          content: {
-            padding: '20px 24px',
-          },
-        }}
-        footer={[
-          <Button key="close" className="btn-m font-bold text-primary-500 h-[42px] px-[22px] rounded-[5px] border border-primary-500" onClick={() => setIsModalVisible(false)}>
-            Kembali
-          </Button>,
-          <Button key="button" className="btn-m font-bold text-white h-[42px] px-[22px] rounded-[5px] bg-primary-500" onClick={() => setIsModalVisible(false)}>
-            {selectedTask ? 'Simpan' : 'Tambah'}
-          </Button>,
-        ]}
-      >
-        <AddTaskModal isOpen={isModalVisible} selectedTask={selectedTask} onStageChange={handleStageChange} stages={stages} addStage={addStage} />
-      </Modal>
+      <AddTaskModal isOpen={isModalVisible} onClose={handleCloseModal} selectedTask={selectedTask} onStageChange={handleStageChange} stages={stages} addStage={addStage} />
     </ContentLayout>
   );
 };
