@@ -1,27 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Button, Form, Upload } from 'antd';
+import { Button, Form, Modal, Upload, message } from 'antd';
 import FloatingLabelInput from '../../global/input/FloatingInput';
 import { PlusOutlined } from '@ant-design/icons';
 import uploadIcon from '/assets/svg/task/uploadIcon.svg';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import dayjs from 'dayjs';
+import { usePostData } from '../../../hooks/useFetch';
 
-const AddTaskModal = ({ isOpen, selectedTask, onStageChange, stages, addStage }) => {
+const AddTaskModal = ({ isOpen, onClose, selectedTask, onStageChange, stages, addStage }) => {
   const [taskName, setTaskName] = useState('');
   const [point, setPoint] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const { mutateAsync: addData } = usePostData();
 
   useEffect(() => {
-    setTaskName(selectedTask.name ?? '');
-    setPoint(selectedTask.point ?? '');
-    setStartDate(selectedTask.startDate ?? '');
+    setTaskName(selectedTask?.name ?? '');
+    setPoint(selectedTask?.point ?? '');
+    setStartDate(selectedTask?.startDate ?? '');
     setEndDate(selectedTask ? dayjs(selectedTask.deadline) : null);
-    setDescription(selectedTask.description ?? '');
-    setImage(selectedTask.image ?? null);
-  }, [selectedTask, stages]);
+    setDescription(selectedTask?.description ?? '');
+    setImage(selectedTask?.image ?? null);
+  }, [selectedTask]);
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -29,8 +31,50 @@ const AddTaskModal = ({ isOpen, selectedTask, onStageChange, stages, addStage })
     }
   };
 
+  const handleSubmit = async () => {
+    const taskData = {
+      title: taskName,
+      description,
+      thumbnail: "https://res.cloudinary.com/dlbbsdd3a/image/upload/v1717770921/task_thumbnail/e96qgqeiuqu7pnhnwena.jpg", 
+      start_date: startDate,
+      end_date: endDate,
+      point: parseInt(point),
+      task_steps: stages.map(stage => ({
+        title: stage.title,
+        description: stage.description
+      }))
+    };
+
+    try {
+      await addData({endpoint: '/tasks', newData:taskData});
+      console.log("sukes")
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   return (
-    <div>
+    <Modal
+      open={isOpen}
+      width={890}
+      centered
+      onCancel={onClose}
+      closable={false}
+      title={<h2 className='font-bold h4'>Tambah Data Misi</h2>}
+      styles={{
+        content: {
+          padding: '20px 24px',
+        },
+      }}
+      footer={[
+        <Button key="close" className="btn-m font-bold text-primary-500 h-[42px] px-[22px] rounded-[5px] border border-primary-500" onClick={onClose}>
+          Kembali
+        </Button>,
+        <Button onClick={handleSubmit} className="btn-m font-bold text-white h-[42px] px-[22px] rounded-[5px] bg-primary-500">
+          {selectedTask ? 'Simpan' : 'Tambah'}
+        </Button>,
+      ]}
+    >
       <Form className='flex gap-[30px]'>
         <Form.Item>
           <Upload.Dragger
@@ -66,7 +110,7 @@ const AddTaskModal = ({ isOpen, selectedTask, onStageChange, stages, addStage })
               <FloatingLabelInput
                 id="point"
                 label="Nilai Poin"
-                placeholder="Masukan Misi"
+                placeholder="Masukan Poin"
                 value={point}
                 onChange={(e) => setPoint(e.target.value)}
               />
@@ -76,18 +120,18 @@ const AddTaskModal = ({ isOpen, selectedTask, onStageChange, stages, addStage })
                 placeholder="Masukan Tanggal Mulai"
                 type='date'
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(date) => setStartDate(date)}
               />
               <FloatingLabelInput
                 id="end-date"
                 label="Tanggal Selesai"
-                placeholder="Masukan Misi"
+                placeholder="Masukan Tanggal Selesai"
                 type='date'
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(date) => setEndDate(date)}
               />
               <FloatingLabelInput
-                id="point"
+                id="description"
                 label="Deskripsi"
                 placeholder="Masukan Deskripsi"
                 className="col-span-2"
@@ -101,16 +145,16 @@ const AddTaskModal = ({ isOpen, selectedTask, onStageChange, stages, addStage })
               {stages.map((stage, index) => (
                 <div key={index} className='flex flex-row gap-2 mt-3'>
                   <span className='mt-2 text-primary-500 body-m'>{index + 1}</span>
-                  <div key={index} className='flex-1 w-full flex flex-col gap-3 pb-2'>
+                  <div className='flex-1 w-full flex flex-col gap-3 pb-2'>
                     <FloatingLabelInput
-                      id="name"
+                      id={`stage-title-${index}`}
                       label="Nama Misi"
                       placeholder="Masukan Misi"
                       value={stage.title}
                       onChange={(e) => onStageChange(index, 'title', e.target.value)}
                     />
                     <FloatingLabelInput
-                      id="description"
+                      id={`stage-description-${index}`}
                       label="Deskripsi"
                       placeholder="Masukan Deskripsi"
                       type='desc'
@@ -122,13 +166,17 @@ const AddTaskModal = ({ isOpen, selectedTask, onStageChange, stages, addStage })
               ))}
             </section>
           </div>
-          <button className='py-2 px-5 bg-primary-500 text-white w-full mt-5 rounded-[5px] text-start btn-m flex flex-row items-center gap-2' onClick={addStage} icon={<PlusOutlined />}>
+          <button
+            type='button'
+            className='py-2 px-5 bg-primary-500 text-white w-full mt-5 rounded-[5px] text-start btn-m flex flex-row items-center gap-2'
+            onClick={addStage}
+          >
             <IoIosAddCircleOutline className='text-2xl' />
             Tambah Tahapan Misi
           </button>
         </div>
       </Form>
-    </div>
+    </Modal>
   );
 };
 

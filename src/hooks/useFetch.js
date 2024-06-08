@@ -7,7 +7,7 @@ const fetchData = async ({ queryKey }) => {
   const { data } = await APIInstance.get(endpoint, {
     headers: {
       // Bakal diganti dari local/cookies soon
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQUQwMDAxIiwicm9sZSI6InN1cGVyIGFkbWluIiwiZXhwIjoxNzE3ODY2ODU5fQ.Qotfd0pmCu54BMf6eMdN3uLWpYlV9oKY84AknPXd_GU"
+      "Authorization": `Bearer ${localStorage.getItem('token')}`
     }
   });
   return data;
@@ -24,7 +24,7 @@ const postData = async ({ endpoint, newData }) => {
   const { data } = await APIInstance.post(endpoint, newData, {
     headers: {
       // Bakal diganti dari local/cookies soon
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQUQwMDAxIiwicm9sZSI6InN1cGVyIGFkbWluIiwiZXhwIjoxNzE3ODY2ODU5fQ.Qotfd0pmCu54BMf6eMdN3uLWpYlV9oKY84AknPXd_GU"
+      "Authorization": `Bearer ${localStorage.getItem('token')}`
     }
   });
   return data;
@@ -36,7 +36,7 @@ const updateData = async ({ endpoint, updatedData }) => {
   const { data } = await APIInstance.put(endpoint, updatedData, {
     headers: {
       // Bakal diganti dari local/cookies soon
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQUQwMDAxIiwicm9sZSI6InN1cGVyIGFkbWluIiwiZXhwIjoxNzE3ODY2ODU5fQ.Qotfd0pmCu54BMf6eMdN3uLWpYlV9oKY84AknPXd_GU"
+      "Authorization": `Bearer ${localStorage.getItem('token')}`
     }
   });
   return data;
@@ -47,7 +47,7 @@ const deleteData = async ({ endpoint }) => {
   const { data } = await APIInstance.delete(endpoint, {
     headers: {
       // Bakal diganti dari local/cookies soon
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQUQwMDAxIiwicm9sZSI6InN1cGVyIGFkbWluIiwiZXhwIjoxNzE3ODY2ODU5fQ.Qotfd0pmCu54BMf6eMdN3uLWpYlV9oKY84AknPXd_GU"
+      "Authorization": `Bearer ${localStorage.getItem('token')}`
     }
   });
   return data;

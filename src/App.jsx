@@ -13,6 +13,7 @@ import EditContentVideo from './pages/admin/ManageContent/EditContentVideo';
 import LandingPage from './pages/landing/LandingPage';
 import NotFound from './pages/404';
 import { useEffect } from 'react';
+import PrivateRoute from './Routes/PrivateRoute';
 
 function App() {
 
@@ -31,22 +32,24 @@ function App() {
       <ToastContainer />
       <Routes>
         <Route element={<ScrollToTop />}>
-          <Route path="/landing-page" element={<LandingPage />}></Route>
+          <Route path="/" element={<LandingPage />}></Route>
           <Route path="/login" element={<LoginPage />} />
-          <Route element={<DashboardLayout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/report" element={<ManageReport />} />
-            <Route path="/content" element={<ManageContent />} />
-            <Route path="/content/add-article" element={<AddContentArticle />} />
-            <Route path="/content/edit-article/:id" element={<EditContentArticle />} />
-            <Route path="/content/add-video" element={<AddContentVideo />} />
-            <Route path="/content/edit-video/:id" element={<EditContentVideo />} />
-            <Route path="/achievement" element={<ManageUserAchievements />} />
-            <Route path="/mission/list" element={<MissionList />} />
-            <Route path="/mission/approval" element={<ManageApprovalTask />} />
-            <Route path="/admin" element={<ManageAdmin />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/openai" element={<ManageOpenAI />} />
+          <Route element={<PrivateRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/admin/*" element={<NotFound />} />
+              <Route path="/admin/dashboard" element={<Dashboard />} />
+              <Route path="/admin/report" element={<ManageReport />} />
+              <Route path="/admin/content" element={<ManageContent />} />
+              <Route path="/admin/content/add-article" element={<AddContentArticle />} />
+              <Route path="/admin/content/edit-article/:id" element={<EditContentArticle />} />
+              <Route path="/admin/content/add-video" element={<AddContentVideo />} />
+              <Route path="/admin/content/edit-video/:id" element={<EditContentVideo />} />
+              <Route path="/admin/achievement" element={<ManageUserAchievements />} />
+              <Route path="/admin/mission/list" element={<MissionList />} />
+              <Route path="/admin/mission/approval" element={<ManageApprovalTask />} />
+              <Route path="/admin/admin" element={<ManageAdmin />} />
+              <Route path="/admin/openai" element={<ManageOpenAI />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
