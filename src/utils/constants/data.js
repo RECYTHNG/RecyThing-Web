@@ -20,61 +20,61 @@ import openaiWhite from "/assets/svg/sidebar/openaiWhite.svg"
 export const nav_item = [
   {
     name: "Dashboard",
-    url: "/",
+    url: "/admin/dashboard",
     iconActive: missionWhite,
     icon: mission,
   },
   {
     name: "Manajemen Pelaporan",
-    url: "/report",
+    url: "/admin/report",
     iconActive: reportWhite,
     icon: report,
   },
   {
     name: "Manajemen Misi",
     iconActive: missionWhite,
-    url: "/mission",
+    url: "/admin/mission",
     icon: mission,
     children: [
       {
         name: "Daftar Misi",
-        url: "/mission/list",
+        url: "/admin/mission/list",
         icon: missionList,
       },
       {
         name: "Persetujuan Misi",
-        url: "/mission/approval",
+        url: "/admin/mission/approval",
         icon: missionApproval,
       },
     ]
   },
   {
     name: "Manajemen Konten",
-    url: "/content",
+    url: "/admin/content",
     iconActive: contentWhite,
     icon: content,
   },
   {
     name: "Manajemen Pengguna",
-    url: "/user",
+    url: "/admin/user",
     iconActive: userWhite,
     icon: user,
   },
   {
     name: "Manajemen Admin",
-    url: "/admin",
+    url: "/admin/admin",
     iconActive: adminWhite,
     icon: admin,
   },
   {
-    name: "Manajemen Penacapaian",
-    url: "/achievement",
+    name: "Manajemen Pencapaian",
+    url: "/admin/achievement",
     iconActive: achievmentWhite,
     icon: achievment,
   },
   {
     name: "Manajemen OpenAI",
-    url: "/openai",
+    url: "/admin/openai",
     iconActive: openaiWhite,
     icon: openai,
   },

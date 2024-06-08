@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLogin } from '../../hooks/useFetch'; // Adjust the import path as needed
+import { useLogin } from '../../hooks/useFetch';
 import Rectangle1 from '../../assets/rectangle1.svg';
 import Rectangle2 from '../../assets/rectangle2.svg';
 import Rectangle3 from '../../assets/rectangle3.svg';
@@ -42,7 +42,7 @@ const LoginPage = () => {
     mutateAsync({ endpoint: '/admin/login', loginData: { email, password } }).then((res) => {
       console.log(res.data.token);
       localStorage.setItem('token', res.data.token);
-      navigate('/');
+      navigate('/admin/dashboard');
     });
   };
 
