@@ -74,10 +74,101 @@ export const DisapproveModalChildren = ({ onOk, onCancel }) => {
         </button>
         <button
           type="submit"
-          className="flex-1 rounded-[5px] bg-danger-500 text-white btn-l font-bold py-4"
+          className={`flex-1 rounded-[5px] bg-danger-500 text-white btn-l font-bold py-2 px-4 ${
+            !reason ? "bg-gray-500 cursor-not-allowed" : ""
+          }`}
           onClick={handleOk}
+          disabled={!reason}
         >
           Tolak
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const DetailModal = ({
+  selectedRecord,
+  currentPhotoIndex,
+  photosPerPage,
+  currentPage,
+  prevPhotos,
+  nextPhotos,
+  setIsDetailModalVisible,
+}) => {
+  return (
+    <div className="flex flex-col gap-10">
+      <h4 className="h4 font-bold">Detail Misi</h4>
+      <div className="flex justify-between">
+        <div className="flex flex-col gap-[14px]">
+          <p className="sub-m font-bold text-[#616161]">Misi</p>
+          <h5 className="h5 font-bold text-primary-500">
+            {selectedRecord?.namaMisi}
+          </h5>
+          <p className="h6">
+            by{" "}
+            <span className="font-semibold text-[#118E45]">
+              {selectedRecord?.pelaksana}
+            </span>
+          </p>
+        </div>
+        <div className="flex flex-col gap-[14px]">
+          <p className="sub-m font-bold text-[#616161]">Batas Akhir</p>
+          <h5 className="h5 font-bold text-primary-500">
+            {selectedRecord?.batasAkhir}
+          </h5>
+        </div>
+      </div>
+      <div className="flex">
+        <h4 className="h4 font-bold mr-24">{currentPage}</h4>
+        <div className="grid grid-cols-3 gap-10">
+          {selectedRecord?.photos
+            .slice(currentPhotoIndex, currentPhotoIndex + photosPerPage)
+            .map((photo, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={photo}
+                  alt={`Photo ${index}`}
+                  className="w-full h-full rounded-md"
+                />
+              </div>
+            ))}
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-[10px]">
+          <p className="text-primary-500 btn-m font-semibold">Keterangan</p>
+          <p className="body-s">{selectedRecord?.keterangan}</p>
+        </div>
+        <div className="flex flex-col gap-[10px] text-end">
+          <p className="text-primary-500 btn-m font-semibold">
+            Waktu Pengunggahan Bukti
+          </p>
+          <p className="body-s">{selectedRecord?.waktuUpload}</p>
+        </div>
+      </div>
+      <div className="flex justify-end gap-[10px] mt-4">
+        {currentPhotoIndex > 0 && (
+          <button
+            type="button"
+            className="rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4 px-6"
+            onClick={prevPhotos}
+          >
+            Kembali
+          </button>
+        )}
+        <button
+          type="button"
+          className="rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4 px-6"
+          onClick={
+            currentPhotoIndex + photosPerPage >= selectedRecord?.photos.length
+              ? () => setIsDetailModalVisible(false)
+              : nextPhotos
+          }
+        >
+          {currentPhotoIndex + photosPerPage >= selectedRecord?.photos.length
+            ? "Tutup"
+            : "Berikutnya"}
         </button>
       </div>
     </div>

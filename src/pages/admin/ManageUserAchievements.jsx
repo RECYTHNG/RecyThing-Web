@@ -1,17 +1,15 @@
-import { ActionIcons } from "../../components/global/Icons/icons";
 import { useMemo, useState } from "react";
 import GoldBadge from "/assets/images/GoldBadge.png";
 import SilverBadge from "/assets/images/SilverBadge.png";
 import ClassicBadge from "/assets/images/ClassicBadge.png";
 import Tables from "../../components/global/Table";
 import { formatNumber } from "../../utils/formatNumbers";
-import { Button, Dropdown, Menu } from "antd";
+import { Button, Dropdown, } from "antd";
 import { toast } from "react-toastify";
 import ContentLayout from "../../layouts/ContentLayout";
-import { FaEdit } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa6";
 import { AddModal, DeleteModal, EditModal } from "../../components/Achievement/ModalAchievements";
-import AddButton from "../../components/global/button/AddButton";
+import { EditOutlined, DeleteOutlined, } from '@ant-design/icons';
+import HorizontalDotsIcon from "../../assets/moreicons";
 
 export default function ManageUserAchivements() {
   const badge = useMemo(
@@ -60,29 +58,34 @@ export default function ManageUserAchivements() {
         dataIndex: "aksi",
         key: "aksi",
         width: 106,
-        render: (text, record) => (
-          <Dropdown
-            overlay={
-              <Menu className="p-4 bg-white rounded shadow flex-col justify-start items-center inline-flex">
-                <Menu.Item key="edit" onClick={() => handleEdit(record)}>
-                  <button className="text-black hover:text-white bg-white hover:bg-warning-500 btn-m flex items-center gap-2 px-6 py-2 rounded-[5px] w-full">
-                    <FaEdit />
-                    Edit
-                  </button>
-                </Menu.Item>
-                <Menu.Item key="delete" onClick={() => handleDelete(record)}>
-                  <button className="text-black hover:text-white bg-white hover:bg-danger-500 btn-m flex items-center gap-2 px-4 py-2 rounded-[5px] w-full">
-                    <FaTrash /> Delete
-                  </button>
-                </Menu.Item>
-              </Menu>
-            }
-            trigger={["click"]}
-            placement="bottomRight"
-          >
-            <Button icon={<ActionIcons />} />
-          </Dropdown>
-        ),
+        render: (_, record) => {
+          const menuItems = [
+            {
+              label: <span type="text">Edit</span>,
+              icon: <EditOutlined />,
+              key: 'approve',
+              onClick: () => handleEdit(record),
+            },
+            {
+              label: <span type="text">Delete</span>,
+              icon: <DeleteOutlined />,
+              key: 'disapprove',
+              onClick: () => handleDelete(record)
+            },
+          ];
+
+          const menuProps = {
+            items: menuItems,
+          };
+
+          return (
+            <Dropdown menu={menuProps} trigger={['click']} overlayClassName='btn-m text-center'>
+              <div className='cursor-pointer'>
+                <Button icon={<HorizontalDotsIcon />} />
+              </div>
+            </Dropdown>
+          );
+        }
       },
     ],
     []
@@ -140,9 +143,6 @@ export default function ManageUserAchivements() {
     []
   );
 
-  const showModal = () => {
-    setIsAddModalVisible(true);
-  };
 
   const handleOk = (newAchievement) => {
     setDataAchievements((prevData) => [...prevData, newAchievement]);
