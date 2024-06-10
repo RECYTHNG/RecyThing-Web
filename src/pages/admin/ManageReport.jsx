@@ -1,13 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Modal, Tag, Button, Input } from 'antd';
 import Filters from '../../components/Report/Filters';
 import Tables from '../../components/global/Table';
 import LabeledValue from '../../components/Report/LabeledValue';
 import ContentLayout from '../../layouts/ContentLayout';
 import FloatingLabelInput from '../../components/global/input/FloatingInput';
-import { useFetch } from '../../hooks/useFetch';
-
-const { TextArea } = Input;
+import { useFetch, useUpdateData } from '../../hooks/useFetch';
+import { getHour } from '../../utils/helper/getHour';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -22,6 +21,19 @@ const getStatusColor = (status) => {
   }
 };
 
+const mapStatus = (status) => {
+  switch (status) {
+    case 'approve':
+      return 'Accepted';
+    case 'reject':
+      return 'Rejected';
+    case 'need review':
+      return 'Need Review';
+    default:
+      return status;
+  }
+};
+
 const ModalContent = ({ selectedReport }) => (
   <div>
     <div className="flex items-start justify-between">
@@ -31,7 +43,7 @@ const ModalContent = ({ selectedReport }) => (
         </div>
         <div className="flex flex-col gap-3 body-m">
           <LabeledValue label="Full Name" value={selectedReport.name} />
-          <LabeledValue label="User ID" value={selectedReport.id} />
+          <LabeledValue label="User ID" value={selectedReport.author_id} />
         </div>
       </div>
     </div>
@@ -42,26 +54,22 @@ const ModalContent = ({ selectedReport }) => (
           <LabeledValue labelWidth={135} label="Report Category" value={selectedReport.category} />
           <LabeledValue labelWidth={135} label="Status" value={<Tag className={`${getStatusColor(selectedReport.status)} rounded-full border-none px-5 py-[2px]`}>{selectedReport.status}</Tag>} />
           <LabeledValue labelWidth={135} label="Reporting Date" value={selectedReport.date} />
-          <LabeledValue labelWidth={135} label="Reporting Time" value="19:00" />
+          <LabeledValue labelWidth={135} label="Reporting Time" value={selectedReport.hour} />
           <LabeledValue labelWidth={135} label="Location" value={selectedReport.location} />
-          <LabeledValue labelWidth={135} label="Detail Location" value="Jl. Kolonel Masturi No.246, Cipageran, Kec. Cimahi Utara, Kota Cimahi, Jawa Barat 40511" />
+          <LabeledValue labelWidth={135} label="Detail Location" value={selectedReport.detailLocation} />
         </div>
         <div className="flex flex-col gap-3">
-          <LabeledValue labelWidth={135} label="Report ID" value="I found rubbish piled up in the Kolmas area. To be precise, the Kolmas Regency complex. The pile of rubbish is near the security guard's office" />
+          <LabeledValue labelWidth={135} label="Description" value={selectedReport.description} />
           <LabeledValue
             labelWidth={135}
-            label="Report ID"
+            label="Photo Evidence"
             value={
               <div className="grid grid-cols-3 gap-2">
-                <div className="aspect-square w-[78px]">
-                  <img src="https://placehold.co/78x78" alt="img1" className="w-full object-cover object-center" />
-                </div>
-                <div className="aspect-square w-[78px]">
-                  <img src="https://placehold.co/95x95" alt="img1" className="w-full object-cover object-center" />
-                </div>
-                <div className="aspect-square w-[78px]">
-                  <img src="https://placehold.co/100x100" alt="img1" className="w-full object-cover object-center" />
-                </div>
+                {selectedReport?.photo?.map((photoUrl, idx) => (
+                  <div key={"photo-" + idx} className="aspect-square w-[78px]">
+                    <img src={photoUrl} alt="img1" className="w-full object-cover object-center" />
+                  </div>
+                ))}
               </div>
             }
           />
@@ -75,23 +83,29 @@ const ManageReport = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
-  const { data: reportData } = useFetch('/reports')
-  // console.log(reportData)
+  const [reason, setReason] = useState('')
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const { data: reportData, isLoading } = useFetch(`/reports?page=${currentPage}&limit=${pageSize}`, [], [currentPage, pageSize]);
+  const { mutateAsync: updateStatus } = useUpdateData()
 
   const data = useMemo(
-    () => [
-      { id: 'RPT001', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Need Review', date: '12/12/2022', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT002', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Need Review', date: '22/12/2021', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT003', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Rejected', date: '31/12/2023', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT004', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Rejected', date: '21/12/2033', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT005', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Accepted', date: '11/12/2012', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT006', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Accepted', date: '19/12/2011', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT007', name: 'Harry Gani Darmawan', category: 'Littering', status: 'Accepted', date: '02/12/2041', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT008', name: 'Harry Gani Darmawan', category: 'Rubbish', status: 'Rejected', date: '05/12/2002', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT009', name: 'Harry Gani Darmawan', category: 'Littering', status: 'Rejected', date: '03/12/2003', location: 'Cimahi, Jawa Barat' },
-      { id: 'RPT010', name: 'Harry Gani Darmawan', category: 'Littering', status: 'Rejected', date: '10/12/2041', location: 'Cimahi, Jawa Barat' },
-    ],
-    []
+    () =>
+      reportData?.data?.reports?.map((data) => ({
+        id: data.id,
+        name: data.author_id,
+        author_id: data.author_id,
+        category: data.report_type,
+        status: mapStatus(data.status),
+        date: new Date(data.created_at).toLocaleDateString('id-ID'),
+        hour: getHour(data.created_at),
+        ss: data.created_at,
+        location: `${data.city}, ${data.province}`,
+        detailLocation: `${data.address}, ${data.city}, ${data.province}`,
+        description: data.description,
+        photo: data.report_images
+      })) || [],
+    [reportData]
   );
 
   const columns = useMemo(
@@ -123,12 +137,18 @@ const ManageReport = () => {
   };
 
   const handleOk = () => {
-    // Call api approve
-    setIsModalVisible(false);
+    updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'approve' } })
+      .then((data) => {
+        console.log(data)
+        setIsModalVisible(false);
+      }).catch((err) => {
+        console.log(err)
+      })
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setReason('')
   };
 
   const handleReject = () => {
@@ -139,11 +159,23 @@ const ManageReport = () => {
   const handleRejectCancel = () => {
     setIsRejectModalVisible(false);
     setIsModalVisible(true);
+    setReason('')
   };
 
   const handleRejectOk = () => {
-    // Call api reject
-    setIsRejectModalVisible(false);
+    updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'reject' } })
+      .then((data) => {
+        console.log(data)
+        setIsRejectModalVisible(false);
+        setReason('')
+      }).catch((err) => {
+        console.log(err)
+      })
+  };
+
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
   };
 
   return (
@@ -155,10 +187,12 @@ const ManageReport = () => {
         <Tables
           pagination={true}
           initialPageSize={10}
-          data={data}
+          data={{ items: data, totalCount: reportData?.data?.total || 0 }}
           columns={columns}
           enableRowClick
           onRowClick={showModal}
+          onPageChange={handlePageChange}
+          isLoading={isLoading}
         />
         <Modal
           open={isModalVisible}
@@ -190,17 +224,20 @@ const ManageReport = () => {
           centered
           closeIcon={false}
           width={633}
+          footer={false}
         >
           <h3 className='h4 font-bold'>Are you sure you want to reject this report?</h3>
-          <FloatingLabelInput 
-          type='desc'
-          label={"Type Your Reason Here"}
-          placeholder={""}
-          className="mt-[30px]"
+          <FloatingLabelInput
+            type='desc'
+            label={"Type Your Reason Here"}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder={""}
+            className="mt-[30px]"
           />
           <div className='flex flex-col gap-3 mt-11 btn-m font-bold'>
-            <button className='py-3 w-full bg-primary-500 text-white rounded-[5px]'>Reject</button>
-            <button className='py-3 w-full border border-primary-500 text-primary-500 rounded-[5px]'>Cancel</button>
+            <button className='py-3 w-full bg-primary-500 text-white rounded-[5px]' onClick={handleRejectOk}>Reject</button>
+            <button className='py-3 w-full border border-primary-500 text-primary-500 rounded-[5px]' onClick={handleRejectCancel}>Cancel</button>
           </div>
         </Modal>
       </div>
