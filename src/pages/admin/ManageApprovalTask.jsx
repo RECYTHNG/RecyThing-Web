@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import ContentLayout from "../../layouts/ContentLayout";
 import { Dropdown, Tag, Avatar, Modal, Button } from "antd";
 import Tables from "../../components/global/Table";
 import { ApproveModalChildren, DetailModal, DisapproveModalChildren } from "../../components/Mission/Approval/ModalChild";
 import HorizontalDotsIcon from "../../assets/moreicons";
+import { useFetch } from "../../hooks/useFetch";
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -28,52 +29,42 @@ export default function ManageApprovalTask() {
 
   const photosPerPage = 3;
 
-  const [data, setData] = useState([
-    {
-      id: "TM01",
-      namaMisi: "Daur Ulang Plastik",
-      pelaksana: "John Doe",
-      batasAkhir: "2024-06-01",
-      status: "Menunggu",
-      profilePic: "https://randomuser.me/api/portraits/men/1.jpg",
-      waktuUpload: "2024-06-01",
-      keterangan:
-        "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
-      photos: [
-        "https://via.placeholder.com/500/92c952",
-        "https://via.placeholder.com/150/771796",
-        "https://via.placeholder.com/150/24f355",
-        "https://via.placeholder.com/150/d32776",
-        "https://via.placeholder.com/500/f66b97",
-        "https://via.placeholder.com/150/56a8c2",
-        "https://via.placeholder.com/150/b0f7cc",
-        "https://via.placeholder.com/150/54176f",
-        "https://via.placeholder.com/150/51aa97",
-      ],
-    },
-    {
-      id: "TM02",
-      namaMisi: "Penghijauan Kota",
-      pelaksana: "Jane Doe",
-      batasAkhir: "2024-06-05",
-      status: "Setuju",
-      profilePic: "https://randomuser.me/api/portraits/women/2.jpg",
-      waktuUpload: "2024-05-30",
-      keterangan:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      photos: [
-        "https://via.placeholder.com/500/92c952",
-        "https://via.placeholder.com/150/771796",
-        "https://via.placeholder.com/150/24f355",
-        "https://via.placeholder.com/150/d32776",
-        "https://via.placeholder.com/500/f66b97",
-        "https://via.placeholder.com/150/56a8c2",
-        "https://via.placeholder.com/150/b0f7cc",
-        "https://via.placeholder.com/150/54176f",
-        "https://via.placeholder.com/150/51aa97",
-      ],
-    },
-  ]);
+  const { data, isLoading, isError } = useFetch('/approval-tasks', 'approvalTasks');
+
+  console.log(data)
+
+  useEffect(() => {
+    if (data) {
+      console.log("Fetched data:", data);
+    }
+  }, [data]);
+
+  const parsedData = useMemo(() => {
+    if (data && Array.isArray(data.data)) {
+      return data.data.map((item) => ({
+        id: item.id,
+        namaMisi: item.task.title,
+        pelaksana: item.user.name,
+        batasAkhir: item.task.end_date,
+        status: item.status_accept,
+        profilePic: "https://randomuser.me/api/portraits/men/1.jpg", 
+        waktuUpload: item.task.start_date,
+        keterangan: "Default description",
+        photos: [
+          "https://via.placeholder.com/500/92c952",
+          "https://via.placeholder.com/150/771796",
+          "https://via.placeholder.com/150/24f355",
+          "https://via.placeholder.com/150/d32776",
+          "https://via.placeholder.com/500/f66b97",
+          "https://via.placeholder.com/150/56a8c2",
+          "https://via.placeholder.com/150/b0f7cc",
+          "https://via.placeholder.com/150/54176f",
+          "https://via.placeholder.com/150/51aa97",
+        ],
+      }));
+    }
+    return [];
+  }, [data]);
 
   const showSetujuModal = (record) => {
     setSelectedRecord(record);
@@ -86,21 +77,11 @@ export default function ManageApprovalTask() {
   };
 
   const handleSetuju = () => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === selectedRecord.id ? { ...item, status: "Setuju" } : item
-      )
-    );
     setIsSetujuModalVisible(false);
   };
 
   const handleTolak = (reason) => {
     console.log("Reason for rejection:", reason);
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === selectedRecord.id ? { ...item, status: "Tolak" } : item
-      )
-    );
     setIsTolakModalVisible(false);
   };
 
@@ -123,6 +104,18 @@ export default function ManageApprovalTask() {
 
   const handleMenuClick = (e) => {
     console.log('click', e.key);
+  };
+
+  const handleIconClick = (e) => {
+    e.stopPropagation();
+  };
+
+  const handleMenuItemClick = (action, record) => {
+    if (action === 'approve') {
+      showSetujuModal(record);
+    } else if (action === 'disapprove') {
+      showTolakModal(record);
+    }
   };
 
   const columns = useMemo(
@@ -165,12 +158,18 @@ export default function ManageApprovalTask() {
               {
                 label: <span type="text">Setuju</span>,
                 key: 'approve',
-                onClick: () => showSetujuModal(record),
+                onClick: (e) => {
+                  e.domEvent.stopPropagation();
+                  handleMenuItemClick('approve', record);
+                },
               },
               {
                 label: <span type="text">Tolak</span>,
                 key: 'disapprove',
-                onClick: () => showTolakModal(record)
+                onClick: (e) => {
+                  e.domEvent.stopPropagation();
+                  handleMenuItemClick('disapprove', record);
+                },
               },
             ];
 
@@ -181,7 +180,7 @@ export default function ManageApprovalTask() {
 
             return (
               <Dropdown menu={menuProps} trigger={['click']} overlayClassName='btn-m text-center'>
-                <div className='cursor-pointer'>
+                <div className='cursor-pointer' onClick={handleIconClick}>
                   <Button icon={<HorizontalDotsIcon />} />
                 </div>
               </Dropdown>
@@ -200,11 +199,12 @@ export default function ManageApprovalTask() {
       <div className="px-4 py-4 bg-[#F9FAFB]">
         <div className="p-6 bg-white rounded-[10px] shadow-lg">
           <Tables
-            data={data}
+            data={{items: parsedData, totalCount: data?.data?.total || 0 }}
             columns={columns}
             pagination={true}
             enableRowClick
             onRowClick={showDetailModal}
+            isLoading={isLoading}
           />
         </div>
       </div>

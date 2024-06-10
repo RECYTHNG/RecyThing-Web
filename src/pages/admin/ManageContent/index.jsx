@@ -30,7 +30,7 @@ export default function ManageContent() {
                 Video
               </button>
             </div>
-            <AddButton text="Tambah" to={activeTab === "article" ? "/content/add-article" : "/content/add-video"}/>
+            <AddButton text="Tambah" to={activeTab === "article" ? "/admin/content/add-article" : "/admin/content/add-video"}/>
           </div>
           {activeTab === "article" ? <ManageContentArticle /> : <ManageContentVideo />}
         </div>

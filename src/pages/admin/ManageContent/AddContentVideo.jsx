@@ -62,7 +62,7 @@ export default function AddContentVideo() {
       deskripsi: false,
       linkVideo: false,
     });
-    navigate("/content");
+    navigate("/admin/content");
   };
 
   const handleSubmit = (e) => {
@@ -86,7 +86,7 @@ export default function AddContentVideo() {
     };
     console.log("Video Submitted: ", formData);
     toast.success("Video berhasil diunggah");
-    navigate("/content");
+    navigate("/admin/content");
   };
 
   return (
@@ -201,22 +201,30 @@ export default function AddContentVideo() {
                     <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
                       {categories.map((category) => (
                         <div key={category} className="flex gap-2 items-center">
-                          <input
-                            id={category}
-                            name={category}
-                            type="checkbox"
-                            value={category}
-                            checked={selectedCategories.includes(category)}
-                            onChange={() => handleCategoryChange(category)}
-                            className="relative peer shrink-0 appearance-none w-4 h-4 border-2 border-primary-500 rounded-sm bg-white mt-1 checked:bg-primary-500 checked:border-0"
-                          />
-                          <label
-                            className="body-m cursor-pointer"
-                            htmlFor={category}
-                          >
-                            {category}
-                          </label>
-                          <FaCheck className="absolute w-4 h-4 text-white hidden peer-checked:block" />
+                          <div className="inline-flex items-center">
+                            <label
+                              className="relative flex items-center p-3 rounded-full cursor-pointer"
+                              htmlFor={category}
+                            >
+                              <input
+                                type="checkbox"
+                                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
+                                id={category}
+                                value={category}
+                                checked={selectedCategories.includes(category)}
+                                onChange={() => handleCategoryChange(category)}
+                              />
+                              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                                <FaCheck className="h-3.5 w-3.5" />
+                              </span>
+                            </label>
+                            <label
+                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                              htmlFor={category}
+                            >
+                              {category}
+                            </label>
+                          </div>
                         </div>
                       ))}
                     </div>

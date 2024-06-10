@@ -1,6 +1,7 @@
 import { Modal } from "antd";
 import { useState, useEffect } from "react";
 import DeleteImage from "/assets/images/DeleteImage.png";
+import { useUpdateData } from "../../hooks/useFetch";
 
 export const AddModal = ({ isVisible, onOk, onCancel }) => {
   const [level, setLevel] = useState("");
@@ -165,10 +166,13 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
   const [level, setLevel] = useState("");
   const [totalPoin, setTotalPoin] = useState("");
   const [badgeImage, setBadgeImage] = useState(null);
+  const [badgeImageFile, setBadgeImageFile] = useState(null); 
   const [isFocused, setIsFocused] = useState({
     level: false,
     totalPoin: false,
   });
+
+  const updateDataMutation = useUpdateData();
 
   useEffect(() => {
     if (record) {
@@ -177,6 +181,8 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
       setBadgeImage(record.lencana);
     }
   }, [record]);
+
+  console.log(`Record: ${record}`)
 
   const handleFocus = (field) => {
     setIsFocused({ ...isFocused, [field]: true });
@@ -189,12 +195,21 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
   const handleThumbnailChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setBadgeImage(URL.createObjectURL(e.target.files[0]));
+      setBadgeImageFile(e.target.files[0]); 
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onOk({ id: record.id, level, totalPoin, badgeImage });
+    const updatedRecord = { id: record.id, level, totalPoin, badgeImage: badgeImageFile || badgeImage };
+    updateDataMutation.mutate(
+      { id: record.id, data: updatedRecord },
+      {
+        onSuccess: () => {
+          onOk(updatedRecord);
+        },
+      }
+    );
   };
 
   return (
