@@ -10,8 +10,11 @@ import ContentLayout from "../../layouts/ContentLayout";
 import { AddModal, DeleteModal, EditModal } from "../../components/Achievement/ModalAchievements";
 import { EditOutlined, DeleteOutlined, } from '@ant-design/icons';
 import HorizontalDotsIcon from "../../assets/moreicons";
+import { useFetch } from "../../hooks/useFetch";
 
 export default function ManageUserAchivements() {
+  const { data, error, isLoading } = useFetch('/achievements', 'achievements');
+
   const badge = useMemo(
     () => ({
       Gold: <img src={GoldBadge} alt="Gold Badge" />,
@@ -26,30 +29,23 @@ export default function ManageUserAchivements() {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
-  const [dataAchievements, setDataAchievements] = useState([
-    {
-      id: 1,
-      level: "Gold",
-      lencana: badge.Gold,
-      target: formatNumber(175000),
-    },
-    {
-      id: 2,
-      level: "Silver",
-      lencana: badge.Silver,
-      target: formatNumber(5000),
-    },
-    {
-      id: 3,
-      level: "Classic",
-      lencana: badge.Classic,
-      target: formatNumber(0),
-    },
-  ]);
+
+  const dataAchievements = useMemo(() => {
+    if (isLoading || error) return [];
+    return data?.data.map((item, index) => ({
+      id: item.id,
+      no: index + 1,
+      level: item.level.charAt(0).toUpperCase() + item.level.slice(1),
+      lencana: <img src={item.badge_url} alt={`${item.level} Badge`} className="w-20"/>,
+      target: formatNumber(item.target_point),
+    }));
+  }, [data]);
+
+  console.log(data)
 
   const columnAchievements = useMemo(
     () => [
-      { title: "No", dataIndex: "id", key: "id", width: 106 },
+      { title: "No", dataIndex: "no", key: "no", width: 106 },
       { title: "Level", dataIndex: "level", key: "level" },
       { title: "Lencana", dataIndex: "lencana", key: "lencana" },
       { title: "Target Point", dataIndex: "target", key: "target" },
@@ -142,7 +138,6 @@ export default function ManageUserAchivements() {
     ],
     []
   );
-
 
   const handleOk = (newAchievement) => {
     setDataAchievements((prevData) => [...prevData, newAchievement]);
