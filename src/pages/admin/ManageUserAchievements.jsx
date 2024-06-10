@@ -187,13 +187,14 @@ export default function ManageUserAchivements() {
               {/* <AddButton text="Tambah" onClick={showModal} /> */}
             </div>
             <div className="px-8 py-4 shadow-md rounded-lg bg-white">
-              <Tables data={dataAchievements} columns={columnAchievements} />
+              <Tables data={dataAchievements} columns={columnAchievements} isLoading={isLoading}/>
             </div>
             <h5 className="h5 font-bold">Peringkat Pengguna</h5>
             <div className="px-8 py-4 shadow-md rounded-lg bg-white">
               <Tables
                 data={dataUserAchievements}
                 columns={columnUserAchievements}
+                isLoading={isLoading}
               />
             </div>
           </div>
