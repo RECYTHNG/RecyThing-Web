@@ -47,9 +47,9 @@ export default function ManageApprovalTask() {
         pelaksana: item.user.name,
         batasAkhir: item.task.end_date,
         status: item.status_accept,
-        profilePic: "https://randomuser.me/api/portraits/men/1.jpg", // replace with actual data if available
+        profilePic: "https://randomuser.me/api/portraits/men/1.jpg", 
         waktuUpload: item.task.start_date,
-        keterangan: "Default description", // replace with actual data if available
+        keterangan: "Default description",
         photos: [
           "https://via.placeholder.com/500/92c952",
           "https://via.placeholder.com/150/771796",
@@ -199,11 +199,12 @@ export default function ManageApprovalTask() {
       <div className="px-4 py-4 bg-[#F9FAFB]">
         <div className="p-6 bg-white rounded-[10px] shadow-lg">
           <Tables
-            data={parsedData}
+            data={{items: parsedData, totalCount: data?.data?.total || 0 }}
             columns={columns}
             pagination={true}
             enableRowClick
             onRowClick={showDetailModal}
+            isLoading={isLoading}
           />
         </div>
       </div>
