@@ -86,8 +86,23 @@ const ManageReport = () => {
   const [reason, setReason] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const { data: reportData, isLoading } = useFetch(`/reports?page=${currentPage}&limit=${pageSize}`, [], [currentPage, pageSize]);
-  const { mutateAsync: updateStatus } = useUpdateData()
+  const [reportCategory, setReportCategory] = useState('');
+  const [status, setStatus] = useState('');
+  const [date, setDate] = useState('');
+
+  const buildQueryParams = () => {
+    const params = [];
+    if (reportCategory) params.push(`report_type=${reportCategory}`);
+    if (status) params.push(`status=${status}`);
+    if (date) params.push(`date=${date}`);
+    return params.join('&');
+  };
+
+  const queryParams = buildQueryParams();
+  const fetchUrl = `/reports?page=${currentPage}&limit=${pageSize}${queryParams ? `&${queryParams}` : ''}`;
+
+  const { data: reportData, isLoading } = useFetch(fetchUrl, [], [fetchUrl]);
+  const { mutateAsync: updateStatus } = useUpdateData();
 
   const data = useMemo(
     () =>
@@ -163,7 +178,7 @@ const ManageReport = () => {
   };
 
   const handleRejectOk = () => {
-    updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'reject' } })
+    updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'reject', reason } })
       .then((data) => {
         console.log(data)
         setIsRejectModalVisible(false);
@@ -178,11 +193,22 @@ const ManageReport = () => {
     setPageSize(pageSize);
   };
 
+  const handleFilterChange = (newCategory, newStatus, newDate) => {
+    setReportCategory(newCategory);
+    setStatus(newStatus);
+    setDate(newDate);
+  };
+
   return (
     <ContentLayout title={'Manage Report'}>
       <div className="px-6 py-9">
         <div className="flex items-end justify-end text-[#414141]">
-          <Filters />
+          <Filters
+            reportCategory={reportCategory}
+            status={status}
+            date={date}
+            onFilterChange={handleFilterChange}
+          />
         </div>
         <Tables
           pagination={true}
