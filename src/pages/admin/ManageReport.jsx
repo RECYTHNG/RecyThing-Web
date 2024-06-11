@@ -66,7 +66,7 @@ const ModalContent = ({ selectedReport }) => (
             value={
               <div className="grid grid-cols-3 gap-2">
                 {selectedReport?.photo?.map((photoUrl, idx) => (
-                  <div key={"photo-" + idx} className="aspect-square w-[78px]">
+                  <div key={'photo-' + idx} className="aspect-square w-[78px]">
                     <img src={photoUrl} alt="img1" className="w-full object-cover object-center" />
                   </div>
                 ))}
@@ -83,11 +83,11 @@ const ManageReport = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
-  const [reason, setReason] = useState('')
+  const [reason, setReason] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const { data: reportData, isLoading } = useFetch(`/reports?page=${currentPage}&limit=${pageSize}`, [], [currentPage, pageSize]);
-  const { mutateAsync: updateStatus } = useUpdateData()
+  const { mutateAsync: updateStatus } = useUpdateData();
 
   const data = useMemo(
     () =>
@@ -103,7 +103,7 @@ const ManageReport = () => {
         location: `${data.city}, ${data.province}`,
         detailLocation: `${data.address}, ${data.city}, ${data.province}`,
         description: data.description,
-        photo: data.report_images
+        photo: data.report_images,
       })) || [],
     [reportData]
   );
@@ -139,16 +139,17 @@ const ManageReport = () => {
   const handleOk = () => {
     updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'approve' } })
       .then((data) => {
-        console.log(data)
+        console.log(data);
         setIsModalVisible(false);
-      }).catch((err) => {
-        console.log(err)
       })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setReason('')
+    setReason('');
   };
 
   const handleReject = () => {
@@ -159,18 +160,19 @@ const ManageReport = () => {
   const handleRejectCancel = () => {
     setIsRejectModalVisible(false);
     setIsModalVisible(true);
-    setReason('')
+    setReason('');
   };
 
   const handleRejectOk = () => {
     updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'reject' } })
       .then((data) => {
-        console.log(data)
+        console.log(data);
         setIsRejectModalVisible(false);
-        setReason('')
-      }).catch((err) => {
-        console.log(err)
+        setReason('');
       })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handlePageChange = (page, pageSize) => {
@@ -184,16 +186,7 @@ const ManageReport = () => {
         <div className="flex items-end justify-end text-[#414141]">
           <Filters />
         </div>
-        <Tables
-          pagination={true}
-          initialPageSize={10}
-          data={{ items: data, totalCount: reportData?.data?.total || 0 }}
-          columns={columns}
-          enableRowClick
-          onRowClick={showModal}
-          onPageChange={handlePageChange}
-          isLoading={isLoading}
-        />
+        <Tables pagination={true} initialPageSize={10} data={{ items: data, totalCount: reportData?.data?.total || 0 }} columns={columns} enableRowClick onRowClick={showModal} onPageChange={handlePageChange} isLoading={isLoading} />
         <Modal
           open={isModalVisible}
           width={890}
@@ -217,27 +210,16 @@ const ManageReport = () => {
           {selectedReport && <ModalContent selectedReport={selectedReport} />}
         </Modal>
 
-        <Modal
-          open={isRejectModalVisible}
-          onOk={handleRejectOk}
-          onCancel={handleRejectCancel}
-          centered
-          closeIcon={false}
-          width={633}
-          footer={false}
-        >
-          <h3 className='h4 font-bold'>Are you sure you want to reject this report?</h3>
-          <FloatingLabelInput
-            type='desc'
-            label={"Type Your Reason Here"}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder={""}
-            className="mt-[30px]"
-          />
-          <div className='flex flex-col gap-3 mt-11 btn-m font-bold'>
-            <button className='py-3 w-full bg-primary-500 text-white rounded-[5px]' onClick={handleRejectOk}>Reject</button>
-            <button className='py-3 w-full border border-primary-500 text-primary-500 rounded-[5px]' onClick={handleRejectCancel}>Cancel</button>
+        <Modal open={isRejectModalVisible} onOk={handleRejectOk} onCancel={handleRejectCancel} centered closeIcon={false} width={633} footer={false}>
+          <h3 className="h4 font-bold">Are you sure you want to reject this report?</h3>
+          <FloatingLabelInput type="desc" label={'Type Your Reason Here'} value={reason} onChange={(e) => setReason(e.target.value)} placeholder={''} className="mt-[30px]" />
+          <div className="flex flex-col gap-3 mt-11 btn-m font-bold">
+            <button className="py-3 w-full bg-primary-500 text-white rounded-[5px]" onClick={handleRejectOk}>
+              Reject
+            </button>
+            <button className="py-3 w-full border border-primary-500 text-primary-500 rounded-[5px]" onClick={handleRejectCancel}>
+              Cancel
+            </button>
           </div>
         </Modal>
       </div>

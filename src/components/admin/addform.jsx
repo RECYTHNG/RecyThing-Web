@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { usePostData } from '../../hooks/useFetch';
 import Person from '../../assets/person.svg';
 import Email from '../../assets/email.svg';
 import Lock from '../../assets/lock.svg';
@@ -16,11 +17,28 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const { mutateAsync: postData } = usePostData();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newAdmin = { id: `AD${Math.floor(Math.random() * 1000)}`, fullName, email, password, role, avatar };
-    onAdd(newAdmin);
+
+    const adminData = {
+      name: fullName,
+      email: email,
+      password: password,
+      confirm_password: confirmPassword,
+      role: role,
+      profile_photo: avatar,
+    };
+    console.log(adminData);
+
+    try {
+      await postData({ endpoint: '/admin', newData: adminData });
+      console.log('sukses');
+      onAdd();
+    } catch (error) {
+      console.error('Error adding admin:', error);
+    }
   };
 
   const handleAvatarChange = (e) => {

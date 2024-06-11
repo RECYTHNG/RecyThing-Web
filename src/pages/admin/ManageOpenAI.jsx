@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Button, Dropdown, Menu, Tooltip, Modal, message } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Dropdown, Menu, Tooltip, Modal } from 'antd';
 import Tables from '../../components/global/Table';
 import ContentLayout from '../../layouts/ContentLayout';
 import Edit from '../../assets/edit.svg';
@@ -12,22 +12,9 @@ import DetailModal from '../../components/customedata/detailmodal';
 import { toast } from 'react-toastify';
 import { DeleteModal } from '../../components/customedata/modaldelete';
 import AddButton from '../../components/global/button/AddButton';
+import { useFetch, useUpdateData } from '../../hooks/useFetch';
 
 const ManageOpenAI = () => {
-  const [admins, setAdmins] = useState([
-    { id: 1, tanggal: '10/04/2024', topik: 'Daur Ulang Kertas', deskripsi: 'Proses mengumpulkan, mencacah, dan mengolah kertas bekas menjadi produk baru seperti kertas atau karton.' },
-    { id: 2, tanggal: '12/01/2024', topik: 'Daur Ulang Kaca', deskripsi: 'Tahapan pengumpulan, pembersihan, penghancuran, dan peleburan kaca bekas menjadi produk baru.' },
-    { id: 3, tanggal: '15/01/2024', topik: 'Pengelolaan Limbah Elektronik', deskripsi: 'Proses pengumpulan, pemisahan, dan pengolahan perangkat elektronik bekas untuk diambil komponennya atau didaur ulang.' },
-    { id: 4, tanggal: '20/01/2024', topik: 'Kompos', deskripsi: 'Hasil penguraian bahan organik menjadi pupuk alami melalui proses pengumpulan dan penguraian sisa makanan serta daun.' },
-    { id: 5, tanggal: '20/01/2024', topik: 'Pengurangan Limbah', deskripsi: 'Berapa banyak pengguna kami yang sedang aktif?' },
-    { id: 6, tanggal: '20/01/2024', topik: 'Pengelolaan Sampah Organik', deskripsi: 'Bagaimana tingkat kepuasan pengguna terhadap layanan pelanggan?' },
-    { id: 7, tanggal: '20/01/2024', topik: 'Daur Ulang Baterai', deskripsi: 'Pengumpulan baterai di pusat daur ulang khusus untuk memisahkan komponen berbahaya dan menggunakan kembali materialnya.' },
-    { id: 8, tanggal: '20/01/2024', topik: 'Daur Ulang Minyak Bekas', deskripsi: 'Proses pengumpulan dan pengolahan minyak bekas menjadi biodiesel atau produk lain seperti sabun.' },
-    { id: 9, tanggal: '20/01/2024', topik: 'Daur Ulang Botol Plastik', deskripsi: 'Proses pengumpulan, pembersihan, pencacahan menjadi serpihan, dan peleburan botol plastik bekas untuk membuat produk plastik baru.' },
-    { id: 10, tanggal: '20/01/2024', topik: 'Daur Ulang Karet', deskripsi: 'Proses pencacahan, peleburan, dan pembentukan karet bekas menjadi produk baru seperti alas lantai atau tikar.' },
-    { id: 11, tanggal: '20/01/2024', topik: 'Daur Ulang Karet', deskripsi: 'Proses pencacahan, peleburan, dan pembentukan karet bekas menjadi produk baru seperti alas lantai atau tikar.' },
-  ]);
-
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
@@ -35,21 +22,38 @@ const ManageOpenAI = () => {
   const [editData, setEditData] = useState(null);
   const [detailData, setDetailData] = useState(null);
   const [recordToDelete, setRecordToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const truncateText = (text, length) => {
     if (text.length <= length) return text;
     return text.substring(0, length) + '...';
   };
 
+  const { data: customData, isLoading } = useFetch(`/custom-datas?page=${currentPage}&limit=${pageSize}`, 'custom-datas');
+  console.log(customData);
+
+  const data = useMemo(
+    () =>
+      customData?.data?.['custom_datas']?.map((admin) => ({
+        id: admin.id,
+        topic: admin.topic,
+        description: admin.description,
+        created_at: new Date(admin.created_at).toLocaleDateString('id-ID'),
+        updated_at: admin.updated_at,
+      })) || [],
+    [customData]
+  );
+
   const columns = useMemo(
     () => [
       { title: 'No', dataIndex: 'id', key: 'id' },
-      { title: 'Tanggal', dataIndex: 'tanggal', key: 'tanggal' },
-      { title: 'Topik', dataIndex: 'topik', key: 'topik' },
+      { title: 'Tanggal', dataIndex: 'created_at', key: 'created_at' },
+      { title: 'Topik', dataIndex: 'topic', key: 'topic' },
       {
         title: 'Deskripsi',
-        dataIndex: 'deskripsi',
-        key: 'deskripsi',
+        dataIndex: 'description',
+        key: 'description',
         render: (text) => (
           <Tooltip title={text}>
             <span>{truncateText(text, 45)}</span>
@@ -110,8 +114,7 @@ const ManageOpenAI = () => {
     setIsDeleteModalVisible(true);
   };
 
-  const handleDeleteOk = (id) => {
-    setAdmins((prevAdmins) => prevAdmins.filter((admin) => admin.id !== id));
+  const handleDeleteOk = () => {
     toast.success('Topik berhasil dihapus.', {
       position: 'top-right',
       autoClose: 2000,
@@ -144,8 +147,7 @@ const ManageOpenAI = () => {
     setIsDetailModalVisible(false);
   };
 
-  const handleEditSubmit = (updatedData) => {
-    setAdmins((prevAdmins) => prevAdmins.map((admin) => (admin.id === updatedData.id ? { ...admin, ...updatedData } : admin)));
+  const handleEditSubmit = () => {
     setIsEditModalVisible(false);
     toast.success('Data berhasil di ubah!', {
       position: 'top-right',
@@ -156,10 +158,7 @@ const ManageOpenAI = () => {
     });
   };
 
-  const handleAddSubmit = (newData) => {
-    const newId = admins.length ? Math.max(admins.map((admin) => admin.id)) + 1 : 1;
-    const newAdmin = { id: newId, ...newData };
-    setAdmins((prevAdmins) => [...prevAdmins, newAdmin]);
+  const handleAddSubmit = () => {
     setIsAddModalVisible(false);
     toast.success('Data berhasil di tambah!.', {
       position: 'top-right',
@@ -170,6 +169,11 @@ const ManageOpenAI = () => {
     });
   };
 
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+
   return (
     <ContentLayout title={'Manajemen OpenAI'}>
       <div className="px-6 py-9 bg-[#F4F4F4]">
@@ -177,17 +181,17 @@ const ManageOpenAI = () => {
           <AddButton text="Tambah" onClick={showModal} />
         </div>
         <div className="px-6 py-3 shadow-md flex flex-col gap-6 rounded-lg bg-white mt-6">
-          <Tables data={admins} columns={columns} pagination={true} initialPageSize={10} />
+          <Tables data={{ items: data, totalCount: customData?.data?.total || 0 }} columns={columns} pagination={true} initialPageSize={10} onPageChange={handlePageChange} isLoading={isLoading} />
         </div>
       </div>
       <Modal open={isAddModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null} width={640}>
         <AddDataForm onCancel={handleCancel} onSubmit={handleAddSubmit} />
       </Modal>
       <Modal open={isEditModalVisible} onCancel={handleCancel} footer={null} width={640}>
-        <EditDataForm id={editData?.id} initialTopic={editData?.topik} initialDescription={editData?.deskripsi} onSubmit={handleEditSubmit} onCancel={handleCancel} />
+        <EditDataForm id={editData?.id} initialTopic={editData?.topic} initialDescription={editData?.description} onSubmit={handleEditSubmit} onCancel={handleCancel} />
       </Modal>
-      <DetailModal visible={isDetailModalVisible} onCancel={handleCancel} data={detailData} />
-      <DeleteModal isVisible={isDeleteModalVisible} onOk={handleDeleteOk} onCancel={handleDeleteCancel} record={recordToDelete} />
+      <DetailModal open={isDetailModalVisible} onCancel={handleCancel} data={detailData} />
+      <DeleteModal open={isDeleteModalVisible} onOk={() => handleDeleteOk(recordToDelete?.id)} onCancel={handleDeleteCancel} record={recordToDelete} />
     </ContentLayout>
   );
 };
