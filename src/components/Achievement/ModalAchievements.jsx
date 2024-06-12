@@ -20,7 +20,7 @@ export const AddModal = ({ isVisible, onOk, onCancel }) => {
     setIsFocused({ ...isFocused, [field]: false });
   };
 
-  const handleThumbnailChange = (e) => {
+  const handleBadgeChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setBadgeImage(URL.createObjectURL(e.target.files[0]));
     }
@@ -91,10 +91,9 @@ export const AddModal = ({ isVisible, onOk, onCancel }) => {
             )}
             <input
               type="file"
-              id="thumbnail"
-              name="thumbnail"
-              accept="image/*"
-              onChange={handleThumbnailChange}
+              id="badge"
+              name="badge"
+              onChange={handleBadgeChange}
               className="opacity-0 absolute inset-0 cursor-pointer"
             />
           </div>
@@ -166,7 +165,7 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
   const [level, setLevel] = useState("");
   const [totalPoin, setTotalPoin] = useState("");
   const [badgeImage, setBadgeImage] = useState(null);
-  const [badgeImageFile, setBadgeImageFile] = useState(null); 
+  const [badgeImageFile, setBadgeImageFile] = useState(null);
   const [isFocused, setIsFocused] = useState({
     level: false,
     totalPoin: false,
@@ -178,11 +177,10 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
     if (record) {
       setLevel(record.level);
       setTotalPoin(record.target);
-      setBadgeImage(record.lencana);
+      setBadgeImage(record.lencana.props.src); // Use the correct property for the image URL
+      console.log("Record loaded:", record);
     }
   }, [record]);
-
-  console.log(`Record: ${record}`)
 
   const handleFocus = (field) => {
     setIsFocused({ ...isFocused, [field]: true });
@@ -192,10 +190,10 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
     setIsFocused({ ...isFocused, [field]: false });
   };
 
-  const handleThumbnailChange = (e) => {
+  const handleBadgeChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setBadgeImage(URL.createObjectURL(e.target.files[0]));
-      setBadgeImageFile(e.target.files[0]); 
+      setBadgeImageFile(e.target.files[0]);
     }
   };
 
@@ -265,22 +263,26 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
               </label>
             </div>
           </div>
-          <div className="border-2 border-dashed border-gray-300 px-2 py-1 self-start rounded-lg cursor-pointer flex flex-col hover:border-gray-400 relative">
+          <div className="border-2 border-dashed border-gray-300 px-2 py-1 max-w-36 self-start rounded-lg cursor-pointer flex flex-col hover:border-gray-400 relative">
             {badgeImage ? (
               <img
                 src={badgeImage}
-                alt="Thumbnail Preview"
-                className="rounded-md w-full h-full object-cover"
+                alt="Badge Preview"
+                className="rounded-md w-full max-w-xs object-cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "";
+                }}
               />
             ) : (
               <div className="text-center text-gray-500">Unggah Lencana</div>
             )}
             <input
               type="file"
-              id="thumbnail"
-              name="thumbnail"
+              id="badge"
+              name="badge"
               accept="image/*"
-              onChange={handleThumbnailChange}
+              onChange={handleBadgeChange}
               className="opacity-0 absolute inset-0 cursor-pointer"
             />
           </div>
