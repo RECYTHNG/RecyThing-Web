@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { usePostData } from '../../hooks/useFetch';
+import { usePostFormData } from '../../hooks/useFetch';
 import Person from '../../assets/person.svg';
 import Email from '../../assets/email.svg';
 import Lock from '../../assets/lock.svg';
@@ -13,11 +13,12 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('Admin');
+  const [role, setRole] = useState('admin');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
-  const { mutateAsync: postData } = usePostData();
+  const [image, setImage] = useState(null);
+  const { mutateAsync: postData } = usePostFormData();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +29,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
       password: password,
       confirm_password: confirmPassword,
       role: role,
-      profile_photo: avatar,
+      profile_photo: image,
     };
     console.log(adminData);
 
@@ -45,6 +46,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
     const file = e.target.files[0];
     if (file) {
       setAvatar(URL.createObjectURL(file));
+      setImage(file);
     }
   };
 
@@ -132,8 +134,8 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
               <div className="relative">
                 <img src={Role} alt="Role Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
                 <select value={role} onChange={(e) => setRole(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed">
-                  <option value="Super Admin">Super Admin</option>
-                  <option value="Admin">Admin</option>
+                  <option value="super admin">super Admin</option>
+                  <option value="admin">admin</option>
                 </select>
               </div>
             </div>

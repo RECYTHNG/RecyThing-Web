@@ -1,7 +1,7 @@
 import { ConfigProvider, Table, Select, Pagination, Spin } from 'antd';
 import React, { useState } from 'react';
 
-const Tables = ({ data, columns, onRowClick, initialPageSize = 10, pagination, enableRowClick = false, onPageChange, isLoading }) => {
+const Tables = ({ data, columns, onRowClick, initialPageSize = 10, pagination, enableRowClick = false, onPageChange, isLoading=false }) => {
   const [pageSize, setPageSize] = useState(initialPageSize);
   const [current, setCurrent] = useState(1);
 

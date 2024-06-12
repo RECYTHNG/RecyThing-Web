@@ -30,6 +30,18 @@ const postData = async ({ endpoint, newData }) => {
   return data;
 };
 
+// Fungsi untuk membuat data (POST Multipart Form)
+const postFormData = async ({ endpoint, newData }) => {
+  const { data } = await APIInstance.post(endpoint, newData, {
+    headers: {
+      // Bakal diganti dari local/cookies soon
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'multipart/form-data',
+    }
+  });
+  return data;
+};
+
 
 // Fungsi untuk memperbarui data (PUT)
 const updateData = async ({ endpoint, updatedData }) => {
@@ -80,6 +92,17 @@ export const usePostData = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: postData,
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+};
+
+// Hook untuk mengirim data form
+export const usePostFormData = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: postFormData,
     onSuccess: () => {
       queryClient.invalidateQueries();
     },

@@ -14,9 +14,9 @@ import AddButton from '../../components/global/button/AddButton';
 
 const getRoleColor = (role) => {
   switch (role) {
-    case 'Super Admin':
+    case 'super admin':
       return 'bg-sky-700 text-white';
-    case 'Admin':
+    case 'admin':
       return 'bg-sky-400 text-white';
     default:
       return '';
@@ -28,8 +28,10 @@ const ManageAdmin = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const { data: adminData, isLoading } = useFetch('/admins?page=1&limit=10', 'admins');
+  const { data: adminData, isLoading } = useFetch(`/admins?page=${currentPage}&limit=${pageSize}`, 'admins');
   const data = useMemo(
     () =>
       adminData?.data?.map((admin) => ({
@@ -155,6 +157,11 @@ const ManageAdmin = () => {
     setSelectedAdmin(null);
   };
 
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+
   return (
     <ContentLayout title={'Manage Admin'}>
       <div className="px-6 py-9">
@@ -162,7 +169,7 @@ const ManageAdmin = () => {
           <AddButton text="Tambah" onClick={showAddModal} />
         </div>
         <div className="px-6 py-3 rounded-lg shadow mt-6">
-          <Tables data={data} columns={columns} pagination={true} initialPageSize={10} isLoading={isLoading} />
+          <Tables data={{ items: data, totalCount: adminData?.data?.total || 0 }} columns={columns} pagination={true} initialPageSize={10} isLoading={isLoading} onPageChange={handlePageChange} />
         </div>
         <Modal open={isAddModalVisible} onCancel={handleAddCancel} footer={null} width={730}>
           <AddAdminForm onAdd={handleAddOk} onCancel={handleAddCancel} />

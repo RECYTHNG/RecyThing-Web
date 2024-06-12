@@ -22,7 +22,7 @@ const getStatusColor = (status) => {
 const MissionList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [stages, setStages] = useState([{ title: '', description: '' }]);
+  const [stages, setStages] = useState([{ title: '', description: '' }, { title: '', description: '' }]);
   const { data: taskData, isLoading, isError } = useFetch('/tasks?page=1&limit=10', 'task')
 
   const data = useMemo(

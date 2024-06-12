@@ -1,50 +1,37 @@
-import { ConfigProvider, Select } from 'antd';
+import { ConfigProvider, Select, DatePicker, Dropdown, Menu, Button } from 'antd';
+import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { GoChevronDown } from "react-icons/go";
-import { MdOutlineFilterAlt } from 'react-icons/md';
-import { DatePicker } from 'antd';
-import { MdOutlineCalendarMonth } from "react-icons/md";
+import { MdOutlineFilterAlt, MdOutlineCalendarMonth } from 'react-icons/md';
 
-const Filters = () => {
-  const [reportCategory, setReportCategory] = useState('None');
-  const [status, setStatus] = useState('Need Review');
-  const [date, setDate] = useState('12/12/2022');
+const Filters = ({ reportCategory, status, date, onFilterChange }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [localReportCategory, setLocalReportCategory] = useState(reportCategory);
+  const [localStatus, setLocalStatus] = useState(status);
+  const [localDate, setLocalDate] = useState(date ? dayjs(date, "DD/MM/YYYY") : null);
 
   const handleFilter = () => {
-    // Implement the filter logic here
-    console.log({ reportCategory, status, date });
+    const formattedDate = localDate ? localDate.format("YYYY-MM-DD") : null;
+    onFilterChange(localReportCategory, localStatus, formattedDate);
+    setIsOpen(false)
   };
 
-  return (
-    <ConfigProvider
-    theme={{
-      components: {
-        DatePicker: {
-          colorTextPlaceholder: "#888",
-          colorText: "#888"
-        },
-        Select: {
-          colorText: "#888"
-        }
-      }
-    }}>
-      <details className="dropdown dropdown-end text-[#414141]">
-        <summary tabIndex={0} role="button" className="px-9 body-m flex items-center">
-          Filter
-          <MdOutlineFilterAlt className="w-5 h-5 ml-2" />
-        </summary>
-        <div tabIndex={0} className="dropdown-content z-10 menu p-2 shadow-filter bg-white rounded-[10px] w-64 mt-4">
+  const menu = (
+    <Menu className='w-[250px]'>
+      <div className='px-2'>
+        <div>
           <div className="form-control">
             <label className="label">
               <span className="body-m font-bold">Report Category</span>
             </label>
             <Select
               suffixIcon={<GoChevronDown className='text-[#414141] text-lg' />}
-              defaultValue="rubbish"
+              value={localReportCategory || 'None'}
               className='w-full'
               style={{
                 height: "42px",
               }}
+              onChange={(value) => setLocalReportCategory(value)}
               options={[
                 {
                   value: 'rubbish',
@@ -54,22 +41,26 @@ const Filters = () => {
                   value: 'littering',
                   label: 'Littering',
                 },
-              ]} />
+              ]}
+            />
           </div>
+        </div>
+        <div>
           <div className="form-control mt-2">
             <label className="label">
               <span className="body-m font-bold">Status</span>
             </label>
             <Select
               suffixIcon={<GoChevronDown className='text-[#414141] text-lg' />}
-              defaultValue="review"
+              value={localStatus || "Need Review"}
               className='w-full'
               style={{
                 height: "42px",
               }}
+              onChange={(value) => setLocalStatus(value)}
               options={[
                 {
-                  value: 'review',
+                  value: 'need review',
                   label: 'Need Review',
                 },
                 {
@@ -77,11 +68,14 @@ const Filters = () => {
                   label: 'Rejected',
                 },
                 {
-                  value: 'accept',
+                  value: 'approve',
                   label: 'Accepted',
                 },
-              ]} />
+              ]}
+            />
           </div>
+        </div>
+        <div>
           <div className="form-control mt-2">
             <label className="label">
               <span className="body-m font-bold">Date</span>
@@ -93,11 +87,40 @@ const Filters = () => {
                 height: "42px",
               }}
               format={"DD/MM/YYYY"}
-              suffixIcon={<MdOutlineCalendarMonth className='text-[#414141] text-lg' />} />
+              onChange={(date) => setLocalDate(dayjs(date, "DD/MM/YYYY"))}
+              suffixIcon={<MdOutlineCalendarMonth className='text-[#414141] text-lg' />}
+            />
           </div>
-          <button className="btn mt-5 text-light-50 body-m bg-primary-500 hover:bg-primary-400" onClick={handleFilter}>Sort By Filter</button>
         </div>
-      </details>
+        <div>
+          <Button key={'submit'} className="btn mt-5 text-light-50 body-m bg-primary-500 hover:bg-primary-400 w-full" onClick={handleFilter}>
+            Sort By Filter
+          </Button>
+        </div>
+      </div>
+    </Menu>
+  );
+
+  return (
+    <ConfigProvider
+      theme={{
+        components: {
+          DatePicker: {
+            colorTextPlaceholder: "#888",
+            colorText: "#888",
+          },
+          Select: {
+            colorText: "#888",
+          },
+        },
+      }}
+    >
+      <Dropdown overlay={menu} open={isOpen} trigger={['click']} placement="bottomRight">
+        <Button onClick={() => setIsOpen(!isOpen)} className="px-9 body-m flex items-center text-[#414141]">
+          Filter
+          <MdOutlineFilterAlt className="w-5 h-5 ml-2" />
+        </Button>
+      </Dropdown>
     </ConfigProvider>
   );
 };
