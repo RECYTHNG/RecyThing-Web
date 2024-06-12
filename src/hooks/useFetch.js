@@ -6,7 +6,6 @@ const fetchData = async ({ queryKey }) => {
   const [_key, endpoint] = queryKey;
   const { data } = await APIInstance.get(endpoint, {
     headers: {
-      // Bakal diganti dari local/cookies soon
       "Authorization": `Bearer ${localStorage.getItem('token')}`
     }
   });
@@ -23,7 +22,6 @@ const login = async ({ endpoint, loginData }) => {
 const postData = async ({ endpoint, newData }) => {
   const { data } = await APIInstance.post(endpoint, newData, {
     headers: {
-      // Bakal diganti dari local/cookies soon
       "Authorization": `Bearer ${localStorage.getItem('token')}`
     }
   });
@@ -34,7 +32,6 @@ const postData = async ({ endpoint, newData }) => {
 const postFormData = async ({ endpoint, newData }) => {
   const { data } = await APIInstance.post(endpoint, newData, {
     headers: {
-      // Bakal diganti dari local/cookies soon
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
       "Content-Type": 'multipart/form-data',
     }
@@ -47,8 +44,18 @@ const postFormData = async ({ endpoint, newData }) => {
 const updateData = async ({ endpoint, updatedData }) => {
   const { data } = await APIInstance.put(endpoint, updatedData, {
     headers: {
-      // Bakal diganti dari local/cookies soon
       "Authorization": `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+  return data;
+};
+
+// Fungsi untuk memperbarui data Form (PUT)
+const updateFormData = async ({ endpoint, updatedData }) => {
+  const { data } = await APIInstance.put(endpoint, updatedData, {
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'multipart/form-data',
     }
   });
   return data;
@@ -58,7 +65,6 @@ const updateData = async ({ endpoint, updatedData }) => {
 const deleteData = async ({ endpoint }) => {
   const { data } = await APIInstance.delete(endpoint, {
     headers: {
-      // Bakal diganti dari local/cookies soon
       "Authorization": `Bearer ${localStorage.getItem('token')}`
     }
   });
@@ -114,6 +120,17 @@ export const useUpdateData = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateData,
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+};
+
+// Hook untuk memperbarui data Form
+export const useUpdateFormData = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateFormData,
     onSuccess: () => {
       queryClient.invalidateQueries();
     },
