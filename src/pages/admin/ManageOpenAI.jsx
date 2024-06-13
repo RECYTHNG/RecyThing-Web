@@ -31,7 +31,6 @@ const ManageOpenAI = () => {
   };
 
   const { data: customData, isLoading } = useFetch(`/custom-datas?page=${currentPage}&limit=${pageSize}`, 'custom-datas');
-  console.log(customData);
 
   const data = useMemo(
     () =>
@@ -44,6 +43,7 @@ const ManageOpenAI = () => {
       })) || [],
     [customData]
   );
+  console.log(customData);
 
   const columns = useMemo(
     () => [

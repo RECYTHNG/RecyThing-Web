@@ -88,21 +88,21 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
             <div className="flex flex-col justify-start items-start gap-1">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Full Name</label>
               <div className="relative">
-                <img src={Person} alt="Person Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Person} alt="Person Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-1">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Email</label>
               <div className="relative">
-                <img src={Email} alt="Email Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Email} alt="Email Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-[5px]">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Password</label>
               <div className="relative">
-                <img src={Lock} alt="Password Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Lock} alt="Password Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -117,7 +117,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
             <div className="flex flex-col justify-start items-start gap-[5px]">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Re-Enter Password</label>
               <div className="relative">
-                <img src={Lock} alt="Password Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Lock} alt="Password Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
@@ -132,11 +132,20 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
             <div className="flex flex-col justify-start items-start gap-[5px]">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Role</label>
               <div className="relative">
-                <img src={Role} alt="Role Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
-                <select value={role} onChange={(e) => setRole(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed">
-                  <option value="super admin">super Admin</option>
+                <img src={Role} alt="Role Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="pl-10 pr-10 w-[306px] py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed appearance-none cursor-pointer"
+                >
+                  <option value="super admin">super admin</option>
                   <option value="admin">admin</option>
                 </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
             </div>
           </div>

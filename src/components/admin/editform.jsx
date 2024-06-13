@@ -6,35 +6,57 @@ import Role from '../../assets/manage.svg';
 import Eye from '../../assets/eye.svg';
 import EyeOff from '../../assets/eye-off.svg';
 import CameraIcon from '../../assets/camera.svg';
+import { useUpdateFormData } from '../../hooks/useFetch';
 
 const EditAdminForm = ({ admin, onEdit, onCancel }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [role, setRole] = useState('Admin');
+  const [role, setRole] = useState('admin');
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const [image, setImage] = useState(null);
+  const { mutateAsync: updateData } = useUpdateFormData();
 
   useEffect(() => {
     if (admin) {
       setFullName(admin.name);
       setEmail(admin.email);
-      setRole(admin.status);
+      setRole(admin.role);
+      setImage(admin.profile_photo);
+      setAvatar(admin.profile_photo);
     }
   }, [admin]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newEdit = { id: `AD${Math.floor(Math.random() * 1000)}`, fullName, email, oldPassword, newPassword, role, avatar };
-    onEdit(newEdit);
+
+    const editData = new FormData();
+    editData.append('name', fullName);
+    editData.append('email', email);
+    editData.append('old_password', oldPassword);
+    editData.append('new_password', newPassword);
+    editData.append('role', role);
+    if (image) {
+      editData.append('profile_photo', image);
+    }
+
+    try {
+      await updateData({ endpoint: `/admin/${admin.id}`, updatedData: editData });
+      console.log('sukses');
+      onEdit();
+    } catch (error) {
+      console.error('Error edit admin:', error);
+    }
   };
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setAvatar(URL.createObjectURL(file));
+      setImage(file);
     }
   };
 
@@ -76,21 +98,21 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
             <div className="flex flex-col justify-start items-start gap-1">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Full Name</label>
               <div className="relative">
-                <img src={Person} alt="Person Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Person} alt="Person Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-1">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Email</label>
               <div className="relative">
-                <img src={Email} alt="Email Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Email} alt="Email Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-[5px]">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Enter Old Password</label>
               <div className="relative">
-                <img src={Lock} alt="Password Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Lock} alt="Password Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input
                   type={showOldPassword ? 'text' : 'password'}
                   value={oldPassword}
@@ -105,7 +127,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
             <div className="flex flex-col justify-start items-start gap-[5px]">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Enter New Password</label>
               <div className="relative">
-                <img src={Lock} alt="Password Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <img src={Lock} alt="Password Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
                 <input
                   type={showNewPassword ? 'text' : 'password'}
                   value={newPassword}
@@ -120,11 +142,20 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
             <div className="flex flex-col justify-start items-start gap-[5px]">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Role</label>
               <div className="relative">
-                <img src={Role} alt="Role Icon" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
-                <select value={role} onChange={(e) => setRole(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed">
-                  <option value="Super Admin">Super Admin</option>
-                  <option value="Admin">Admin</option>
+                <img src={Role} alt="Role Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="pl-10 pr-10 w-[306px] py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed appearance-none cursor-pointer"
+                >
+                  <option value="super admin">super admin</option>
+                  <option value="admin">admin</option>
                 </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
             </div>
           </div>

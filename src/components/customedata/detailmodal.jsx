@@ -10,22 +10,16 @@ const DetailModal = ({ open, onCancel, data }) => {
   };
 
   return (
-    <Modal visible={open} onCancel={onCancel} footer={null} width={800} height={100}>
-      <div className="px-6 py-5 bg-white rounded-[20px] flex-col gap-8 inline-flex">
-        <h1 className="text-black text-2xl font-bold font-['Nunito'] leading-relaxed">Detail Data OpenAI</h1>
-        <div className="flex-col gap-3.5 flex">
-          <div className="inline-flex">
-            <div className="h-[22px] justify-start items-end gap-2.5 flex">
-              <div className="grow shrink basis-0 text-sky-900 text-xl font-bold leading-snug">{data?.topic}</div>
-            </div>
-            <div className="grow shrink basis-0 justify-end gap-2.5 flex">
-              <div className="text-zinc-500 text-xs font-medium leading-none">Unggah, {formatDate(data?.created_at)}</div>
-            </div>
+    <Modal visible={open} onCancel={onCancel} footer={null} width={700} style={{ maxHeight: '80vh', overflowY: 'auto' }}>
+      <div className="px-6 py-5 bg-white rounded-[20px] flex flex-col gap-8">
+        <h1 className="text-black text-2xl font-bold leading-relaxed">Detail Data OpenAI</h1>
+        <div className="flex flex-col gap-3.5">
+          <div className="flex justify-between items-center">
+            <div className="text-sky-900 text-xl font-bold leading-snug">{data?.topic}</div>
+            <div className="text-zinc-500 text-xs font-medium leading-none">Unggah, {formatDate(data?.created_at)}</div>
           </div>
-          <div className="h-[67px] flex-col gap-2.5 flex">
-            <div className="self-stretch gap-2.5 inline-flex">
-              <div className="grow shrink basis-0 text-zinc-500 text-xs font-bold leading-none">DESKRIPSI</div>
-            </div>
+          <div className="flex flex-col gap-2.5">
+            <div className="text-zinc-500 text-xs font-bold leading-none">DESKRIPSI</div>
             <div className="text-black text-lg font-normal leading-tight">{data?.description}</div>
           </div>
         </div>

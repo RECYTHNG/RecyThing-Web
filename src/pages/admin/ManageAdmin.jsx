@@ -44,7 +44,7 @@ const ManageAdmin = () => {
       })) || [],
     [adminData]
   );
-
+  console.log(adminData);
   const columns = useMemo(
     () => [
       { title: 'Admin ID', dataIndex: 'id', key: 'id', align: 'center' },
@@ -120,7 +120,6 @@ const ManageAdmin = () => {
 
   const handleEditOk = () => {
     setIsEditModalVisible(false);
-    setSelectedAdmin(null);
     toast.success('Data saved successfully', {
       position: 'top-right',
       autoClose: 2000,
@@ -142,7 +141,6 @@ const ManageAdmin = () => {
 
   const handleDelete = () => {
     setIsDeleteModalVisible(false);
-    setSelectedAdmin(null);
     toast.error('Data has been deleted', {
       position: 'top-right',
       autoClose: 2000,
@@ -169,7 +167,7 @@ const ManageAdmin = () => {
           <AddButton text="Tambah" onClick={showAddModal} />
         </div>
         <div className="px-6 py-3 rounded-lg shadow mt-6">
-          <Tables data={{ items: data, totalCount: adminData?.data?.total || 0 }} columns={columns} pagination={true} initialPageSize={10} isLoading={isLoading} onPageChange={handlePageChange} />
+          <Tables data={{ items: data, totalCount: adminData?.total_data || 0 }} columns={columns} pagination={true} initialPageSize={10} isLoading={isLoading} onPageChange={handlePageChange} />
         </div>
         <Modal open={isAddModalVisible} onCancel={handleAddCancel} footer={null} width={730}>
           <AddAdminForm onAdd={handleAddOk} onCancel={handleAddCancel} />
