@@ -5,53 +5,111 @@ import { PlusOutlined } from '@ant-design/icons';
 import uploadIcon from '/assets/svg/task/uploadIcon.svg';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import dayjs from 'dayjs';
-import { usePostData } from '../../../hooks/useFetch';
+import { usePostFormData, useUpdateFormData } from '../../../hooks/useFetch';
+import { toast } from 'react-toastify';
 
-const AddTaskModal = ({ isOpen, onClose, selectedTask, onStageChange, stages, addStage }) => {
+const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
   const [taskName, setTaskName] = useState('');
   const [point, setPoint] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [description, setDescription] = useState('');
+  const [stages, setStages] = useState([{ title: '', description: '' }, { title: '', description: '' }]);
   const [image, setImage] = useState(null);
-  const { mutateAsync: addData } = usePostData();
+  const [imgDisplay, setImgDisplay] = useState('');
+  const { mutateAsync: addTask } = usePostFormData();
+  const { mutateAsync: updateTask } = useUpdateFormData();
 
-  useEffect(() => {
-    setTaskName(selectedTask?.name ?? '');
-    setPoint(selectedTask?.point ?? '');
-    setStartDate(selectedTask?.startDate ?? '');
-    setEndDate(selectedTask ? dayjs(selectedTask.deadline) : null);
-    setDescription(selectedTask?.description ?? '');
-    setImage(selectedTask?.image ?? null);
-  }, [selectedTask]);
-
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
-    }
+  const handleStageChange = (index, key, value) => {
+    const newStages = [...stages];
+    newStages[index][key] = value;
+    setStages(newStages);
   };
 
-  const handleSubmit = async () => {
-    const taskData = {
+  const addStage = () => {
+    setStages([...stages, { title: '', description: '' }]);
+  };
+
+  useEffect(() => {
+    console.log(selectedTask)
+    const initialStage = selectedTask?.stages?.map(({ title, description }) => ({ title, description })) ?? [{ title: '', description: '' }, { title: '', description: '' }]
+    setTaskName(selectedTask?.name ?? '');
+    setPoint(selectedTask?.point ?? '');
+    setStartDate(selectedTask ? dayjs(selectedTask.startDate, "DD/MM/YYYY") : null);
+    setEndDate(selectedTask ? dayjs(selectedTask.deadline, "DD/MM/YYYY") : null);
+    setDescription(selectedTask?.description ?? '');
+    setStages(initialStage)
+    setImgDisplay(selectedTask?.thumbnail ?? '')
+  }, [selectedTask]);
+
+  const handleImageChange = (info) => {
+    if (info.file) {
+      setImage(info.file);
+      setImgDisplay(URL.createObjectURL(info.file));
+      }
+    console.log(info)
+  };
+
+  const handleEdit = async () => {
+    const formData = new FormData();
+
+    formData.append('json_data', JSON.stringify({
       title: taskName,
       description,
-      thumbnail: "https://res.cloudinary.com/dlbbsdd3a/image/upload/v1717770921/task_thumbnail/e96qgqeiuqu7pnhnwena.jpg", 
-      start_date: startDate,
-      end_date: endDate,
+      start_date:  dayjs(startDate).format('YYYY-MM-DD'),
+      end_date: dayjs(endDate).format('YYYY-MM-DD'),
       point: parseInt(point),
       task_steps: stages.map(stage => ({
         title: stage.title,
         description: stage.description
       }))
-    };
-
-    try {
-      await addData({endpoint: '/tasks', newData:taskData});
-      console.log("sukes")
-    } catch (error) {
-      console.log(error)
+    }));
+  
+    if (image) {
+      formData.append('thumbnail', image);
     }
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+  
+    updateTask({ endpoint: `/tasks/${selectedTask.id}`, updatedData: formData })
+    .then((_) => {
+      onClose()
+      toast.success("Sukses Update Data Task")
+    }).catch((_) => {
+      toast.error("Gagal Update Data Task")
+    })
   };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+
+    formData.append('json_data', JSON.stringify({
+      title: taskName,
+      description,
+      start_date:  dayjs(startDate).format('YYYY-MM-DD'),
+      end_date: dayjs(endDate).format('YYYY-MM-DD'),
+      point: parseInt(point),
+      task_steps: stages.map(stage => ({
+        title: stage.title,
+        description: stage.description
+      }))
+    }));
+  
+    if (image) {
+      formData.append('thumbnail', image);
+    }
+  
+    addTask({ endpoint: '/tasks', newData: formData })
+    .then((data) => {
+      onClose()
+      console.log(data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  };
+  
 
   return (
     <Modal
@@ -70,7 +128,7 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask, onStageChange, stages, ad
         <Button key="close" className="btn-m font-bold text-primary-500 h-[42px] px-[22px] rounded-[5px] border border-primary-500" onClick={onClose}>
           Kembali
         </Button>,
-        <Button onClick={handleSubmit} className="btn-m font-bold text-white h-[42px] px-[22px] rounded-[5px] bg-primary-500">
+        <Button onClick={selectedTask ? handleEdit : handleSubmit} className="btn-m font-bold text-white h-[42px] px-[22px] rounded-[5px] bg-primary-500">
           {selectedTask ? 'Simpan' : 'Tambah'}
         </Button>,
       ]}
@@ -78,21 +136,27 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask, onStageChange, stages, ad
       <Form className='flex gap-[30px]'>
         <Form.Item>
           <Upload.Dragger
-            height={256}
             name="files"
             accept=".jpg,.png"
             maxCount={1}
+            showUploadList={false}
             beforeUpload={() => false}
             onChange={handleImageChange}
             style={{ border: '2px dashed #00476d' }}
           >
-            <div className='flex flex-col items-center gap-4 w-[216px]'>
-              <div className='ant-upload-drag-icon w-full flex items-center justify-center'>
-                <img src={uploadIcon} alt="Uploaded" />
-              </div>
-              <p className="sub-m text-primary-500 font-bold">Drag & Drop to Upload</p>
-              <span className='sub-s font-bold text-secondary-500'>or Browse</span>
-              <p className="body-xs text-dark-700">Max 200MB, JPG/PNG</p>
+            <div className='flex flex-col items-center justify-center w-[232px] aspect-square'>
+              {imgDisplay ?
+              <img src={imgDisplay} className='w-full h-full object-cover object-center'/>
+              :
+                <div className='flex flex-col items-center gap-4'>
+                  <div className='ant-upload-drag-icon w-full flex items-center justify-center'>
+                    <img src={uploadIcon} alt="Uploaded" />
+                  </div>
+                  <p className="sub-m text-primary-500 font-bold">Drag & Drop to Upload</p>
+                  <span className='sub-s font-bold text-secondary-500'>or Browse</span>
+                  <p className="body-xs text-dark-700">Max 200MB, JPG/PNG</p>
+                </div>
+          }
             </div>
           </Upload.Dragger>
         </Form.Item>
@@ -151,7 +215,7 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask, onStageChange, stages, ad
                       label="Nama Misi"
                       placeholder="Masukan Misi"
                       value={stage.title}
-                      onChange={(e) => onStageChange(index, 'title', e.target.value)}
+                      onChange={(e) => handleStageChange(index, 'title', e.target.value)}
                     />
                     <FloatingLabelInput
                       id={`stage-description-${index}`}
@@ -159,7 +223,7 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask, onStageChange, stages, ad
                       placeholder="Masukan Deskripsi"
                       type='desc'
                       value={stage.description}
-                      onChange={(e) => onStageChange(index, 'description', e.target.value)}
+                      onChange={(e) => handleStageChange(index, 'description', e.target.value)}
                     />
                   </div>
                 </div>

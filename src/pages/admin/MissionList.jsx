@@ -7,6 +7,7 @@ import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-de
 import { HiDotsHorizontal } from 'react-icons/hi';
 import AddTaskModal from '../../components/task/management/AddTaskModal';
 import { useFetch } from '../../hooks/useFetch';
+import dayjs from 'dayjs';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -22,7 +23,6 @@ const getStatusColor = (status) => {
 const MissionList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [stages, setStages] = useState([{ title: '', description: '' }, { title: '', description: '' }]);
   const { data: taskData, isLoading, isError } = useFetch('/tasks?page=1&limit=10', 'task')
 
   const data = useMemo(
@@ -30,9 +30,14 @@ const MissionList = () => {
       taskData?.data?.map((task) => ({
         id: task.id,
         name: task.title,
+        description: task.description,
         creator: task.task_creator.name,
-        deadline: new Date(task.end_date).toLocaleDateString('id-ID'),
+        startDate: dayjs(task.start_date).format("DD/MM/YYYY"),
+        deadline: dayjs(task.end_date).format("DD/MM/YYYY"),
         status: task.status ? 'Aktif' : 'Tidak Aktif',
+        point: task.point,
+        stages: task.steps,
+        thumbnail: task.thumbnail,
       })) || [],
     [taskData]
   );
@@ -100,30 +105,17 @@ const MissionList = () => {
 
   const handleEdit = (record) => {
     setSelectedTask(record);
-    setStages(record.stages || [{ title: '', description: '' }]);
     setIsModalVisible(true);
-  };
-
-  const handleStageChange = (index, key, value) => {
-    const newStages = [...stages];
-    newStages[index][key] = value;
-    setStages(newStages);
   };
 
   const handleAddData = () => {
     setIsModalVisible(true)
     setSelectedTask('')
-    setStages([{ title: '', description: '' }])
   }
-
-  const addStage = () => {
-    setStages([...stages, { title: '', description: '' }]);
-  };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setSelectedTask(null);
-    setStages([{ title: '', description: '' }]);
   };
 
   return (
@@ -135,11 +127,12 @@ const MissionList = () => {
         <Tables
           pagination={true}
           initialPageSize={10}
-          data={data}
+          data={{ items: data, totalCount: taskData?.total_data || 0 }}
           columns={columns}
+          isLoading={isLoading}
         />
       </div>
-      <AddTaskModal isOpen={isModalVisible} onClose={handleCloseModal} selectedTask={selectedTask} onStageChange={handleStageChange} stages={stages} addStage={addStage} />
+      <AddTaskModal isOpen={isModalVisible} onClose={handleCloseModal} selectedTask={selectedTask}/>
     </ContentLayout>
   );
 };

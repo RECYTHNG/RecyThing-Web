@@ -4,10 +4,17 @@ import { nav_item } from '../../utils/constants/data';
 import logo from '/assets/svg/logo.svg';
 import { MdOutlineLogout } from 'react-icons/md';
 import { FaChevronDown } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
+  const navigate = useNavigate()
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  function handleLogout(){
+    localStorage.removeItem('token')
+    navigate('/login')
+  }
   return (
     <nav className="h-screen min-w-[290px] flex flex-col px-[14px] pt-[37px] pb-[27px] text-[#737791] overflow-y-auto bg-white">
       <img src={logo} alt="logo" className="text-center h-[34px]" />
@@ -48,7 +55,7 @@ const Sidebar = () => {
         })}
       </div>
       <div className="flex-1 flex items-end justify-start min-h-12">
-        <button onClick={() => localStorage.removeItem('token')} className="hover:bg-danger-500 hover:text-white flex items-center gap-4 px-7 py-1 rounded-lg transition-all duration-300">
+        <button onClick={handleLogout} className="hover:bg-danger-500 hover:text-white flex items-center gap-4 px-7 py-1 rounded-lg transition-all duration-300">
           <MdOutlineLogout />
           Keluar
         </button>
