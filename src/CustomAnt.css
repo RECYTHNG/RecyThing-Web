@@ -20,3 +20,7 @@ div:hover::-webkit-scrollbar-thumb {
 .ant-spin-container .ant-pagination {
   display: none;
 }
+
+.ant-upload-btn {
+  padding: 0px !important; /* Use !important to force the padding */
+}
