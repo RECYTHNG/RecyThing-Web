@@ -14,7 +14,7 @@ export const DeleteModal = ({ isVisible, onOk, onCancel, record }) => {
           <span className="block mt-1">data ini?</span>
         </h4>
         <p className="body-m text-center text-[#959595]">Data yang dihapus tidak dapat dipulihkan</p>
-        <div className="flex gap-2 w-full px-[78px] mt-4">
+        <div className="flex gap-2 w-full px-[10px] mt-4">
           <button type="button" className="flex-1 rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4" onClick={onCancel}>
             Batal
           </button>
