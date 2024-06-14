@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import uploadIcon from '/assets/svg/task/uploadIcon.svg';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import dayjs from 'dayjs';
-import { usePostFormData, useUpdateFormData } from '../../../hooks/useFetch';
+import { usePostFormData, usePatchFormData } from '../../../hooks/useFetch';
 import { toast } from 'react-toastify';
 
 const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
@@ -18,7 +18,7 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
   const [image, setImage] = useState(null);
   const [imgDisplay, setImgDisplay] = useState('');
   const { mutateAsync: addTask } = usePostFormData();
-  const { mutateAsync: updateTask } = useUpdateFormData();
+  const { mutateAsync: updateTask } = usePatchFormData();
 
   const handleStageChange = (index, key, value) => {
     const newStages = [...stages];

@@ -61,6 +61,17 @@ const updateFormData = async ({ endpoint, updatedData }) => {
   return data;
 };
 
+// Fungsi untuk memperbarui data Form (PATCH)
+const patchFormData = async ({ endpoint, updatedData }) => {
+  const { data } = await APIInstance.patch(endpoint, updatedData, {
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'multipart/form-data',
+    }
+  });
+  return data;
+};
+
 // Fungsi untuk menghapus data (DELETE)
 const deleteData = async ({ endpoint }) => {
   const { data } = await APIInstance.delete(endpoint, {
@@ -131,6 +142,17 @@ export const useUpdateFormData = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateFormData,
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+};
+
+// Hook untuk memperbarui data Form
+export const usePatchFormData = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: patchFormData,
     onSuccess: () => {
       queryClient.invalidateQueries();
     },
