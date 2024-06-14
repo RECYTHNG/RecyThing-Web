@@ -7,6 +7,7 @@ import ContentLayout from '../../layouts/ContentLayout';
 import FloatingLabelInput from '../../components/global/input/FloatingInput';
 import { useFetch, useUpdateData } from '../../hooks/useFetch';
 import { getHour } from '../../utils/helper/getHour';
+import { toast } from 'react-toastify';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -109,7 +110,8 @@ const ManageReport = () => {
   const data = useMemo(
     () =>
       reportData?.data?.reports?.map((data) => ({
-        id: data.author.id,
+        id: data.id,
+        author_id: data.author.id,
         name: data.author.name,
         author_id: data.author_id,
         category: data.report_type,
@@ -156,8 +158,8 @@ const ManageReport = () => {
   const handleOk = () => {
     updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'approve' } })
       .then((data) => {
-        console.log(data);
         setIsModalVisible(false);
+        toast.success('The Report Was Accepted');
       })
       .catch((err) => {
         console.log(err);
@@ -183,9 +185,9 @@ const ManageReport = () => {
   const handleRejectOk = () => {
     updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'reject', reason } })
       .then((data) => {
-        console.log(data);
         setIsRejectModalVisible(false);
         setReason('');
+        toast.error('The Report Was Rejected');
       })
       .catch((err) => {
         console.log(err);
