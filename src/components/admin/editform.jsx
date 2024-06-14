@@ -6,7 +6,7 @@ import Role from '../../assets/manage.svg';
 import Eye from '../../assets/eye.svg';
 import EyeOff from '../../assets/eye-off.svg';
 import CameraIcon from '../../assets/camera.svg';
-import { useUpdateFormData } from '../../hooks/useFetch';
+import { usePatchFormData } from '../../hooks/useFetch';
 
 const EditAdminForm = ({ admin, onEdit, onCancel }) => {
   const [fullName, setFullName] = useState('');
@@ -18,7 +18,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [image, setImage] = useState(null);
-  const { mutateAsync: updateData } = useUpdateFormData();
+  const { mutateAsync: updateData } = usePatchFormData();
 
   useEffect(() => {
     if (admin) {
@@ -30,7 +30,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
     }
   }, [admin]);
 
-  const handleSubmit = async (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
 
     const editData = new FormData();
@@ -47,6 +47,10 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
       await updateData({ endpoint: `/admin/${admin.id}`, updatedData: editData });
       console.log('sukses');
       onEdit();
+
+      setOldPassword('');
+      setNewPassword('');
+      setRole('admin');
     } catch (error) {
       console.error('Error edit admin:', error);
     }
@@ -73,7 +77,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
       <div className="p-2.5 flex justify-center items-center gap-2.5">
         <div className="text-neutral-700 text-2xl font-bold leading-[38.40px]">{admin ? 'Edit Admin' : 'Add New Admin'}</div>
       </div>
-      <form onSubmit={handleSubmit} className="flex flex-col justify-start items-center gap-[47px]">
+      <form onSubmit={handleEdit} className="flex flex-col justify-start items-center gap-[47px]">
         <div className="flex justify-start items-center gap-[90px]">
           <div className="flex justify-start items-start gap-2.5">
             <div className="relative w-[149px] h-[149px] rounded-xl overflow-hidden bg-neutral-200 flex items-center justify-center">
@@ -99,14 +103,20 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Full Name</label>
               <div className="relative">
                 <img src={Person} alt="Person Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
-                <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed"
+                />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-1">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Email</label>
               <div className="relative">
                 <img src={Email} alt="Email Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-[5px]">
@@ -117,6 +127,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
                   type={showOldPassword ? 'text' : 'password'}
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
+                  required
                   className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed"
                 />
                 <button type="button" onClick={toggleOldPasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -132,6 +143,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
                   type={showNewPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  required
                   className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed"
                 />
                 <button type="button" onClick={toggleNewPasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -146,6 +158,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
+                  required
                   className="pl-10 pr-10 w-[306px] py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed appearance-none cursor-pointer"
                 >
                   <option value="super admin">super admin</option>
@@ -164,10 +177,8 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
           <button type="submit" className="w-[306px] h-[38px] px-2 py-1.5 bg-sky-900 rounded-[7px] justify-center items-center gap-[98px] inline-flex">
             <div className="text-white text-base font-normal leading-relaxed">{admin ? 'Save Data' : 'Update Data'}</div>
           </button>
-          <button type="button" className="w-[306px] h-[38px] px-2 py-1.5 bg-neutral-300 rounded-[7px] justify-center items-center gap-[98px] inline-flex">
-            <div className="text-white text-base font-normal leading-relaxed" onClick={onCancel}>
-              Cancel
-            </div>
+          <button type="button" className="w-[306px] h-[38px] px-2 py-1.5 bg-neutral-300 rounded-[7px] justify-center items-center gap-[98px] inline-flex" onClick={onCancel}>
+            <div className="text-white text-base font-normal leading-relaxed">Cancel</div>
           </button>
         </div>
       </form>

@@ -12,7 +12,7 @@ import DetailModal from '../../components/customedata/detailmodal';
 import { toast } from 'react-toastify';
 import { DeleteModal } from '../../components/customedata/modaldelete';
 import AddButton from '../../components/global/button/AddButton';
-import { useFetch, useUpdateData } from '../../hooks/useFetch';
+import { useFetch } from '../../hooks/useFetch';
 
 const ManageOpenAI = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
@@ -39,11 +39,10 @@ const ManageOpenAI = () => {
         topic: admin.topic,
         description: admin.description,
         created_at: new Date(admin.created_at).toLocaleDateString('id-ID'),
-        updated_at: admin.updated_at,
+        updated_at: new Date(admin.updated_at).toLocaleDateString('id-ID'),
       })) || [],
     [customData]
   );
-  console.log(customData);
 
   const columns = useMemo(
     () => [

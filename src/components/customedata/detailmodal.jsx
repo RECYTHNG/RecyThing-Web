@@ -16,7 +16,7 @@ const DetailModal = ({ open, onCancel, data }) => {
         <div className="flex flex-col gap-3.5">
           <div className="flex justify-between items-center">
             <div className="text-sky-900 text-xl font-bold leading-snug">{data?.topic}</div>
-            <div className="text-zinc-500 text-xs font-medium leading-none">Unggah, {formatDate(data?.created_at)}</div>
+            <div className="text-zinc-500 text-xs font-medium leading-none">Unggah, {data?.created_at}</div>
           </div>
           <div className="flex flex-col gap-2.5">
             <div className="text-zinc-500 text-xs font-bold leading-none">DESKRIPSI</div>
