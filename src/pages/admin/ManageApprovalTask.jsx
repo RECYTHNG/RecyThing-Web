@@ -26,10 +26,11 @@ export default function ManageApprovalTask() {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const photosPerPage = 3;
 
-  const { data, isLoading, isError } = useFetch('/approval-tasks', 'approvalTasks');
+const { data, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPage}&limit=${pageSize}`, [], [currentPage, pageSize], 'approvalTasks');
 
   console.log(data)
 
@@ -118,6 +119,11 @@ export default function ManageApprovalTask() {
     }
   };
 
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+
   const columns = useMemo(
     () => [
       { title: "ID", dataIndex: "id", key: "id" },
@@ -204,6 +210,7 @@ export default function ManageApprovalTask() {
             pagination={true}
             enableRowClick
             onRowClick={showDetailModal}
+            onPageChange={handlePageChange}
             isLoading={isLoading}
           />
         </div>

@@ -1,53 +1,7 @@
 import { useState } from "react";
 import Card from "../../../components/global/Card";
-import { Link } from "react-router-dom";
-import { Modal } from "antd";
-import { videos } from "./dummyData.json";
-
-function VideoModal({ video, isVisible, onOk, onCancel }) {
-  return (
-    <Modal
-      open={isVisible}
-      onOk={onOk}
-      onCancel={onCancel}
-      width={571}
-      footer={null}
-    >
-      {video && (
-        <div className="pt-6 flex flex-col gap-5">
-          <div className="h-[300px] w-full flex items-center justify-start">
-            <iframe
-              src={video.linkVideo}
-              className="w-full h-full object-cover object-center rounded-lg"
-            />
-          </div>
-          <h2 className="h4 font-bold">{video.title}</h2>
-          <p className="text-gray-500">{video.watch} rb ditonton</p>
-          <div className="h-[231px] overflow-scroll">
-            <p className="text-left body-s">{video.desc}</p>
-          </div>
-          <div className="flex gap-2">
-            <button
-              type="reset"
-              className="flex-1 rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4"
-              onClick={onOk}
-            >
-              Kembali
-            </button>
-            <Link to={`/content/edit-video/${video.id}`} className="flex-1">
-              <button
-                type="submit"
-                className="w-full rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4"
-              >
-                Ubah
-              </button>
-            </Link>
-          </div>
-        </div>
-      )}
-    </Modal>
-  );
-}
+import { useFetch } from "../../../hooks/useFetch";
+import DetailVideoModal from "../../../components/Content/DetailModal";
 
 function VideoPagination({
   currentPage,
@@ -61,9 +15,7 @@ function VideoPagination({
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-4">
-        <label htmlFor="show" className="mr-2">
-          Show
-        </label>
+        <label htmlFor="show" className="mr-2">Show</label>
         <select
           id="show"
           className="rounded-lg border px-1 py-1"
@@ -104,22 +56,22 @@ function VideoPagination({
 }
 
 export default function ManageContent() {
-  const [videosPerPage, setVideosPerPage] = useState(8);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const { data: responseData, isLoading, error } = useFetch('/videos/data', 'videosData');
+  const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [videosPerPage, setVideosPerPage] = useState(8);
 
   const indexOfLastVideo = currentPage * videosPerPage;
   const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
-  const currentVideos = videos.slice(indexOfFirstVideo, indexOfLastVideo);
 
   const paginate = (pageNumber, perPage = videosPerPage) => {
     setCurrentPage(pageNumber);
     setVideosPerPage(perPage);
   };
 
-  const showModal = (video) => {
-    setSelectedVideo(video);
+  const showModal = (videoId) => {
+    setSelectedVideoId(videoId);
     setIsModalVisible(true);
   };
 
@@ -131,26 +83,31 @@ export default function ManageContent() {
     setIsModalVisible(false);
   };
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching data</div>;
+
+  const videosData = responseData?.data || [];
+
   return (
     <div className="px-8 py-6 shadow-md flex flex-col gap-[30px] rounded-lg bg-white">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-[52px] gap-y-8 place-items-center">
-        {currentVideos.map((video) => (
+        {videosData.slice(indexOfFirstVideo, indexOfLastVideo).map((video) => (
           <Card
             key={video.id}
-            image={video.thumbnail}
+            image={video.url_thumbnail}
             title={video.title}
-            onClick={() => showModal(video)}
+            onClick={() => showModal(video.id)}
           />
         ))}
       </div>
       <VideoPagination
         currentPage={currentPage}
-        totalVideos={videos.length}
+        totalVideos={videosData.length}
         videosPerPage={videosPerPage}
         paginate={paginate}
       />
-      <VideoModal
-        video={selectedVideo}
+      <DetailVideoModal
+        videoId={selectedVideoId}
         isVisible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}

@@ -18,15 +18,30 @@ export default function AddContentVideo() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const navigate = useNavigate();
 
-  const categories = [
-    "Tips",
-    "Daur Ulang",
-    "Tutorial",
-    "Edukasi",
-    "Kampanye",
-    "Lainnya",
+  const rubbishCategories = [
+    "Plastik",
+    "Besi",
+    "Kaca",
+    "Organik",
+    "Kayu",
+    "Kertas",
+    "Baterai",
+    "Kaleng",
+    "Elektronik",
+    "Tekstil",
+    "Minyak",
+    "Bola Lampu",
+    "Berbahaya",
   ];
 
+  const contentCategories = [
+    "Tips",
+    "Tutorial",
+    "Kampanye",
+    "Daur Ulang",
+    "Edukasi",
+  ];
+  
   const handleFocus = (inputId) => {
     setIsFocused((prev) => ({ ...prev, [inputId]: true }));
   };
@@ -160,74 +175,109 @@ export default function AddContentVideo() {
               </div>
             </div>
             {/* RIGHT INPUT */}
-            <div className="flex flex-col justify-between">
-              <div className="flex flex-col gap-5">
-                <div className="bg-white py-5 px-4 rounded-lg shadow-md">
-                  <div>
-                    <label
-                      className="block text-gray-700 body-l font-bold mb-5"
-                      htmlFor="thumbnail"
-                    >
-                      Thumbnail
-                    </label>
-                    <div className="border-2 border-dashed border-gray-300 h-[203px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
-                      {thumbnail ? (
-                        <img
-                          src={thumbnail}
-                          alt="Thumbnail Preview"
-                          className="rounded-md w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-center text-gray-500">
-                          <AddImageIcon />
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        id="thumbnail"
-                        name="thumbnail"
-                        accept="image/*"
-                        onChange={handleThumbnailChange}
-                        className="opacity-0 absolute inset-0 cursor-pointer"
+            <div className="flex flex-col gap-5">
+              <div className="bg-white py-5 px-4 rounded-lg shadow-md">
+                <div>
+                  <label
+                    className="block text-gray-700 body-l font-bold mb-5"
+                    htmlFor="thumbnail"
+                  >
+                    Thumbnail
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 h-[203px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
+                    {thumbnail ? (
+                      <img
+                        src={thumbnail}
+                        alt="Thumbnail Preview"
+                        className="rounded-md w-full h-full object-cover"
                       />
-                    </div>
+                    ) : (
+                      <div className="text-center text-gray-500">
+                        <AddImageIcon />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="thumbnail"
+                      name="thumbnail"
+                      accept="image/*"
+                      onChange={handleThumbnailChange}
+                      className="opacity-0 absolute inset-0 cursor-pointer"
+                    />
                   </div>
                 </div>
-                <div className="bg-white py-5 px-4 rounded-lg shadow-md">
-                  <div>
-                    <label className="block text-gray-700 body-l font-bold mb-5">
-                      Kategori
-                    </label>
-                    <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
-                      {categories.map((category) => (
-                        <div key={category} className="flex gap-2 items-center">
-                          <div className="inline-flex items-center">
-                            <label
-                              className="relative flex items-center p-3 rounded-full cursor-pointer"
-                              htmlFor={category}
-                            >
-                              <input
-                                type="checkbox"
-                                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
-                                id={category}
-                                value={category}
-                                checked={selectedCategories.includes(category)}
-                                onChange={() => handleCategoryChange(category)}
-                              />
-                              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                                <FaCheck className="h-3.5 w-3.5" />
-                              </span>
-                            </label>
-                            <label
-                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
-                              htmlFor={category}
-                            >
-                              {category}
-                            </label>
-                          </div>
+              </div>
+              <div className="bg-white py-5 px-4 rounded-lg shadow-md">
+                <div>
+                  <label className="block text-gray-700 body-l font-bold mb-5">
+                    Kategori Sampah
+                  </label>
+                  <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
+                    {rubbishCategories.map((category) => (
+                      <div key={category} className="flex gap-2 items-center">
+                        <div className="inline-flex items-center">
+                          <label
+                            className="relative flex items-center p-3 rounded-full cursor-pointer"
+                            htmlFor={category}
+                          >
+                            <input
+                              type="checkbox"
+                              className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
+                              id={category}
+                              value={category}
+                              checked={selectedCategories.includes(category)}
+                              onChange={() => handleCategoryChange(category)}
+                            />
+                            <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                              <FaCheck className="h-3.5 w-3.5" />
+                            </span>
+                          </label>
+                          <label
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                            htmlFor={category}
+                          >
+                            {category}
+                          </label>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white py-5 px-4 rounded-lg shadow-md">
+                <div>
+                  <label className="block text-gray-700 body-l font-bold mb-5">
+                    Kategori Konten
+                  </label>
+                  <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
+                    {contentCategories.map((category) => (
+                      <div key={category} className="flex gap-2 items-center">
+                        <div className="inline-flex items-center">
+                          <label
+                            className="relative flex items-center p-3 rounded-full cursor-pointer"
+                            htmlFor={category}
+                          >
+                            <input
+                              type="checkbox"
+                              className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
+                              id={category}
+                              value={category}
+                              checked={selectedCategories.includes(category)}
+                              onChange={() => handleCategoryChange(category)}
+                            />
+                            <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                              <FaCheck className="h-3.5 w-3.5" />
+                            </span>
+                          </label>
+                          <label
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                            htmlFor={category}
+                          >
+                            {category}
+                          </label>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -243,7 +293,7 @@ export default function AddContentVideo() {
                   type="submit"
                   className="flex-1 rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4"
                 >
-                  Simpan
+                  Unggah
                 </button>
               </div>
             </div>
