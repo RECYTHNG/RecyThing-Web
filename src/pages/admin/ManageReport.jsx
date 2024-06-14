@@ -113,7 +113,6 @@ const ManageReport = () => {
         id: data.id,
         author_id: data.author.id,
         name: data.author.name,
-        author_id: data.author_id,
         category: data.report_type,
         status: mapStatus(data.status),
         date: new Date(data.created_at).toLocaleDateString('id-ID'),
