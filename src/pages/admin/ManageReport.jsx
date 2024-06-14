@@ -7,6 +7,7 @@ import ContentLayout from '../../layouts/ContentLayout';
 import FloatingLabelInput from '../../components/global/input/FloatingInput';
 import { useFetch, useUpdateData } from '../../hooks/useFetch';
 import { getHour } from '../../utils/helper/getHour';
+import { toast } from 'react-toastify';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -43,7 +44,7 @@ const ModalContent = ({ selectedReport }) => (
         </div>
         <div className="flex flex-col gap-3 body-m">
           <LabeledValue label="Full Name" value={selectedReport.name} />
-          <LabeledValue label="User ID" value={selectedReport.author_id} />
+          <LabeledValue label="User ID" value={selectedReport.id} />
         </div>
       </div>
     </div>
@@ -104,11 +105,14 @@ const ManageReport = () => {
   const { data: reportData, isLoading } = useFetch(fetchUrl, [], [fetchUrl]);
   const { mutateAsync: updateStatus } = useUpdateData();
 
+  console.log(reportData)
+
   const data = useMemo(
     () =>
       reportData?.data?.reports?.map((data) => ({
         id: data.id,
-        name: data.author_id,
+        author_id: data.author.id,
+        name: data.author.name,
         author_id: data.author_id,
         category: data.report_type,
         status: mapStatus(data.status),
@@ -154,8 +158,8 @@ const ManageReport = () => {
   const handleOk = () => {
     updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'approve' } })
       .then((data) => {
-        console.log(data);
         setIsModalVisible(false);
+        toast.success('The Report Was Accepted');
       })
       .catch((err) => {
         console.log(err);
@@ -181,9 +185,9 @@ const ManageReport = () => {
   const handleRejectOk = () => {
     updateStatus({ endpoint: `/report/${selectedReport.id}`, updatedData: { status: 'reject', reason } })
       .then((data) => {
-        console.log(data);
         setIsRejectModalVisible(false);
         setReason('');
+        toast.error('The Report Was Rejected');
       })
       .catch((err) => {
         console.log(err);
