@@ -34,7 +34,7 @@ function App() {
         <Route element={<ScrollToTop />}>
           <Route path="/" element={<LandingPage />}></Route>
           <Route path="/login" element={<LoginPage />} />
-          {/* <Route element={<PrivateRoute />}> */}
+          <Route element={<PrivateRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/admin/*" element={<NotFound />} />
               <Route path="/admin/dashboard" element={<Dashboard />} />
@@ -51,7 +51,7 @@ function App() {
               <Route path="/admin/openai" element={<ManageOpenAI />} />
               <Route path="/admin/user" element={<ManageUserDetail />} />
             </Route>
-          {/* </Route> */}
+          </Route>
         </Route>
       </Routes>
     </div>
