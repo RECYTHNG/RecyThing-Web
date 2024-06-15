@@ -70,7 +70,7 @@ export default function ManageContent() {
     setVideosPerPage(perPage);
   };
 
-  const showModal = (videoId) => {
+  const showModal = (videoId) => { 
     setSelectedVideoId(videoId);
     setIsModalVisible(true);
   };
@@ -82,9 +82,6 @@ export default function ManageContent() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching data</div>;
 
   const videosData = responseData?.data || [];
 
