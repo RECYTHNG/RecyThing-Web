@@ -105,8 +105,6 @@ const ManageReport = () => {
   const { data: reportData, isLoading } = useFetch(fetchUrl, [], [fetchUrl]);
   const { mutateAsync: updateStatus } = useUpdateData();
 
-  console.log(reportData)
-
   const data = useMemo(
     () =>
       reportData?.data?.reports?.map((data) => ({
