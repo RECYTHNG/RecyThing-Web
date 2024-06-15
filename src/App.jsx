@@ -29,7 +29,7 @@ function App() {
 
   return (
     <div>
-      <ToastContainer />
+      <ToastContainer pauseOnFocusLoss={false} pauseOnHover={false}/>
       <Routes>
         <Route element={<ScrollToTop />}>
           <Route path="/" element={<LandingPage />}></Route>

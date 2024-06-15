@@ -7,7 +7,6 @@ import { useFetch } from '../hooks/useFetch';
 
 const ContentLayout = ({ children, title }) => {
   const { data: adminData, isLoading, isError } = useFetch('/admin/profile');
-  console.log(adminData)
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
