@@ -1,7 +1,8 @@
 import { Modal } from "antd";
 import { useState, useEffect } from "react";
 import DeleteImage from "/assets/images/DeleteImage.png";
-import { useUpdateData } from "../../hooks/useFetch";
+import { usePatchFormData, useUpdateFormData } from "../../hooks/useFetch";
+import { toast } from "react-toastify";
 
 export const AddModal = ({ isVisible, onOk, onCancel }) => {
   const [level, setLevel] = useState("");
@@ -162,23 +163,22 @@ export const DeleteModal = ({ isVisible, onOk, onCancel, record }) => {
 };
 
 export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
-  const [level, setLevel] = useState("");
-  const [totalPoin, setTotalPoin] = useState("");
-  const [badgeImage, setBadgeImage] = useState(null);
+  const [level, setLevel] = useState(record ? record.level : "");
+  const [totalPoin, setTotalPoin] = useState(record ? record.target_point : "");
+  const [badgeImage, setBadgeImage] = useState(record ? record.lencana.props.src : null);
   const [badgeImageFile, setBadgeImageFile] = useState(null);
   const [isFocused, setIsFocused] = useState({
     level: false,
     totalPoin: false,
   });
 
-  const updateDataMutation = useUpdateData();
+  const { mutateAsync: updateAchievement } = usePatchFormData();
 
   useEffect(() => {
     if (record) {
       setLevel(record.level);
-      setTotalPoin(record.target);
-      setBadgeImage(record.lencana.props.src); // Use the correct property for the image URL
-      console.log("Record loaded:", record);
+      setTotalPoin(record.target_point);
+      setBadgeImage(record.lencana.props.src);
     }
   }, [record]);
 
@@ -197,18 +197,37 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedRecord = { id: record.id, level, totalPoin, badgeImage: badgeImageFile || badgeImage };
-    updateDataMutation.mutate(
-      { id: record.id, data: updatedRecord },
-      {
-        onSuccess: () => {
-          onOk(updatedRecord);
-        },
+  
+    const formData = new FormData();
+    formData.append("level", level);
+    formData.append("target_point", totalPoin);
+    if (badgeImageFile) {
+      formData.append("badge_url", badgeImageFile);
+    }
+  
+    try {
+      if (record && record.id) {
+        await updateAchievement({
+          endpoint: `/achievements/${record.id}`,
+          updatedData: formData,
+        });
+  
+        const updatedRecord = {
+          ...record,
+          level,
+          target: totalPoin,
+          lencana: <img src={badgeImage} alt="Updated Badge" className="w-20" />
+        };
+  
+        onOk(updatedRecord); // Pass the updated record to the parent component
       }
-    );
-  };
+    } catch (error) {
+      console.error("Error updating achievement:", error);
+      // Handle error, e.g., show notification or error message
+    }
+  };  
 
   return (
     <Modal
