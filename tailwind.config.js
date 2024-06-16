@@ -106,6 +106,9 @@ export default {
       },
       boxShadow: {
         'filter': '0px 0px 4px 0px rgba(0, 0, 0, 0.25)', // custom shadow
+      },
+      fontFamily: {
+        'poppins': ['Poppins', 'Open Sans', 'sans-serif'],
       }
     },
   },

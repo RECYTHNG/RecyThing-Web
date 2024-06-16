@@ -17,6 +17,7 @@ const FloatingLabelInput = ({ label, placeholder, id, type = "text", className, 
             onChange={onChange}
             className={`block w-full px-3 py-3 text-base leading-6 text-black placeholder:text-black/[0.38] border border-black/[0.23] rounded-[4px] focus:outline-none`}
             placeholder={placeholder}
+            autoComplete='off'
           />
           <label
             htmlFor={id}
@@ -36,6 +37,7 @@ const FloatingLabelInput = ({ label, placeholder, id, type = "text", className, 
             onChange={onChange}
             className={`block w-full px-3 py-3 text-base leading-6 text-black placeholder:text-black/[0.38] border border-black/[0.23] rounded-[4px] focus:outline-none`}
             placeholder={placeholder}
+            autoComplete='off'
           />
           <label
             htmlFor={id}

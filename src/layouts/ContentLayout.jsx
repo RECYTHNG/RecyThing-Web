@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FaChevronDown } from "react-icons/fa6";
-import notification from "/assets/svg/notification.svg"
 import { Avatar, Input } from 'antd';
 import { IoPersonSharp } from 'react-icons/io5';
 import { useFetch } from '../hooks/useFetch';
@@ -18,9 +17,6 @@ const ContentLayout = ({ children, title }) => {
         <header className='w-full p-5 flex justify-between items-center bg-white text-[#151D48]'>
           <h1 className='h4 font-semibold'>{title}</h1>
           <div className='flex items-center gap-5'>
-            <div className='min-w-12 h-12 flex items-center justify-center bg-[#EFEFEF] rounded-lg'>
-              <img src={notification} />
-            </div>
             <div className='flex items-center gap-4'>
               <Avatar
                 size={{ xs: 24, sm: 28, md: 32, lg: 40, xl: 44, xxl: 50 }}
