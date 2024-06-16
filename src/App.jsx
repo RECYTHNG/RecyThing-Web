@@ -29,7 +29,12 @@ function App() {
 
   return (
     <div>
-      <ToastContainer pauseOnFocusLoss={false} pauseOnHover={false}/>
+      <ToastContainer
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
+        theme="colored"
+        hideProgressBar={true}
+      />
       <Routes>
         <Route element={<ScrollToTop />}>
           <Route path="/" element={<LandingPage />}></Route>

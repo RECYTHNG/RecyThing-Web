@@ -162,6 +162,24 @@ body {
   margin-bottom: 20px;
 }
 
+.Toastify__toast--success {
+  background-color: #EDF7ED !important;
+  color: #1E4620 !important;
+}
+
+.Toastify__toast--success .Toastify__toast-icon {
+  color: #2E7D32 !important;
+}
+
+.Toastify__toast--error {
+  background-color: #FDEDED !important;
+  color: #5F2120 !important;
+}
+
+.Toastify__toast--error .Toastify__toast-icon {
+  color: #D32F2F !important;
+}
+
 @media (max-width: 1024px) {
   .cardd > div {
     width: 45%;
