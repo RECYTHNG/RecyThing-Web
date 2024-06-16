@@ -1,13 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Button, Form, Modal, Upload, message } from 'antd';
-import FloatingLabelInput from '../../global/input/FloatingInput';
-import { PlusOutlined } from '@ant-design/icons';
+import { Modal } from 'antd';
 import pointIcon from '/assets/svg/task/pointIcon.svg';
 import stepLine from '/assets/svg/task/stepLine.svg';
-import { IoIosAddCircleOutline } from "react-icons/io";
-import dayjs from 'dayjs';
-import { usePostFormData, usePatchFormData } from '../../../hooks/useFetch';
-import { toast } from 'react-toastify';
+import closeIcon from '/assets/svg/task/closeIcon.svg';
 
 const DetailTaskModal = ({ isOpen, onClose, selectedTask }) => {
   return (
@@ -16,7 +10,7 @@ const DetailTaskModal = ({ isOpen, onClose, selectedTask }) => {
       width={890}
       centered
       onCancel={onClose}
-      closable={false}
+      closeIcon={<img src={closeIcon} alt='close-icon'/>}
       title={<h2 className='font-bold h4'>Detail Misi</h2>}
       styles={{
         content: {
@@ -26,12 +20,12 @@ const DetailTaskModal = ({ isOpen, onClose, selectedTask }) => {
       footer={false}
     >
       <div className='flex gap-[30px] max-h-[440px] overflow-auto pr-7'>
-        <div className='flex flex-col items-center justify-center w-[237px] h-fit aspect-square'>
+        <div className='flex flex-col items-center justify-center h-[237px] w-fit aspect-square'>
           <img src={selectedTask?.thumbnail} className='w-full h-full object-cover object-center rounded-[20px]' />
         </div>
         <div className='w-full flex flex-col gap-5'>
-          <div className='flex justify-between items-center'>
-            <h3 className='h4 text-primary-500 font-bold'>{selectedTask?.name}</h3>
+          <div className='flex justify-between items-start gap-10'>
+            <h3 className='h4 text-primary-500 font-bold flex-1'>{selectedTask?.name}</h3>
             <div className='flex flex-row items-center gap-1 px-[10px] py-[6px] bg-warning-300 text-primary-500 text-xs font-semibold rounded-[10px]'>
               <img src={pointIcon} alt="point-icon" />
               {selectedTask?.point} Poin
@@ -50,7 +44,7 @@ const DetailTaskModal = ({ isOpen, onClose, selectedTask }) => {
           <div className='body-s flex flex-col gap-5'>
             <span className='text-primary-500 font-bold'>Tahapan Misi</span>
             <ul className="flex flex-col gap-1">
-              {selectedTask?.stages.map((stages, idx) => (
+              {selectedTask?.stages?.map((stages, idx) => (
                 <li key={stages.id} className="flex items-start ">
                   <div className='h-full flex flex-col items-center'>
                     <div className="flex-shrink-0 w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center">
