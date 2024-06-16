@@ -12,7 +12,7 @@ import DetailModal from '../../components/customedata/detailmodal';
 import { toast } from 'react-toastify';
 import { DeleteModal } from '../../components/customedata/modaldelete';
 import AddButton from '../../components/global/button/AddButton';
-import { useFetch, useUpdateData } from '../../hooks/useFetch';
+import { useFetch } from '../../hooks/useFetch';
 
 const ManageOpenAI = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
@@ -21,7 +21,7 @@ const ManageOpenAI = () => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [editData, setEditData] = useState(null);
   const [detailData, setDetailData] = useState(null);
-  const [recordToDelete, setRecordToDelete] = useState(null);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -30,7 +30,7 @@ const ManageOpenAI = () => {
     return text.substring(0, length) + '...';
   };
 
-  const { data: customData, isLoading } = useFetch(`/custom-datas?page=${currentPage}&limit=${pageSize}`, 'custom-datas');
+  const { data: customData, isLoading, refetch } = useFetch(`/custom-datas?page=${currentPage}&limit=${pageSize}`, 'custom-datas');
 
   const data = useMemo(
     () =>
@@ -39,11 +39,10 @@ const ManageOpenAI = () => {
         topic: admin.topic,
         description: admin.description,
         created_at: new Date(admin.created_at).toLocaleDateString('id-ID'),
-        updated_at: admin.updated_at,
+        updated_at: new Date(admin.updated_at).toLocaleDateString('id-ID'),
       })) || [],
     [customData]
   );
-  console.log(customData);
 
   const columns = useMemo(
     () => [
@@ -110,25 +109,25 @@ const ManageOpenAI = () => {
   };
 
   const confirmDelete = (record) => {
-    setRecordToDelete(record);
+    setSelectedAdmin(record);
     setIsDeleteModalVisible(true);
   };
 
-  const handleDeleteOk = () => {
-    toast.success('Topik berhasil dihapus.', {
+  const handleDelete = async () => {
+    setIsDeleteModalVisible(false);
+    toast.success('Data berhasil dihapus!', {
       position: 'top-right',
       autoClose: 2000,
       style: {
         marginTop: '90px',
       },
     });
-    setIsDeleteModalVisible(false);
-    setRecordToDelete(null);
+    refetch();
   };
 
-  const handleDeleteCancel = () => {
+  const handleCancelDelete = () => {
     setIsDeleteModalVisible(false);
-    setRecordToDelete(null);
+    setSelectedAdmin(null);
   };
 
   const showModal = () => {
@@ -149,24 +148,26 @@ const ManageOpenAI = () => {
 
   const handleEditSubmit = () => {
     setIsEditModalVisible(false);
-    toast.success('Data berhasil di ubah!', {
+    toast.success('Data berhasil diubah!', {
       position: 'top-right',
       autoClose: 2000,
       style: {
         marginTop: '90px',
       },
     });
+    refetch();
   };
 
   const handleAddSubmit = () => {
     setIsAddModalVisible(false);
-    toast.success('Data berhasil di tambah!.', {
+    toast.success('Data berhasil ditambah!', {
       position: 'top-right',
       autoClose: 2000,
       style: {
         marginTop: '90px',
       },
     });
+    refetch();
   };
 
   const handlePageChange = (page, pageSize) => {
@@ -185,13 +186,13 @@ const ManageOpenAI = () => {
         </div>
       </div>
       <Modal open={isAddModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null} width={640}>
-        <AddDataForm onCancel={handleCancel} onSubmit={handleAddSubmit} />
+        <AddDataForm onCancel={handleCancel} onAdd={handleAddSubmit} />
       </Modal>
       <Modal open={isEditModalVisible} onCancel={handleCancel} footer={null} width={640}>
-        <EditDataForm id={editData?.id} initialTopic={editData?.topic} initialDescription={editData?.description} onSubmit={handleEditSubmit} onCancel={handleCancel} />
+        <EditDataForm admin={editData} onEdit={handleEditSubmit} onCancel={handleCancel} />
       </Modal>
       <DetailModal open={isDetailModalVisible} onCancel={handleCancel} data={detailData} />
-      <DeleteModal open={isDeleteModalVisible} onOk={() => handleDeleteOk(recordToDelete?.id)} onCancel={handleDeleteCancel} record={recordToDelete} />
+      <DeleteModal isVisible={isDeleteModalVisible} onOk={handleDelete} onCancel={handleCancelDelete} admin={selectedAdmin} />
     </ContentLayout>
   );
 };

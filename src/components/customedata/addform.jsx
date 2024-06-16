@@ -1,16 +1,31 @@
 import React, { useState } from 'react';
+import { usePostData } from '../../hooks/useFetch';
 
-const AddDataForm = ({ onCancel, onSubmit }) => {
+const AddDataForm = ({ onCancel, onAdd }) => {
   const [topic, setTopic] = useState('');
   const [description, setDescription] = useState('');
   const [isTopicFocused, setIsTopicFocused] = useState(false);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
+  const { mutateAsync: postData } = usePostData();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ tanggal: new Date().toLocaleDateString('id-ID'), topik: topic, deskripsi: description });
-    setTopic('');
-    setDescription('');
+
+    const customData = {
+      topic: topic,
+      description: description,
+    };
+    console.log(customData);
+
+    try {
+      await postData({ endpoint: '/custom-data', newData: customData });
+      console.log('sukses');
+      onAdd();
+      setTopic('');
+      setDescription('');
+    } catch (error) {
+      console.error('Erro add data:', error);
+    }
   };
 
   return (
