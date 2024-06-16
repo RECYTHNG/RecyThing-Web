@@ -1,13 +1,16 @@
 import { useMemo, useState } from 'react';
+import { Tag, Dropdown } from 'antd';
 import ContentLayout from '../../layouts/ContentLayout';
 import AddButton from '../../components/global/button/AddButton';
 import Tables from '../../components/global/Table';
-import { Button, Dropdown, Menu, Tag, message, Space, Modal, Input, Form, Upload } from 'antd';
-import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { HiDotsHorizontal } from 'react-icons/hi';
 import AddTaskModal from '../../components/task/management/AddTaskModal';
-import { useFetch } from '../../hooks/useFetch';
+import { useDeleteData, useFetch } from '../../hooks/useFetch';
 import dayjs from 'dayjs';
+import DetailTaskModal from '../../components/task/management/DetailTaskModal';
+import { toast } from 'react-toastify';
+import DeleteModal from '../../components/global/Modal/DeleteModal';
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -22,11 +25,17 @@ const getStatusColor = (status) => {
 
 const MissionList = () => {
   const [selectedTask, setSelectedTask] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const { data: taskData, isLoading, isError } = useFetch('/tasks?page=1&limit=10', 'task')
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [idToDelete, setIdToDelete] = useState('')
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const { data: taskData, isLoading, isError } = useFetch(`/tasks?page=${currentPage}&limit=${pageSize}`, 'task')
+  const { mutateAsync: deleteTask } = useDeleteData()
 
   const data = useMemo(
-    () => 
+    () =>
       taskData?.data?.map((task) => ({
         id: task.id,
         name: task.title,
@@ -34,14 +43,13 @@ const MissionList = () => {
         creator: task.task_creator.name,
         startDate: dayjs(task.start_date).format("DD/MM/YYYY"),
         deadline: dayjs(task.end_date).format("DD/MM/YYYY"),
-        status: task.status ? 'Aktif' : 'Tidak Aktif',
+        status: task.status ? 'Aktif' : 'Melewati',
         point: task.point,
         stages: task.steps,
         thumbnail: task.thumbnail,
       })) || [],
     [taskData]
   );
-
 
   const columns = useMemo(
     () => [
@@ -73,17 +81,18 @@ const MissionList = () => {
               label: <span type="text">Detail</span>,
               icon: <EyeOutlined />,
               key: 'detail',
+              onClick: () => handleDetail(record),
             },
             {
               label: <span type="text">Hapus</span>,
               icon: <DeleteOutlined />,
               key: 'delete',
+              onClick: () => handleDelete(record.id),
             },
           ];
 
           const menuProps = {
             items: menuItems,
-            onClick: handleMenuClick,
           };
 
           return (
@@ -99,22 +108,49 @@ const MissionList = () => {
     []
   );
 
-  const handleMenuClick = (e) => {
-    console.log('click', e.key);
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
   };
 
   const handleEdit = (record) => {
     setSelectedTask(record);
-    setIsModalVisible(true);
+    setIsEditModalVisible(true);
   };
 
+  const handleDetail = (record) => {
+    setSelectedTask(record);
+    setIsDetailModalVisible(true);
+  };
+
+  const handleDelete = (id) => {
+    setIdToDelete(id);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleOkDelete = () => {
+    deleteTask({endpoint: `tasks/${idToDelete}`})
+    .then((_) => {
+      setIsDeleteModalVisible(false);
+      toast.success("Data Berhasil Dihapus")
+    }
+    ).catch(() => {
+      toast.error("Terjadi Kesalahan Ketika Menghapus Data")
+    })
+  }
+
   const handleAddData = () => {
-    setIsModalVisible(true)
+    setIsEditModalVisible(true)
     setSelectedTask('')
   }
 
   const handleCloseModal = () => {
-    setIsModalVisible(false);
+    setIsEditModalVisible(false);
+    setSelectedTask(null);
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalVisible(false);
     setSelectedTask(null);
   };
 
@@ -129,10 +165,13 @@ const MissionList = () => {
           initialPageSize={10}
           data={{ items: data, totalCount: taskData?.total_data || 0 }}
           columns={columns}
+          onPageChange={handlePageChange}
           isLoading={isLoading}
         />
       </div>
-      <AddTaskModal isOpen={isModalVisible} onClose={handleCloseModal} selectedTask={selectedTask}/>
+      <AddTaskModal isOpen={isEditModalVisible} onClose={handleCloseModal} selectedTask={selectedTask} />
+      <DetailTaskModal isOpen={isDetailModalVisible} onClose={handleCloseDetailModal} selectedTask={selectedTask} />
+      <DeleteModal isVisible={isDeleteModalVisible} onOk={handleOkDelete} onCancel={() => setIsDeleteModalVisible(false)}/>
     </ContentLayout>
   );
 };

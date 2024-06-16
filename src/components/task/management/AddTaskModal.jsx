@@ -31,7 +31,6 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
   };
 
   useEffect(() => {
-    console.log(selectedTask)
     const initialStage = selectedTask?.stages?.map(({ title, description }) => ({ title, description })) ?? [{ title: '', description: '' }, { title: '', description: '' }]
     setTaskName(selectedTask?.name ?? '');
     setPoint(selectedTask?.point ?? '');
