@@ -2,7 +2,7 @@ import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 const options = {
   responsive: true,
@@ -10,11 +10,16 @@ const options = {
     legend: {
       position: 'top',
     },
+    title: {
+      display: true,
+      text: 'Chart.js Bar Chart',
+    },
   },
 };
 
 const labels = ['Cimahi', 'Cibereum', 'Bandung', 'Surabaya', 'Malang', 'Bekasi', 'Majalengka', 'Pontianak', 'Rancaekek', 'Kediri', 'Ngapak', 'Cilengsi', 'Nganjuk', 'Lampung', 'Batam', 'Depok', 'Bogor', 'Riau Utara', 'Sambas', 'Tokyo'];
 
+// Fungsi untuk membuat data acak antara min dan max
 const getRandomData = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
@@ -23,6 +28,7 @@ const data = {
   labels,
   datasets: [
     {
+      label: 'Dataset 1',
       data: labels.map(() => getRandomData(100, 1000)),
       backgroundColor: 'rgba(2, 144, 226, 1)',
     },
@@ -31,9 +37,9 @@ const data = {
 
 function App() {
   return (
-    <div className="container mx-auto w-[1118px] p-4 rounded-[10px] shadow-lg bg-white">
+    <section className="bg-white rounded-[10px]">
       <Bar options={options} data={data} />
-    </div>
+    </section>
   );
 }
 
