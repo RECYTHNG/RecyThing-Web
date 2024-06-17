@@ -50,6 +50,7 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
   };
 
   const handleEdit = async () => {
+    toast.loading("Sedang Mengupdate Task");
     const formData = new FormData();
 
     formData.append('json_data', JSON.stringify({
@@ -74,9 +75,11 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
   
     updateTask({ endpoint: `/tasks/${selectedTask.id}`, updatedData: formData })
     .then((_) => {
-      onClose()
-      toast.success("Sukses Update Data Task")
+      toast.dismiss();
+      onClose();
+      toast.success("Sukses Update Data Task");
     }).catch((_) => {
+      toast.dismiss();
       toast.error("Gagal Update Data Task")
     })
   };

@@ -129,12 +129,15 @@ const MissionList = () => {
   };
 
   const handleOkDelete = () => {
+    toast.loading("Sedang Menghapus Data");
     deleteTask({endpoint: `tasks/${idToDelete}`})
     .then((_) => {
+      toast.dismiss();
       setIsDeleteModalVisible(false);
       toast.success("Data Berhasil Dihapus")
     }
     ).catch(() => {
+      toast.dismiss();
       toast.error("Terjadi Kesalahan Ketika Menghapus Data")
     })
   }
