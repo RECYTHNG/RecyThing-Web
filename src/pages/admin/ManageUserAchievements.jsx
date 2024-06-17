@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Dropdown } from "antd";
 import { toast } from "react-toastify";
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import GoldBadge from "/assets/images/GoldBadge.png";
 import SilverBadge from "/assets/images/SilverBadge.png";
 import ClassicBadge from "/assets/images/ClassicBadge.png";
@@ -10,7 +10,7 @@ import { formatNumber } from "../../utils/formatNumbers";
 import ContentLayout from "../../layouts/ContentLayout";
 import HorizontalDotsIcon from "../../assets/moreicons";
 import { useFetch } from "../../hooks/useFetch";
-import { AddModal, DeleteModal, EditModal } from "../../components/Achievement/ModalAchievements";
+import { EditModal } from "../../components/Achievement/ModalAchievements";
 
 export default function ManageUserAchievements() {
   const { data, error, isLoading } = useFetch('/achievements', 'achievements');
@@ -19,14 +19,8 @@ export default function ManageUserAchievements() {
     Silver: <img src={SilverBadge} alt="Silver Badge" />,
     Classic: <img src={ClassicBadge} alt="Bronze Badge" />,
   }), []);
-
-  console.log(data)
-
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-  const [recordToDelete, setRecordToDelete] = useState(null);
   const [dataAchievements, setDataAchievements] = useState([]);
 
   useEffect(() => {
@@ -37,6 +31,7 @@ export default function ManageUserAchievements() {
         level: item.level.charAt(0).toUpperCase() + item.level.slice(1),
         lencana: <img src={item.badge_url} alt={`${item.level} Badge`} className="w-20" />,
         target_point: item.target_point,
+        formatedTargetPoint: formatNumber(item.target_point) 
       })));
     }
   }, [data]);
@@ -45,7 +40,7 @@ export default function ManageUserAchievements() {
     { title: "No", dataIndex: "no", key: "no", width: 106 },
     { title: "Level", dataIndex: "level", key: "level" },
     { title: "Lencana", dataIndex: "lencana", key: "lencana" },
-    { title: "Target Point", dataIndex: "target_point", key: "target_point" },
+    { title: "Target Point", dataIndex: "formatedTargetPoint", key: "formatedTargetPoint" },
     {
       title: "Aksi",
       dataIndex: "aksi",
@@ -58,12 +53,6 @@ export default function ManageUserAchievements() {
             icon: <EditOutlined />,
             key: 'approve',
             onClick: () => handleEdit(record),
-          },
-          {
-            label: <span type="text">Delete</span>,
-            icon: <DeleteOutlined />,
-            key: 'disapprove',
-            onClick: () => handleDelete(record),
           },
         ];
 
@@ -98,16 +87,6 @@ export default function ManageUserAchievements() {
     { title: "Lokasi", dataIndex: "lokasi", key: "lokasi" },
   ], []);
 
-  const handleOk = (newAchievement) => {
-    setDataAchievements((prevData) => [...prevData, newAchievement]);
-    toast.success("Berhasil Menambahkan Level");
-    setIsAddModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsAddModalVisible(false);
-  };
-
   const handleEdit = (record) => {
     setSelectedLevel(record);
     setIsEditModalVisible(true);
@@ -119,21 +98,10 @@ export default function ManageUserAchievements() {
       console.log("Previous Data:", prevData);
       return prevData.map((item) => item.id === updatedRecord.id ? updatedRecord : item);
     });
-    toast.success("Berhasil Mengedit Level");
+    toast.success("Pencapaian Berhasil Diedit");
     setIsEditModalVisible(false);
   };
   
-
-  const handleDelete = (record) => {
-    setRecordToDelete(record);
-    setIsDeleteModalVisible(true);
-  };
-
-  const handleOkDelete = (id) => {
-    setDataAchievements((prevData) => prevData.filter((item) => item.id !== id));
-    toast.success("Berhasil Menghapus Level");
-    setIsDeleteModalVisible(false);
-  };
 
   return (
     <ContentLayout title={"Pencapaian"}>
@@ -153,9 +121,7 @@ export default function ManageUserAchievements() {
             </div>
           </div>
         </div>
-        <AddModal isVisible={isAddModalVisible} onOk={handleOk} onCancel={handleCancel} />
         <EditModal isVisible={isEditModalVisible} onOk={handleOkEdit} onCancel={() => setIsEditModalVisible(false)} record={selectedLevel} />
-        <DeleteModal isVisible={isDeleteModalVisible} onOk={handleOkDelete} onCancel={() => setIsDeleteModalVisible(false)} record={recordToDelete} />
       </section>
     </ContentLayout>
   );
