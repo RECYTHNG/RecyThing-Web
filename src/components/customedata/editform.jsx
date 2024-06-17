@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { useUpdateData } from '../../hooks/useFetch';
 
-const EditDataForm = ({ id, initialTopic, initialDescription, onSubmit, onCancel }) => {
-  const [topic, setTopic] = useState(initialTopic || '');
-  const [description, setDescription] = useState(initialDescription || '');
+const EditDataForm = ({ admin, onEdit, onCancel }) => {
+  const [topic, setTopic] = useState('');
+  const [description, setDescription] = useState('');
   const [isTopicFocused, setIsTopicFocused] = useState(false);
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
+  const { mutateAsync: updateData } = useUpdateData();
 
   useEffect(() => {
-    setTopic(initialTopic);
-    setDescription(initialDescription);
-  }, [initialTopic, initialDescription]);
+    if (admin) {
+      setTopic(admin.topic);
+      setDescription(admin.description);
+    }
+  }, [admin]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ id, topic, description });
+    const editData = {
+      topic: topic,
+      description: description,
+    };
+
+    try {
+      await updateData({ endpoint: `/custom-data/${admin.id}`, updatedData: editData });
+      console.log('sukses');
+      onEdit();
+    } catch (error) {
+      console.log('Error edit data', error);
+    }
   };
 
   return (
@@ -63,8 +78,8 @@ const EditDataForm = ({ id, initialTopic, initialDescription, onSubmit, onCancel
             type="button"
             className="px-4 py-2 border border-sky-900 rounded-md text-sky-900 font-bold"
             onClick={() => {
-              setTopic(initialTopic);
-              setDescription(initialDescription);
+              setTopic(admin.topic);
+              setDescription(admin.description);
               onCancel();
             }}
           >

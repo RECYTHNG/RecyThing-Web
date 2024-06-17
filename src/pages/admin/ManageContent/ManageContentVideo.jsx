@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Card from "../../../components/global/Card";
 import { useFetch } from "../../../hooks/useFetch";
-import DetailVideoModal from "../../../components/Content/DetailModal";
+import { DetailVideoModal } from "../../../components/Content/DetailModal"
 
 function VideoPagination({
   currentPage,
@@ -60,7 +60,7 @@ export default function ManageContent() {
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [videosPerPage, setVideosPerPage] = useState(8);
+  const [videosPerPage, setVideosPerPage] = useState(6);
 
   const indexOfLastVideo = currentPage * videosPerPage;
   const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
@@ -70,7 +70,7 @@ export default function ManageContent() {
     setVideosPerPage(perPage);
   };
 
-  const showModal = (videoId) => {
+  const showModal = (videoId) => { 
     setSelectedVideoId(videoId);
     setIsModalVisible(true);
   };
@@ -82,9 +82,6 @@ export default function ManageContent() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching data</div>;
 
   const videosData = responseData?.data || [];
 

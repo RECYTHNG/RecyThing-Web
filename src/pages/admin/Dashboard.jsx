@@ -57,8 +57,8 @@ const Dashboard = () => {
             />
           ))}
         </div>
-        <div className='flex gap-5'>
-          <div className='flex-1'>
+        <div className="flex gap-5">
+          <div className="flex-1">
             <LineChart />
           </div>
           <DoghnutChart data={dashboardData?.user_achievement}/>
@@ -71,7 +71,7 @@ const Dashboard = () => {
         </div>
       </div>
     </ContentLayout>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

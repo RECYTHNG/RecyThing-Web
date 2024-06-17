@@ -15,13 +15,13 @@ const options = {
           const data = tooltipItem.raw;
           const label = tooltipItem.label;
           return ` ${data} ${label}`;
-        }
-      }
-    }
+        },
+      },
+    },
   },
   responsive: true,
   maintainAspectRatio: true,
-  cutout: 70
+  cutout: 70,
 };
 
 const DoughnutChart = ({data}) => {
@@ -72,7 +72,7 @@ const DoughnutChart = ({data}) => {
         </div>
       </div>
     </section>
-  )
+  );
 };
 
 export default DoughnutChart;

@@ -2,14 +2,14 @@ import { Modal } from 'antd';
 import DeleteImage from '/assets/images/DeleteImage.png';
 import { useDeleteData } from '../../hooks/useFetch';
 
-export const DeleteModal = ({ isVisible, onOk, onCancel, record }) => {
+export const DeleteModal = ({ isVisible, onOk, onCancel, admin }) => {
   const { mutateAsync: deleteData } = useDeleteData();
 
-  const handleSubmit = async (e) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
 
     try {
-      await deleteData({ endpoint: `/admin/${record.id}` });
+      await deleteData({ endpoint: `/admin/${admin.id}` });
       onOk();
     } catch (error) {
       console.error('Error delete admin:', error);
@@ -32,7 +32,7 @@ export const DeleteModal = ({ isVisible, onOk, onCancel, record }) => {
           <button type="button" className="flex-1 rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4" onClick={onCancel}>
             Batal
           </button>
-          <button type="button" className="flex-1 rounded-[5px] bg-danger-500 text-white btn-l font-bold py-4" onClick={handleSubmit}>
+          <button type="button" className="flex-1 rounded-[5px] bg-danger-500 text-white btn-l font-bold py-4" onClick={handleDelete}>
             Hapus
           </button>
         </div>
