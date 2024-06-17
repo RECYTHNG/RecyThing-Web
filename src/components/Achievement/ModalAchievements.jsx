@@ -2,6 +2,7 @@ import { Modal } from "antd";
 import { useState, useEffect } from "react";
 import DeleteImage from "/assets/images/DeleteImage.png";
 import { usePatchFormData } from "../../hooks/useFetch";
+import { toast } from "react-toastify";
 
 export const AddModal = ({ isVisible, onOk, onCancel }) => {
   const [level, setLevel] = useState("");
@@ -195,6 +196,8 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
     formData.append("level", level);
     formData.append("target_point", totalPoin);
   
+    const toastId = toast.loading("Sedang memperbarui pencapaian...");
+  
     try {
       if (record && record.id) {
         await updateAchievement({
@@ -208,12 +211,26 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
           target: totalPoin,
           lencana: <img src={badgeImage} alt="Updated Badge" className="w-20" />
         };
+  
         onOk(updatedRecord);
+  
+        toast.update(toastId, {
+          render: "Pencapaian berhasil diperbarui!",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
       }
     } catch (error) {
-      console.error("Error updating achievement:", error);
+      toast.update(toastId, {
+        render: "Gagal memperbarui pencapaian.",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
     }
-  };  
+  };
+  
 
   return (
     <Modal

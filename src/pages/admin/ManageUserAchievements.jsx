@@ -93,12 +93,10 @@ export default function ManageUserAchievements() {
   };
 
   const handleOkEdit = (updatedRecord) => {
-    console.log("Updated Record:", updatedRecord);
     setDataAchievements((prevData) => {
       console.log("Previous Data:", prevData);
       return prevData.map((item) => item.id === updatedRecord.id ? updatedRecord : item);
     });
-    toast.success("Pencapaian Berhasil Diedit");
     setIsEditModalVisible(false);
   };
   
