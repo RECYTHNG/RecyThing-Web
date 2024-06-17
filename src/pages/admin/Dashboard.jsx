@@ -57,7 +57,7 @@ const Dashboard = () => {
           </div>
           <DoghnutChart data={dashboardData?.user_achievement} />
         </div>
-        <BarChart data={dashboardData?.data_user_by_address} />
+        <BarChart data={dashboardData?.data_report_by_city} />
         <div className="grid gap-5">
           <PieChart 
             dataGender={dashboardData?.data_user_by_gender} 

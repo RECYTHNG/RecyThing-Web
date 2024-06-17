@@ -4,24 +4,9 @@ import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: false,
-    },
-    datalabels: false,
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-};
-
 const processUserData = (data) => {
   const labels = [];
-  const totalUsers = [];
+  const totalReports = [];
   let otherLabelIndex = -1;
 
   data?.forEach((item, index) => {
@@ -29,34 +14,54 @@ const processUserData = (data) => {
       otherLabelIndex = index;
     } else {
       labels.push(item.city);
-      totalUsers.push(item.total_user);
+      totalReports.push(item.total_report);
     }
   });
 
   if (otherLabelIndex !== -1) {
     labels.push("Other");
-    totalUsers.push(data[otherLabelIndex].total_user);
+    totalReports.push(data[otherLabelIndex].total_report);
   }
 
-  return { labels, totalUsers };
+  return { labels, totalReports };
 };
 
 function BarChart({ data }) {
   const userData = processUserData(data);
+
+  const maxTotalReports = Math.max(...userData.totalReports); // Temukan nilai maksimum dari totalReports
 
   const userByLocationData = {
     labels: userData.labels,
     datasets: [
       {
         label: "Total Users",
-        data: userData.totalUsers,
+        data: userData.totalReports,
         backgroundColor: "rgba(2, 144, 226, 1)",
       },
     ],
   };
 
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: false,
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: maxTotalReports + 5,
+      },
+    },
+  };
+  
+
   return (
-    <section className="bg-white rounded-[10px] p-5">
+    <section className="bg-white rounded-[10px] p-5 w-full">
       <div className="flex justify-between items-center pb-6">
         <h5 className="h5 font-semibold text-neutral-900">Data Based On Location</h5>
       </div>

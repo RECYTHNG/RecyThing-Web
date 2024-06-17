@@ -40,7 +40,6 @@ export const options = {
     },
     datalabels: false,
   },
-  responsive: true,
 };
 
 const labels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
