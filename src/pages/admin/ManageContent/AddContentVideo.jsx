@@ -16,6 +16,7 @@ export default function AddContentVideo() {
   const [deskripsi, setDeskripsi] = useState("");
   const [linkVideo, setLinkVideo] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const navigate = useNavigate();
 
@@ -35,10 +36,13 @@ export default function AddContentVideo() {
 
   const handleThumbnailChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setThumbnail(URL.createObjectURL(e.target.files[0]));
+      const file = e.target.files[0];
+      setThumbnail(file);
+      setThumbnailPreview(URL.createObjectURL(file));
     }
   };
 
+  
   const handleCategoryChange = (category) => {
     setSelectedCategories((prev) => {
       if (prev.some((item) => item === category)) {
@@ -54,6 +58,7 @@ export default function AddContentVideo() {
     setDeskripsi("");
     setLinkVideo("");
     setThumbnail(null);
+    setThumbnailPreview(null);
     setSelectedCategories([]);
     setIsFocused({
       judul: false,
@@ -65,6 +70,7 @@ export default function AddContentVideo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (
       !judul ||
       !deskripsi ||
@@ -75,30 +81,32 @@ export default function AddContentVideo() {
       toast.error("Semua field harus diisi!");
       return;
     }
-  
-    const formData = new FormData();
-  
-    formData.append('json_data', JSON.stringify({
+
+    const payload = {
       title: judul,
       description: deskripsi,
       link_video: linkVideo,
-      content_categories: selectedCategories
-        .filter(cat => contentCategories.some(c => c.name === cat))
-        .map(cat => ({ name: cat })),
-      waste_categories: selectedCategories
-        .filter(cat => rubbishCategories.some(c => c.name === cat))
-        .map(cat => ({ name: cat })),
-    }));
+      content_categories: selectedCategories.filter(category =>
+        contentCategories.some(cat => cat.name === category)
+      ).map(name => ({ name })),
+      waste_categories: selectedCategories.filter(category =>
+        rubbishCategories.some(cat => cat.name === category)
+      ).map(name => ({ name }))
+    };
   
-    formData.append('thumbnail', document.getElementById('thumbnail').files[0]);
+    const formData = new FormData();
+    formData.append("json_data", JSON.stringify(payload));
+    if (thumbnail) {
+      formData.append("thumbnail", thumbnail);
+    }
   
     try {
       await addVideo({ endpoint: "/videos/data", newData: formData });
-      toast.success("Video berhasil ditambahkan");
-      navigate("/admin/content");
-    } catch (err) {
-      console.log(err);
-      toast.error("Gagal Menambahkan Video");
+      toast.success("Video berhasil ditambahkan!");
+      handleReset();
+    } catch (error) {
+      console.error("Error:", error); 
+      toast.error("Gagal menambahkan video.");
     }
   };
   
@@ -183,9 +191,9 @@ export default function AddContentVideo() {
                     Thumbnail
                   </label>
                   <div className="border-2 border-dashed border-gray-300 h-[203px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
-                    {thumbnail ? (
+                    {thumbnailPreview ? (
                       <img
-                        src={thumbnail}
+                        src={thumbnailPreview}
                         alt="Thumbnail Preview"
                         className="rounded-md w-full h-full object-cover"
                       />
@@ -231,7 +239,7 @@ export default function AddContentVideo() {
                             </span>
                           </label>
                           <label
-                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
                             htmlFor={category.name}
                           >
                             {category.name}
@@ -268,7 +276,7 @@ export default function AddContentVideo() {
                             </span>
                           </label>
                           <label
-                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
                             htmlFor={category.name}
                           >
                             {category.name}
