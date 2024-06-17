@@ -1,6 +1,6 @@
-import React from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import React from "react";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -10,6 +10,7 @@ const options = {
     legend: {
       display: false,
     },
+    datalabels: false,
   },
   scales: {
     y: {
@@ -18,14 +19,13 @@ const options = {
   },
 };
 
-
 const processUserData = (data) => {
   const labels = [];
   const totalUsers = [];
   let otherLabelIndex = -1;
 
   data?.forEach((item, index) => {
-    if (item.city === '') {
+    if (item.city === "") {
       otherLabelIndex = index;
     } else {
       labels.push(item.city);
@@ -34,23 +34,23 @@ const processUserData = (data) => {
   });
 
   if (otherLabelIndex !== -1) {
-    labels.push('Other');
+    labels.push("Other");
     totalUsers.push(data[otherLabelIndex].total_user);
   }
 
   return { labels, totalUsers };
 };
 
-function BarChart({data}) {
+function BarChart({ data }) {
   const userData = processUserData(data);
 
   const userByLocationData = {
     labels: userData.labels,
     datasets: [
       {
-        label: 'Total Users',
+        label: "Total Users",
         data: userData.totalUsers,
-        backgroundColor: 'rgba(2, 144, 226, 1)',
+        backgroundColor: "rgba(2, 144, 226, 1)",
       },
     ],
   };

@@ -38,6 +38,7 @@ export const options = {
     legend: {
       display: false,
     },
+    datalabels: false,
   },
   responsive: true,
 };
