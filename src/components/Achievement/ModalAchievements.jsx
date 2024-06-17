@@ -1,8 +1,7 @@
 import { Modal } from "antd";
 import { useState, useEffect } from "react";
 import DeleteImage from "/assets/images/DeleteImage.png";
-import { usePatchFormData, useUpdateFormData } from "../../hooks/useFetch";
-import { toast } from "react-toastify";
+import { usePatchFormData } from "../../hooks/useFetch";
 
 export const AddModal = ({ isVisible, onOk, onCancel }) => {
   const [level, setLevel] = useState("");
@@ -166,7 +165,6 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
   const [level, setLevel] = useState(record ? record.level : "");
   const [totalPoin, setTotalPoin] = useState(record ? record.target_point : "");
   const [badgeImage, setBadgeImage] = useState(record ? record.lencana.props.src : null);
-  const [badgeImageFile, setBadgeImageFile] = useState(null);
   const [isFocused, setIsFocused] = useState({
     level: false,
     totalPoin: false,
@@ -190,22 +188,12 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
     setIsFocused({ ...isFocused, [field]: false });
   };
 
-  const handleBadgeChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setBadgeImage(URL.createObjectURL(e.target.files[0]));
-      setBadgeImageFile(e.target.files[0]);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     const formData = new FormData();
     formData.append("level", level);
     formData.append("target_point", totalPoin);
-    if (badgeImageFile) {
-      formData.append("badge_url", badgeImageFile);
-    }
   
     try {
       if (record && record.id) {
@@ -220,12 +208,10 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
           target: totalPoin,
           lencana: <img src={badgeImage} alt="Updated Badge" className="w-20" />
         };
-  
-        onOk(updatedRecord); // Pass the updated record to the parent component
+        onOk(updatedRecord);
       }
     } catch (error) {
       console.error("Error updating achievement:", error);
-      // Handle error, e.g., show notification or error message
     }
   };  
 
@@ -282,7 +268,7 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
               </label>
             </div>
           </div>
-          <div className="border-2 border-dashed border-gray-300 px-2 py-1 max-w-36 self-start rounded-lg cursor-pointer flex flex-col hover:border-gray-400 relative">
+          <div className="px-2 py-1 max-w-36 self-start">
             {badgeImage ? (
               <img
                 src={badgeImage}
@@ -294,16 +280,8 @@ export const EditModal = ({ isVisible, onOk, onCancel, record }) => {
                 }}
               />
             ) : (
-              <div className="text-center text-gray-500">Unggah Lencana</div>
+              <div className="text-center text-gray-500">Tidak ada data lencana</div>
             )}
-            <input
-              type="file"
-              id="badge"
-              name="badge"
-              accept="image/*"
-              onChange={handleBadgeChange}
-              className="opacity-0 absolute inset-0 cursor-pointer"
-            />
           </div>
           <div className="flex gap-2 w-full px-[78px]">
             <button
