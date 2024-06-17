@@ -1,54 +1,8 @@
 import { useState } from "react";
 import Card from "../../../components/global/Card";
-import { Link } from "react-router-dom";
-import { Modal } from "antd";
-import { articles } from "./dummyData.json";
-
-function ArticleModal({ article, isVisible, onOk, onCancel }) {
-  return (
-    <Modal
-      open={isVisible}
-      onOk={onOk}
-      onCancel={onCancel}
-      width={571}
-      footer={null}
-    >
-      {article && (
-        <div className="pt-6">
-          <h2 className="h4 font-bold text-center mb-2">{article.title}</h2>
-          <p className="text-center text-gray-500 mb-4">{article.createdAt}</p>
-          <div className="h-[238px] flex items-center justify-center px-[54px]">
-            <img
-              src={article.thumbnail}
-              alt={article.title}
-              className="w-full h-full object-cover object-center rounded-lg mb-4"
-            />
-          </div>
-          <div className="h-[231px] overflow-scroll pt-[18px] px-8">
-            <p className="text-justify body-s">{article.desc}</p>
-          </div>
-          <div className="flex gap-2 px-8 mt-8">
-            <button
-              type="reset"
-              className="flex-1 rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4"
-              onClick={onOk}
-            >
-              Kembali
-            </button>
-            <Link to={`/content/edit-article/${article.id}`} className="flex-1">
-              <button
-                type="submit"
-                className="w-full rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4"
-              >
-                Ubah
-              </button>
-            </Link>
-          </div>
-        </div>
-      )}
-    </Modal>
-  );
-}
+import { useFetch } from "../../../hooks/useFetch";
+import { ArticleDetailModal } from "../../../components/Content/DetailModal";
+import { Spin } from "antd";
 
 function ArticlePagination({
   currentPage,
@@ -105,25 +59,27 @@ function ArticlePagination({
 }
 
 export default function ManageContentArticle() {
+  const { data: responseData, isLoading, error } = useFetch('/articles?page=1&limit=60', 'articlesData');
+  console.log(responseData)
   const [articlesPerPage, setArticlesPerPage] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [selectedArticleId, setSelectedArticleId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const articlesData = Array.isArray(responseData?.data?.articles) ? responseData.data.articles : [];
+  const totalArticles = responseData?.data?.total || 0;
 
   const indexOfLastArticle = currentPage * articlesPerPage;
   const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
-  const currentArticles = articles.slice(
-    indexOfFirstArticle,
-    indexOfLastArticle
-  );
+  const currentArticles = articlesData.slice(indexOfFirstArticle, indexOfLastArticle);
 
   const paginate = (pageNumber, perPage = articlesPerPage) => {
     setCurrentPage(pageNumber);
     setArticlesPerPage(perPage);
   };
 
-  const showModal = (article) => {
-    setSelectedArticle(article);
+  const showModal = (articleId) => {
+    setSelectedArticleId(articleId);
     setIsModalVisible(true);
   };
 
@@ -135,30 +91,47 @@ export default function ManageContentArticle() {
     setIsModalVisible(false);
   };
 
+  if (isLoading) {
+    return (
+      <div className="h-[698px] flex justify-center items-center">
+        <Spin spinning={isLoading}/>
+      </div>
+    )
+  }
+  if (error) {
+    return (
+      <div className="h-[698px] flex justify-center items-center">
+        <h5 className="h5 font-semibold">Maaf sepertinya ada kesalahan pengambilan data</h5>
+      </div>
+    )
+  }
+
   return (
     <div className="px-8 py-6 shadow-md flex flex-col gap-[30px] rounded-lg bg-white">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-[52px] gap-y-8 place-items-center">
         {currentArticles.map((article) => (
           <Card
             key={article.id}
-            image={article.thumbnail}
+            image={article.thumbnail_url}
             title={article.title}
-            onClick={() => showModal(article)}
+            onClick={() => showModal(article.id)}
           />
         ))}
       </div>
       <ArticlePagination
         currentPage={currentPage}
-        totalArticles={articles.length}
+        totalArticles={totalArticles}
         articlesPerPage={articlesPerPage}
         paginate={paginate}
       />
-      <ArticleModal
-        article={selectedArticle}
-        isVisible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      />
+      {isModalVisible && (
+        <ArticleDetailModal
+          articleId={selectedArticleId}
+          isVisible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   );
 }

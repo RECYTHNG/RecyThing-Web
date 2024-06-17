@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import ContentLayout from "../../../layouts/ContentLayout";
 import { FaCheck } from "react-icons/fa";
+import { useFetch, usePostData, usePostFormData } from "../../../hooks/useFetch";
 
 export default function AddContentArticle() {
   const [isFocused, setIsFocused] = useState({
@@ -15,36 +16,20 @@ export default function AddContentArticle() {
   });
   const [judul, setJudul] = useState("");
   const [subJuduls, setSubJuduls] = useState([
-    { subJudul: "", deskripsi: "", image: null },
+    { subJudul: "", deskripsi: "", image: null, imagePreview: null },
   ]);
   const [deskripsi, setDeskripsi] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const navigate = useNavigate();
 
-  const rubbishCategories = [
-    "Plastik",
-    "Besi",
-    "Kaca",
-    "Organik",
-    "Kayu",
-    "Kertas",
-    "Baterai",
-    "Kaleng",
-    "Elektronik",
-    "Tekstil",
-    "Minyak",
-    "Bola Lampu",
-    "Berbahaya",
-  ];
+  const { mutateAsync: addArticleImage } = usePostFormData();
+  const { mutateAsync: addArticleJson } = usePostData();
+  const { data, isLoading, error } = useFetch("/categories", "categories");
 
-  const contentCategories = [
-    "Tips",
-    "Tutorial",
-    "Kampanye",
-    "Daur Ulang",
-    "Edukasi",
-  ];
+  const rubbishCategories = data?.data?.waste_categories || [];
+  const contentCategories = data?.data?.content_categories || [];
 
   const handleFocus = (inputId) => {
     setIsFocused((prev) => ({ ...prev, [inputId]: true }));
@@ -56,14 +41,16 @@ export default function AddContentArticle() {
 
   const handleThumbnailChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setThumbnail(URL.createObjectURL(e.target.files[0]));
+      setThumbnail(e.target.files[0]);
+      setThumbnailPreview(URL.createObjectURL(e.target.files[0]));
     }
   };
 
   const handleSubJudulImageChange = (index, e) => {
     if (e.target.files && e.target.files[0]) {
       const newSubJuduls = [...subJuduls];
-      newSubJuduls[index].image = URL.createObjectURL(e.target.files[0]);
+      newSubJuduls[index].image = e.target.files[0];
+      newSubJuduls[index].imagePreview = URL.createObjectURL(e.target.files[0]);
       setSubJuduls(newSubJuduls);
     }
   };
@@ -91,22 +78,95 @@ export default function AddContentArticle() {
     navigate("/admin/content");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!judul || !deskripsi || !thumbnail || selectedCategories.length === 0) {
       toast.error("Semua field harus diisi!");
       return;
     }
-    const formData = {
-      judul,
-      subJuduls,
-      deskripsi,
-      thumbnail,
-      categories: selectedCategories,
-    };
-    console.log("Artikel Submitted: ", formData);
-    toast.success("Artikel berhasil diunggah");
-    navigate("/admin/content");
+
+    try {
+      // Upload the thumbnail
+      const thumbnailFormData = new FormData();
+      thumbnailFormData.append("image", thumbnail);
+      const thumbnailResponse = await addArticleImage({
+        endpoint: "/article/upload",
+        newData: thumbnailFormData,
+      });
+
+      if (thumbnailResponse.code !== 200) {
+        toast.error(thumbnailResponse.message || "Gagal mengunggah thumbnail.");
+        return;
+      }
+
+      const thumbnailUrl = thumbnailResponse.data.url;
+
+      const sectionImageUrls = [];
+      for (let i = 0; i < subJuduls.length; i++) {
+        if (subJuduls[i].image) {
+          const sectionFormData = new FormData();
+          sectionFormData.append("image", subJuduls[i].image);
+          const sectionImageResponse = await addArticleImage({
+            endpoint: "/article/upload",
+            newData: sectionFormData,
+          });
+
+          if (sectionImageResponse.code !== 200) {
+            toast.error(
+              sectionImageResponse.message ||
+                `Gagal mengunggah gambar untuk sub judul ${i + 1}.`
+            );
+            return;
+          }
+
+          sectionImageUrls[i] = sectionImageResponse.data.url;
+        } else {
+          sectionImageUrls[i] = null;
+        }
+      }
+      
+      const formData = new FormData();
+      const jsonData = {
+        title: judul,
+        description: deskripsi,
+        thumbnail_url: thumbnailUrl,
+        waste_categories: selectedCategories
+          .filter((category) =>
+            rubbishCategories.some((cat) => cat.name === category)
+          ),
+        content_categories: selectedCategories
+          .filter((category) =>
+            contentCategories.some((cat) => cat.name === category)
+          ),
+        sections: subJuduls.map((subJudul, index) => ({
+          title: subJudul.subJudul,
+          description: subJudul.deskripsi,
+          image_url: sectionImageUrls[index],
+        })),
+      };
+
+      formData.append("json_data", JSON.stringify(jsonData));
+
+      console.log("Request Data:", formData.jsonData);
+
+      const jsonResponse = await addArticleJson({
+        endpoint: "/article",
+        newData: formData,
+      });
+
+      console.log("Response Data:", jsonResponse);
+
+      if (jsonResponse.code === 200) {
+        toast.success("Artikel berhasil ditambahkan!");
+        handleReset();
+      } else {
+        toast.error(jsonResponse.message || "Gagal menambahkan artikel.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Gagal menambahkan artikel.");
+    }
   };
 
   const handleSubJudulChange = (index, key, value) => {
@@ -241,9 +301,9 @@ export default function AddContentArticle() {
                     </div>
                     <div className="px-4 py-5 self-start">
                       <div className="border-2 border-dashed border-gray-300 h-[203px] w-[306px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
-                        {subJudul.image ? (
+                        {subJudul.imagePreview ? (
                           <img
-                            src={subJudul.image}
+                            src={subJudul.imagePreview}
                             alt={`Sub Judul ${index + 1} Image Preview`}
                             className="rounded-md  h-full object-cover"
                           />
@@ -287,9 +347,9 @@ export default function AddContentArticle() {
                     Thumbnail
                   </label>
                   <div className="border-2 border-dashed border-gray-300 h-[203px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
-                    {thumbnail ? (
+                    {thumbnailPreview ? (
                       <img
-                        src={thumbnail}
+                        src={thumbnailPreview}
                         alt="Thumbnail Preview"
                         className="rounded-md w-full h-full object-cover"
                       />
@@ -316,29 +376,29 @@ export default function AddContentArticle() {
                   </label>
                   <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
                     {rubbishCategories.map((category) => (
-                      <div key={category} className="flex gap-2 items-center">
+                      <div key={category.id} className="flex gap-2 items-center">
                         <div className="inline-flex items-center">
                           <label
                             className="relative flex items-center p-3 rounded-full cursor-pointer"
-                            htmlFor={category}
+                            htmlFor={category.name}
                           >
                             <input
                               type="checkbox"
                               className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
-                              id={category}
-                              value={category}
-                              checked={selectedCategories.includes(category)}
-                              onChange={() => handleCategoryChange(category)}
+                              id={category.name}
+                              value={category.name}
+                              checked={selectedCategories.includes(category.name)}
+                              onChange={() => handleCategoryChange(category.name)}
                             />
                             <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                               <FaCheck className="h-3.5 w-3.5" />
                             </span>
                           </label>
                           <label
-                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
-                            htmlFor={category}
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
+                            htmlFor={category.name}
                           >
-                            {category}
+                            {category.name}
                           </label>
                         </div>
                       </div>
@@ -353,29 +413,29 @@ export default function AddContentArticle() {
                   </label>
                   <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
                     {contentCategories.map((category) => (
-                      <div key={category} className="flex gap-2 items-center">
+                      <div key={category.id} className="flex gap-2 items-center">
                         <div className="inline-flex items-center">
                           <label
                             className="relative flex items-center p-3 rounded-full cursor-pointer"
-                            htmlFor={category}
+                            htmlFor={category.name}
                           >
                             <input
                               type="checkbox"
                               className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
-                              id={category}
-                              value={category}
-                              checked={selectedCategories.includes(category)}
-                              onChange={() => handleCategoryChange(category)}
+                              id={category.name}
+                              value={category.name}
+                              checked={selectedCategories.includes(category.name)}
+                              onChange={() => handleCategoryChange(category.name)}
                             />
                             <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                               <FaCheck className="h-3.5 w-3.5" />
                             </span>
                           </label>
                           <label
-                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
-                            htmlFor={category}
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
+                            htmlFor={category.name}
                           >
-                            {category}
+                            {category.name}
                           </label>
                         </div>
                       </div>

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import ContentLayout from "../../../layouts/ContentLayout";
 import { FaCheck } from "react-icons/fa";
+import { useFetch, usePostFormData } from "../../../hooks/useFetch";
 
 export default function AddContentVideo() {
   const [isFocused, setIsFocused] = useState({
@@ -15,32 +16,15 @@ export default function AddContentVideo() {
   const [deskripsi, setDeskripsi] = useState("");
   const [linkVideo, setLinkVideo] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const navigate = useNavigate();
 
-  const rubbishCategories = [
-    "Plastik",
-    "Besi",
-    "Kaca",
-    "Organik",
-    "Kayu",
-    "Kertas",
-    "Baterai",
-    "Kaleng",
-    "Elektronik",
-    "Tekstil",
-    "Minyak",
-    "Bola Lampu",
-    "Berbahaya",
-  ];
+  const { data, isLoading, error } = useFetch("/categories", "categories");
+  const { mutateAsync: addVideo } = usePostFormData();
 
-  const contentCategories = [
-    "Tips",
-    "Tutorial",
-    "Kampanye",
-    "Daur Ulang",
-    "Edukasi",
-  ];
+  const rubbishCategories = data?.data?.waste_categories || [];
+  const contentCategories = data?.data?.content_categories || [];
   
   const handleFocus = (inputId) => {
     setIsFocused((prev) => ({ ...prev, [inputId]: true }));
@@ -52,10 +36,13 @@ export default function AddContentVideo() {
 
   const handleThumbnailChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setThumbnail(URL.createObjectURL(e.target.files[0]));
+      const file = e.target.files[0];
+      setThumbnail(file);
+      setThumbnailPreview(URL.createObjectURL(file));
     }
   };
 
+  
   const handleCategoryChange = (category) => {
     setSelectedCategories((prev) => {
       if (prev.some((item) => item === category)) {
@@ -71,6 +58,7 @@ export default function AddContentVideo() {
     setDeskripsi("");
     setLinkVideo("");
     setThumbnail(null);
+    setThumbnailPreview(null);
     setSelectedCategories([]);
     setIsFocused({
       judul: false,
@@ -80,8 +68,9 @@ export default function AddContentVideo() {
     navigate("/admin/content");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (
       !judul ||
       !deskripsi ||
@@ -92,18 +81,47 @@ export default function AddContentVideo() {
       toast.error("Semua field harus diisi!");
       return;
     }
-    const formData = {
-      judul,
-      deskripsi,
-      linkVideo,
-      thumbnail,
-      categories: selectedCategories,
+  
+    const payload = {
+      title: judul,
+      description: deskripsi,
+      link_video: linkVideo,
+      content_categories: selectedCategories.filter(category =>
+        contentCategories.some(cat => cat.name === category)
+      ).map(name => ({ name })),
+      waste_categories: selectedCategories.filter(category =>
+        rubbishCategories.some(cat => cat.name === category)
+      ).map(name => ({ name }))
     };
-    console.log("Video Submitted: ", formData);
-    toast.success("Video berhasil diunggah");
-    navigate("/admin/content");
+  
+    const formData = new FormData();
+    formData.append("json_data", JSON.stringify(payload));
+    if (thumbnail) {
+      formData.append("thumbnail", thumbnail);
+    }
+  
+    const toastId = toast.loading("Sedang menambahkan video...");
+  
+    try {
+      await addVideo({ endpoint: "/videos/data", newData: formData });
+      toast.update(toastId, {
+        render: "Video berhasil ditambahkan!",
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
+      handleReset();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.update(toastId, {
+        render: "Gagal menambahkan video.",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+    }
   };
-
+  
   return (
     <ContentLayout title={"Tambah Video"}>
       <section>
@@ -185,9 +203,9 @@ export default function AddContentVideo() {
                     Thumbnail
                   </label>
                   <div className="border-2 border-dashed border-gray-300 h-[203px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
-                    {thumbnail ? (
+                    {thumbnailPreview ? (
                       <img
-                        src={thumbnail}
+                        src={thumbnailPreview}
                         alt="Thumbnail Preview"
                         className="rounded-md w-full h-full object-cover"
                       />
@@ -214,29 +232,29 @@ export default function AddContentVideo() {
                   </label>
                   <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
                     {rubbishCategories.map((category) => (
-                      <div key={category} className="flex gap-2 items-center">
+                      <div key={category.id} className="flex gap-2 items-center">
                         <div className="inline-flex items-center">
                           <label
                             className="relative flex items-center p-3 rounded-full cursor-pointer"
-                            htmlFor={category}
+                            htmlFor={category.name}
                           >
                             <input
                               type="checkbox"
                               className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
-                              id={category}
-                              value={category}
-                              checked={selectedCategories.includes(category)}
-                              onChange={() => handleCategoryChange(category)}
+                              id={category.name}
+                              value={category.name}
+                              checked={selectedCategories.includes(category.name)}
+                              onChange={() => handleCategoryChange(category.name)}
                             />
                             <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                               <FaCheck className="h-3.5 w-3.5" />
                             </span>
                           </label>
                           <label
-                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
-                            htmlFor={category}
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
+                            htmlFor={category.name}
                           >
-                            {category}
+                            {category.name}
                           </label>
                         </div>
                       </div>
@@ -251,29 +269,29 @@ export default function AddContentVideo() {
                   </label>
                   <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
                     {contentCategories.map((category) => (
-                      <div key={category} className="flex gap-2 items-center">
+                      <div key={category.id} className="flex gap-2 items-center">
                         <div className="inline-flex items-center">
                           <label
                             className="relative flex items-center p-3 rounded-full cursor-pointer"
-                            htmlFor={category}
+                            htmlFor={category.name}
                           >
                             <input
                               type="checkbox"
                               className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
-                              id={category}
-                              value={category}
-                              checked={selectedCategories.includes(category)}
-                              onChange={() => handleCategoryChange(category)}
+                              id={category.name}
+                              value={category.name}
+                              checked={selectedCategories.includes(category.name)}
+                              onChange={() => handleCategoryChange(category.name)}
                             />
                             <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                               <FaCheck className="h-3.5 w-3.5" />
                             </span>
                           </label>
                           <label
-                            className="mt-px font-light text-gray-700 cursor-pointer select-none"
-                            htmlFor={category}
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
+                            htmlFor={category.name}
                           >
-                            {category}
+                            {category.name}
                           </label>
                         </div>
                       </div>
