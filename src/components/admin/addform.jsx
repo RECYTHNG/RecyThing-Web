@@ -18,10 +18,16 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [image, setImage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
   const { mutateAsync: postData } = usePostFormData();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match');
+      return;
+    }
 
     const adminData = {
       name: fullName,
@@ -31,12 +37,18 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
       role: role,
       profile_photo: image,
     };
-    console.log(adminData);
 
     try {
       await postData({ endpoint: '/admin', newData: adminData });
-      console.log('sukses');
+      console.log('Success');
       onAdd();
+
+      setFullName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setRole('admin');
+      setErrorMessage('');
     } catch (error) {
       console.error('Error adding admin:', error);
     }
@@ -89,14 +101,20 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Full Name</label>
               <div className="relative">
                 <img src={Person} alt="Person Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
-                <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed"
+                  required
+                />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-1">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Email</label>
               <div className="relative">
                 <img src={Email} alt="Email Icon" className="absolute left-2 top-1/2 transform -translate-y-1/2" />
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed" required />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start gap-[5px]">
@@ -108,6 +126,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed"
+                  required
                 />
                 <button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   <img src={showPassword ? EyeOff : Eye} alt="Toggle Password Visibility" />
@@ -123,6 +142,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="pl-10 w-[306px] px-2 py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed"
+                  required
                 />
                 <button type="button" onClick={toggleConfirmPasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   <img src={showConfirmPassword ? EyeOff : Eye} alt="Toggle Confirm Password Visibility" />
@@ -137,6 +157,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   className="pl-10 pr-10 w-[306px] py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed appearance-none cursor-pointer"
+                  required
                 >
                   <option value="super admin">super admin</option>
                   <option value="admin">admin</option>
@@ -150,6 +171,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
             </div>
           </div>
         </div>
+        {errorMessage && <div className="text-red-500">{errorMessage}</div>}
         <div className="flex gap-[9px]">
           <button type="submit" className="w-[306px] h-[38px] px-2 py-1.5 bg-sky-900 rounded-[7px]">
             <div className="text-white text-base font-normal leading-relaxed">Add Data</div>

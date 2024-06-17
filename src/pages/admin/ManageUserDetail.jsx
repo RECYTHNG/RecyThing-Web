@@ -4,95 +4,55 @@ import Tables from "../../components/global/Table";
 import { Button, Dropdown, Menu } from "antd";
 import { toast } from "react-toastify";
 import ContentLayout from "../../layouts/ContentLayout";
-import { FaEye } from "react-icons/fa6";
-import { FaTrash } from "react-icons/fa6";
+import { FaEye, FaTrash } from "react-icons/fa6";
 import { DeleteModal, ViewModal } from "../../components/User/ModalUsers";
-import UserImage from "../../assets/image/user-jack.png";
+import { useFetch, useDeleteData } from "../../hooks/useFetch";
+import dayjs from "dayjs";
 
 export default function ManageUserDetail() {
   const [userPoin, setUserPoin] = useState("");
   const [isViewModalVisible, setIsViewModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [idToDelete, setIdToDelete] = useState("");
+  const [selectedData, setSelectedData] = useState(null);
   const [recordToDelete, setRecordToDelete] = useState(null);
-  const [dataUsers, setDataUsers] = useState([
-    {
-      id: 1,
-      nama: "Jack Smith",
-      email: "jack@gmail.com",
-      target: 1000,
-    },
-    {
-      id: 2,
-      nama: "Emily White",
-      email: "emily@gmail.com",
-      target: 1500,
-    },
-    {
-      id: 3,
-      nama: "Noah Wili",
-      email: "noah@gmail.com",
-      target: 2000,
-    },
-    {
-      id: 4,
-      nama: "Amelia",
-      email: "amelia@gmail.com",
-      target: 900,
-    },
-    {
-      id: 5,
-      nama: "Evelyn",
-      email: "evelyn@gmail.com",
-      target: 1200,
-    },
-    {
-      id: 6,
-      nama: "Ava Lee",
-      email: "avalee@gmail.com",
-      target: 850,
-    },
-    {
-      id: 7,
-      nama: "Ethan Taylo",
-      email: "ethan@gmail.com",
-      target: 700,
-    },
-    {
-      id: 8,
-      nama: "olivia Harris",
-      email: "olivia@gmail.com",
-      target: 950,
-    },
-    {
-      id: 9,
-      nama: "Lucas Thom",
-      email: "lucas@gmail.com",
-      target: 1100,
-    },
-    {
-      id: 10,
-      nama: "Mason",
-      email: "mason@gmail.com",
-      target: 1900,
-    },
-  ]);
+  const { data: userData, isLoading, isError } = useFetch(`/users?page=1&limit=100&sort_by=created_at&sort_type=asc`, "user");
+  const { mutateAsync: deleteUser } = useDeleteData();
+
+  const dataUsers = useMemo(
+    () =>
+      userData?.data?.users?.map((user, index) => ({
+        key: user.id,
+        no: index + 1,
+        nama: user.name,
+        email: user.email,
+        point: user.point,
+        badge: user.badge,
+        gender: user.gender.charAt(0).toUpperCase() + user.gender.slice(1),
+        birth_date: dayjs(user.birth_date).format("DD/MM/YYYY"),
+        address: user.address,
+        picture: user.picture_url,
+        created: dayjs(user.created_at).format("DD/MM/YYYY | HH:mm") + " WIB",
+      })) || [],
+    [userData]
+  );
 
   const columnUser = useMemo(
     () => [
-      { title: "No", dataIndex: "id", key: "id", width: 106 },
+      { title: "No", dataIndex: "no", key: "no", width: 50 },
       {
         title: "Nama",
         dataIndex: "nama",
         key: "nama",
-        render: (text) => (
+        render: (text, record) => (
           <div className="flex items-center">
-            <img src={UserImage} alt="User" className="w-8 h-8 rounded-full mr-2" />
+            <img src={record.picture} alt="User" className="w-8 h-8 rounded-full mr-2" />
             {text}
           </div>
         ),
       },
       { title: "Email", dataIndex: "email", key: "email" },
-      { title: "Poin", dataIndex: "target", key: "target" },
+      { title: "Poin", dataIndex: "point", key: "point" },
       {
         title: "Aksi",
         dataIndex: "aksi",
@@ -129,24 +89,31 @@ export default function ManageUserDetail() {
 
   const handleView = (record) => {
     setIsViewModalVisible(true);
+    setSelectedData(record);
   };
 
-  const handleOkView = (updatedRecord) => {
-    const user = dataUsers.find((user) => user.id === updatedRecord.id);
-    const poinValue = user.target;
-    setUserPoin(poinValue); // Set nilai poin
+  const handleOkView = () => {
     setIsViewModalVisible(false);
   };
 
   const handleDelete = (record) => {
     setRecordToDelete(record);
+    setIdToDelete(record.key);
     setIsDeleteModalVisible(true);
   };
 
-  const handleOkDelete = (id) => {
-    setDataUsers((prevData) => prevData.filter((item) => item.id !== id));
-    toast.success("Data berhasil dihapus!");
-    setIsDeleteModalVisible(false);
+  const handleOkDelete = async () => {
+    try {
+      console.log(`Deleting user with ID: ${idToDelete}`);
+      await deleteUser({ endpoint: `/user/${idToDelete}` });
+      toast.success("Data berhasil dihapus!");
+      setIsDeleteModalVisible(false);
+      // Assuming dataUsers is your state variable holding user data
+      // setDataUsers((prevData) => prevData.filter((user) => user.key !== idToDelete));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Terjadi kesalahan ketika menghapus data");
+    }
   };
 
   return (
@@ -155,11 +122,11 @@ export default function ManageUserDetail() {
         <div className="p-5 bg-[#F9FAFB]">
           <div className="flex flex-col gap-8">
             <div className="px-8 py-4 shadow-md rounded-lg bg-white">
-              <Tables pagination={true} initialPageSize={10} data={dataUsers} columns={columnUser} />
+              <Tables pagination={true} initialPageSize={10} data={{ items: dataUsers, totalCount: userData?.data?.total_user || 0 }} columns={columnUser} loading={isLoading} />
             </div>
           </div>
         </div>
-        <ViewModal isVisible={isViewModalVisible} onOk={handleOkView} onCancel={() => setIsViewModalVisible(false)} initialPoin={userPoin} userData={recordToDelete ? dataUsers.find((user) => user.id === recordToDelete.id) : null} />
+        <ViewModal isVisible={isViewModalVisible} onOk={handleOkView} onCancel={() => setIsViewModalVisible(false)} initialPoin={userPoin} userData={selectedData} />
         <DeleteModal isVisible={isDeleteModalVisible} onOk={handleOkDelete} onCancel={() => setIsDeleteModalVisible(false)} record={recordToDelete} />
       </section>
     </ContentLayout>

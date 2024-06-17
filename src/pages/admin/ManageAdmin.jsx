@@ -175,7 +175,7 @@ const ManageAdmin = () => {
         <Modal open={isEditModalVisible} onCancel={handleEditCancel} footer={null} width={730}>
           <EditAdminForm admin={selectedAdmin} onEdit={handleEditOk} onCancel={handleEditCancel} />
         </Modal>
-        <DeleteModal isVisible={isDeleteModalVisible} onOk={handleDelete} onCancel={handleCancelDelete} record={selectedAdmin} />
+        <DeleteModal isVisible={isDeleteModalVisible} onOk={handleDelete} onCancel={handleCancelDelete} admin={selectedAdmin} />
       </div>
     </ContentLayout>
   );

@@ -40,7 +40,7 @@ const ModalContent = ({ selectedReport }) => (
     <div className="flex items-start justify-between">
       <div className="flex gap-5">
         <div className="aspect-square w-[65px] rounded-full">
-          <img src="https://placehold.co/65x65" alt="profile" className="w-full object-cover object-center rounded-full" />
+          <img src={selectedReport.author_profile ?? "https://placehold.co/65x65"} alt="profile" className="w-full object-cover object-center rounded-full" />
         </div>
         <div className="flex flex-col gap-3 body-m">
           <LabeledValue label="Full Name" value={selectedReport.name} />
@@ -105,15 +105,14 @@ const ManageReport = () => {
   const { data: reportData, isLoading } = useFetch(fetchUrl, [], [fetchUrl]);
   const { mutateAsync: updateStatus } = useUpdateData();
 
-  console.log(reportData)
-
   const data = useMemo(
     () =>
       reportData?.data?.reports?.map((data) => ({
         id: data.id,
         author_id: data.author.id,
+        author_profile: data.author.image_url,
         name: data.author.name,
-        category: data.report_type,
+        category: data.report_type.charAt(0).toUpperCase() + data.report_type.slice(1),
         status: mapStatus(data.status),
         date: new Date(data.created_at).toLocaleDateString('id-ID'),
         hour: getHour(data.created_at),
