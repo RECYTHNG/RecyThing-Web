@@ -8,39 +8,63 @@ const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top',
+      display: false,
     },
-    title: {
-      display: true,
-      text: 'Chart.js Bar Chart',
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
     },
   },
 };
 
-const labels = ['Cimahi', 'Cibereum', 'Bandung', 'Surabaya', 'Malang', 'Bekasi', 'Majalengka', 'Pontianak', 'Rancaekek', 'Kediri', 'Ngapak', 'Cilengsi', 'Nganjuk', 'Lampung', 'Batam', 'Depok', 'Bogor', 'Riau Utara', 'Sambas', 'Tokyo'];
 
-// Fungsi untuk membuat data acak antara min dan max
-const getRandomData = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+const processUserData = (data) => {
+  const labels = [];
+  const totalUsers = [];
+  let otherLabelIndex = -1;
+
+  data?.forEach((item, index) => {
+    if (item.city === '') {
+      otherLabelIndex = index;
+    } else {
+      labels.push(item.city);
+      totalUsers.push(item.total_user);
+    }
+  });
+
+  if (otherLabelIndex !== -1) {
+    labels.push('Other');
+    totalUsers.push(data[otherLabelIndex].total_user);
+  }
+
+  return { labels, totalUsers };
 };
 
-const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => getRandomData(100, 1000)),
-      backgroundColor: 'rgba(2, 144, 226, 1)',
-    },
-  ],
-};
+function BarChart({data}) {
+  const userData = processUserData(data);
 
-function App() {
+  const userByLocationData = {
+    labels: userData.labels,
+    datasets: [
+      {
+        label: 'Total Users',
+        data: userData.totalUsers,
+        backgroundColor: 'rgba(2, 144, 226, 1)',
+      },
+    ],
+  };
+
   return (
-    <section className="bg-white rounded-[10px]">
-      <Bar options={options} data={data} />
+    <section className="bg-white rounded-[10px] p-5">
+      <div className="flex justify-between items-center pb-6">
+        <h5 className="h5 font-semibold text-neutral-900">Data Based On Location</h5>
+      </div>
+      <div className="w-full h-[250px]">
+        <Bar options={options} data={userByLocationData} />
+      </div>
     </section>
   );
 }
 
-export default App;
+export default BarChart;

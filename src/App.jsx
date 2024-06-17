@@ -34,6 +34,7 @@ function App() {
         pauseOnHover={false}
         theme="colored"
         hideProgressBar={true}
+        closeButton={false}
       />
       <Routes>
         <Route element={<ScrollToTop />}>

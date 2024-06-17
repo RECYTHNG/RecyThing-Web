@@ -29,9 +29,8 @@ export const options = {
   scales: {
     y: {
       beginAtZero: true,
-      max: 100,
       ticks: {
-        stepSize: 20,
+        stepSize: 5,
       },
     },
   },
@@ -40,43 +39,48 @@ export const options = {
       display: false,
     },
   },
+  responsive: true,
 };
 
-const labels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul"];
+const labels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
-const generateRandomData = (min, max, numPoints) => {
-  const data = [];
-  for (let i = 0; i < numPoints; i++) {
-    data.push(Math.floor(Math.random() * (max - min + 1)) + min);
-  }
-  return data;
+const processData = (data) => {
+  return data?.map(month => month.total_reports).filter(total => total !== 0);
 };
 
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Littering",
-      data: generateRandomData(10, 100, labels.length),
-      backgroundColor: "#00476D",
-      borderColor: "#00476D",
-      fill: false,
-      tension: 0.4,
-    },
-    {
-      label: "Rubbish",
-      data: generateRandomData(10, 100, labels.length),
-      backgroundColor: "#7FB23B",
-      borderColor: "#7FB23B",
-      fill: false,
-      tension: 0.4,
-    },
-  ],
+const processLabels = (data) => {
+  return data?.map((month, index) => (month.total_reports !== 0 ? labels[index] : null)).filter(label => label !== null);
 };
 
-const LineChart = () => {
+const LineChart = ({ data }) => {
+  const litteringData = processData(data?.report_littering);
+  const rubbishData = processData(data?.report_rubbish);
+  const filteredLabels = processLabels(data?.report_littering);
+
+  const reportData = {
+    labels: filteredLabels,
+    datasets: [
+      {
+        label: "Littering",
+        data: litteringData,
+        backgroundColor: "#00476D",
+        borderColor: "#00476D",
+        fill: false,
+        tension: 0.4,
+      },
+      {
+        label: "Rubbish",
+        data: rubbishData,
+        backgroundColor: "#7FB23B",
+        borderColor: "#7FB23B",
+        fill: false,
+        tension: 0.4,
+      },
+    ],
+  };
+
   return (
-    <section>
+    <section className="w-full">
       <div className="bg-white p-5 rounded-[10px]">
         <div className="flex justify-between items-center pb-6">
           <h5 className="h5 font-semibold">Reporting Statistic</h5>
@@ -91,8 +95,8 @@ const LineChart = () => {
             </div>
           </div>
         </div>
-        <div className="h-[296px]">
-          <Line options={options} data={data} />
+        <div className="w-full h-[250px]">
+          <Line options={options} data={reportData} />
         </div>
       </div>
     </section>
