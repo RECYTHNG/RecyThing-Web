@@ -81,7 +81,7 @@ export default function AddContentVideo() {
       toast.error("Semua field harus diisi!");
       return;
     }
-
+  
     const payload = {
       title: judul,
       description: deskripsi,
@@ -100,13 +100,25 @@ export default function AddContentVideo() {
       formData.append("thumbnail", thumbnail);
     }
   
+    const toastId = toast.loading("Sedang menambahkan video...");
+  
     try {
       await addVideo({ endpoint: "/videos/data", newData: formData });
-      toast.success("Video berhasil ditambahkan!");
+      toast.update(toastId, {
+        render: "Video berhasil ditambahkan!",
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
       handleReset();
     } catch (error) {
-      console.error("Error:", error); 
-      toast.error("Gagal menambahkan video.");
+      console.error("Error:", error);
+      toast.update(toastId, {
+        render: "Gagal menambahkan video.",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
     }
   };
   

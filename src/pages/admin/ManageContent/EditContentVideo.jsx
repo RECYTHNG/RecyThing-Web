@@ -98,7 +98,7 @@ export default function EditContentVideo() {
       toast.error("Semua field harus diisi!");
       return;
     }
-
+  
     const jsonData = {
       title: judul,
       description: deskripsi,
@@ -106,47 +106,72 @@ export default function EditContentVideo() {
       content_categories: selectedCategories.map((name) => ({ name })),
       waste_categories: selectedWasteCategories.map((name) => ({ name })),
     };
-
+  
     const formData = new FormData();
     formData.append("json_data", JSON.stringify(jsonData));
     if (thumbnailFile) {
       formData.append("thumbnail", thumbnailFile);
     }
-
+  
+    const toastId = toast.loading("Sedang memperbarui video...");
+  
     try {
       await patchVideo(
         { endpoint: `/videos/data/${id}`, updatedData: formData },
         {
           onSuccess: () => {
-            toast.success("Video berhasil diperbarui");
+            toast.update(toastId, {
+              render: "Video berhasil diperbarui!",
+              type: "success",
+              isLoading: false,
+              autoClose: 5000,
+            });
             navigate("/admin/content");
           }
         }
       );
     } catch (error) {
-      toast.error("Gagal memperbarui video");
+      toast.update(toastId, {
+        render: "Gagal memperbarui video",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
     }
   };
+  
 
   const handleDelete = () => {
     setIsModalVisible(true);
   };
 
   const handleConfirmDelete = async () => {
+    const toastId = toast.loading("Sedang menghapus video...");
+  
     deleteVideo(
       { endpoint: `/videos/data/${video.id}` },
       {
         onSuccess: () => {
-          toast.success('Video berhasil dihapus!');
-          navigate('/admin/content');
+          toast.update(toastId, {
+            render: "Video berhasil dihapus!",
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+          });
+          navigate("/admin/content");
         },
         onError: () => {
-          toast.error('Gagal menghapus video.');
+          toast.update(toastId, {
+            render: "Gagal menghapus video.",
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+          });
         }
       }
     );
   };
-
+  
   const handleCancelDelete = () => {
     setIsModalVisible(false);
   };
