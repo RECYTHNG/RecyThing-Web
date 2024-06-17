@@ -25,8 +25,7 @@ const options = {
 };
 
 const DoughnutChart = ({data}) => {
-  console.log(data)
-
+  
   const chartData = {
     labels: ['User Classic', 'User Silver', 'User Gold', 'User Platinum'],
     datasets: [
@@ -44,7 +43,7 @@ const DoughnutChart = ({data}) => {
   };
 
   return (
-    <section className='py-[22.5px] px-[28px] bg-white rounded-[10px] w-fit flex flex-col items-center gap-5'>
+    <section className='py-[22.5px] px-[28px] bg-white rounded-[10px] flex flex-col items-center gap-5 lg:min-w-[370px] w-full lg:w-fit'>
       <h2 className='h5 text-black font-semibold'>User Achievment</h2>
       <div className='w-[172px] aspect-square relative flex items-center justify-center'>
         <Doughnut data={chartData} options={options} />
@@ -53,7 +52,7 @@ const DoughnutChart = ({data}) => {
           <span className='font-bold text-[#585757] h3'>{data?.total_user}</span>
         </div>
       </div>
-      <div className='w-full grid grid-cols-2 gap-x-5 gap-y-3'>
+      <div className='grid grid-cols-2 gap-x-5 gap-y-3'>
         <div className='flex items-center gap-2'>
           <div className='h-3 w-3 rounded-sm bg-[#DE9149]'></div>
           <p className='body-m text-dark-900'>{data?.classic} User Classic</p>

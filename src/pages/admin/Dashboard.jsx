@@ -57,13 +57,13 @@ const Dashboard = () => {
             />
           ))}
         </div>
-        <div className="flex gap-5">
-          <div className="flex-1">
-            <LineChart />
+        <div className="flex flex-col lg:flex-row gap-5">
+          <div className="flex-1 w-full">
+            <LineChart data={dashboardData?.data_report_statistic}/>
           </div>
           <DoghnutChart data={dashboardData?.user_achievement}/>
         </div>
-        <BarChart />
+        <BarChart data={dashboardData?.data_user_by_address}/>
         <div className='grid grid-cols-3 gap-5'>
           <PieChart />
           <PieChart />
