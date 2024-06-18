@@ -66,7 +66,6 @@ export const DetailVideoModal = ({ videoId, isVisible, onOk, onCancel }) => {
 
 export const ArticleDetailModal = ({ articleId, isVisible, onOk, onCancel }) => {
   const { data: articleData, isLoading, error } = useFetch( isVisible ? `/article/${articleId}` : null, `articleId-${articleId}` );
-  console.log(articleData)
   const article = articleData?.data;
 
   return (
