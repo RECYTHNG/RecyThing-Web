@@ -80,28 +80,42 @@ export default function AddContentArticle() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!judul || !deskripsi || !thumbnail || selectedCategories.length === 0) {
       toast.error("Semua field harus diisi!");
       return;
     }
 
+    const toastUploadImage = toast.loading("Mengunggah gambar...");
+    const toastUploadJson = toast.loading("Mengunggah artikel...");
+    
     try {
-      // Upload the thumbnail
       const thumbnailFormData = new FormData();
       thumbnailFormData.append("image", thumbnail);
       const thumbnailResponse = await addArticleImage({
         endpoint: "/article/upload",
         newData: thumbnailFormData,
       });
+  
 
       if (thumbnailResponse.code !== 200) {
-        toast.error(thumbnailResponse.message || "Gagal mengunggah thumbnail.");
+        toast.update(toastUploadImage, {
+          render: thumbnailResponse.message || "Gagal mengunggah thumbnail.",
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
         return;
       }
-
-      const thumbnailUrl = thumbnailResponse.data.url;
-
+      
+      toast.update(toastUploadImage, {
+        render: "Thumbnail berhasil diunggah!",
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
+      const thumbnailUrl = thumbnailResponse.data.image_url;
+  
       const sectionImageUrls = [];
       for (let i = 0; i < subJuduls.length; i++) {
         if (subJuduls[i].image) {
@@ -111,22 +125,29 @@ export default function AddContentArticle() {
             endpoint: "/article/upload",
             newData: sectionFormData,
           });
-
+  
           if (sectionImageResponse.code !== 200) {
-            toast.error(
-              sectionImageResponse.message ||
-                `Gagal mengunggah gambar untuk sub judul ${i + 1}.`
-            );
+            toast.update(toastUploadImage, {
+              render: sectionImageResponse.message || `Gagal mengunggah gambar untuk sub judul ${i + 1}.`,
+              type: "error",
+              isLoading: false,
+              autoClose: 2000,
+            });
             return;
           }
-
-          sectionImageUrls[i] = sectionImageResponse.data.url;
+  
+          toast.update(toastUploadImage, {
+            render: `Gambar untuk section ${i + 1} berhasil diunggah!`,
+            type: "success",
+            isLoading: false,
+            autoClose: 2000,
+          });
+          sectionImageUrls[i] = sectionImageResponse.data.image_url;
         } else {
           sectionImageUrls[i] = null;
         }
       }
-      
-      const formData = new FormData();
+  
       const jsonData = {
         title: judul,
         description: deskripsi,
@@ -145,29 +166,27 @@ export default function AddContentArticle() {
           image_url: sectionImageUrls[index],
         })),
       };
-
-      formData.append("json_data", JSON.stringify(jsonData));
-
-      console.log("Request Data:", formData.jsonData);
-
-      const jsonResponse = await addArticleJson({
+  
+      await addArticleJson({
         endpoint: "/article",
-        newData: formData,
+        newData: jsonData,
       });
 
-      console.log("Response Data:", jsonResponse);
+      toast.update(toastUploadJson, {
+        render: "Artikel berhasil ditambahkan!",
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
+      handleReset();
+      navigate("/admin/content");
 
-      if (jsonResponse.code === 200) {
-        toast.success("Artikel berhasil ditambahkan!");
-        handleReset();
-      } else {
-        toast.error(jsonResponse.message || "Gagal menambahkan artikel.");
-      }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Gagal menambahkan artikel.");
+      toast.error("Gagal Menambahkan Artikel")
     }
   };
+  
 
   const handleSubJudulChange = (index, key, value) => {
     const newSubJuduls = [...subJuduls];
