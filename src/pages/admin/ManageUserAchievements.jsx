@@ -13,19 +13,17 @@ import { useFetch } from "../../hooks/useFetch";
 import { EditModal } from "../../components/Achievement/ModalAchievements";
 
 export default function ManageUserAchievements() {
-  const { data, error, isLoading } = useFetch('/achievements', 'achievements');
-  const badge = useMemo(() => ({
-    Gold: <img src={GoldBadge} alt="Gold Badge" />,
-    Silver: <img src={SilverBadge} alt="Silver Badge" />,
-    Classic: <img src={ClassicBadge} alt="Bronze Badge" />,
-  }), []);
+  const { data: achievementsData, error, isLoading } = useFetch('/achievements', 'achievements');
+  const { data: userAchievementsData, isLoading: isLoadingUserAchievements } = useFetch('/leaderboard', 'userAchievements');
+
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [dataAchievements, setDataAchievements] = useState([]);
+  const [dataUserAchievements, setDataUserAchievements] = useState([]);
 
   useEffect(() => {
-    if (data && data.data) {
-      setDataAchievements(data.data.map((item, index) => ({
+    if (achievementsData && achievementsData.data) {
+      setDataAchievements(achievementsData.data.map((item, index) => ({
         id: item.id,
         no: index + 1,
         level: item.level.charAt(0).toUpperCase() + item.level.slice(1),
@@ -34,7 +32,23 @@ export default function ManageUserAchievements() {
         formatedTargetPoint: formatNumber(item.target_point) 
       })));
     }
-  }, [data]);
+  }, [achievementsData]);
+
+  useEffect(() => {
+    if (userAchievementsData && userAchievementsData.data) {
+      setDataUserAchievements(userAchievementsData.data.map((item, index) => ({
+        id: index + 1,
+        nama: 
+          <div className="flex gap-2 items-center">
+            <img src={item.picture_url} alt={`${item.name} Picture`} className="w-10 rounded-full"/>
+            {item.name}
+          </div>,
+        lencana: <img src={item.badge} alt={`${item.name} Badge`} className="w-10" />,
+        totalPoin: formatNumber(item.point),
+        lokasi: item.address
+      })));
+    }
+  }, [userAchievementsData]);
 
   const columnAchievements = useMemo(() => [
     { title: "No", dataIndex: "no", key: "no", width: 106 },
@@ -71,14 +85,6 @@ export default function ManageUserAchievements() {
     },
   ], []);
 
-  const dataUserAchievements = useMemo(() => [
-    { id: 1, nama: "Harry Styles", lencana: badge.Gold, totalPoin: formatNumber(500000), lokasi: "Jakarta" },
-    { id: 2, nama: "Zayn Malik", lencana: badge.Gold, totalPoin: formatNumber(300000), lokasi: "Jakarta" },
-    { id: 3, nama: "John Doe", lencana: badge.Gold, totalPoin: formatNumber(200000), lokasi: "Jakarta" },
-    { id: 4, nama: "Jane Smith", lencana: badge.Silver, totalPoin: formatNumber(100000), lokasi: "Bandung" },
-    { id: 5, nama: "Alice Johnson", lencana: badge.Classic, totalPoin: formatNumber(50000), lokasi: "Surabaya" },
-  ], [badge]);
-
   const columnUserAchievements = useMemo(() => [
     { title: "No", dataIndex: "id", key: "id", width: 106 },
     { title: "Nama", dataIndex: "nama", key: "nama" },
@@ -94,13 +100,11 @@ export default function ManageUserAchievements() {
 
   const handleOkEdit = (updatedRecord) => {
     setDataAchievements((prevData) => {
-      console.log("Previous Data:", prevData);
       return prevData.map((item) => item.id === updatedRecord.id ? updatedRecord : item);
     });
     setIsEditModalVisible(false);
   };
   
-
   return (
     <ContentLayout title={"Pencapaian"}>
       <section>
@@ -115,7 +119,7 @@ export default function ManageUserAchievements() {
             </div>
             <h5 className="h5 font-bold">Peringkat Pengguna</h5>
             <div className="px-8 py-4 shadow-md rounded-lg bg-white">
-              <Tables data={dataUserAchievements} columns={columnUserAchievements} isLoading={isLoading} />
+              <Tables data={dataUserAchievements} columns={columnUserAchievements} isLoading={isLoadingUserAchievements} />
             </div>
           </div>
         </div>
