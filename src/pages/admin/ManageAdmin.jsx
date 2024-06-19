@@ -5,7 +5,6 @@ import Tables from '../../components/global/Table';
 import AddAdminForm from '../../components/admin/addform';
 import EditAdminForm from '../../components/admin/editform';
 import ContentLayout from '../../layouts/ContentLayout';
-import { toast } from 'react-toastify';
 import HorizontalDotsIcon from '../../assets/moreicons';
 import Edit from '../../assets/edit.svg';
 import Delete from '../../assets/trash.svg';
@@ -14,9 +13,9 @@ import AddButton from '../../components/global/button/AddButton';
 
 const getRoleColor = (role) => {
   switch (role) {
-    case 'super admin':
+    case 'Super Admin':
       return 'bg-sky-700 text-white';
-    case 'admin':
+    case 'Admin':
       return 'bg-sky-400 text-white';
     default:
       return '';
@@ -39,12 +38,13 @@ const ManageAdmin = () => {
         name: admin.name,
         email: admin.email,
         password: admin.password,
-        role: admin.role,
+        role: admin.role == 'admin' ? 'Admin' : 'Super Admin',
+
         profile_photo: admin.profile_photo,
       })) || [],
     [adminData]
   );
-  console.log(adminData);
+
   const columns = useMemo(
     () => [
       { title: 'Admin ID', dataIndex: 'id', key: 'id', align: 'center' },
@@ -100,13 +100,6 @@ const ManageAdmin = () => {
 
   const handleAddOk = () => {
     setIsAddModalVisible(false);
-    toast.success('Data added successfully', {
-      position: 'top-right',
-      autoClose: 2000,
-      style: {
-        marginTop: '90px',
-      },
-    });
   };
 
   const handleAddCancel = () => {
@@ -120,13 +113,6 @@ const ManageAdmin = () => {
 
   const handleEditOk = () => {
     setIsEditModalVisible(false);
-    toast.success('Data saved successfully', {
-      position: 'top-right',
-      autoClose: 2000,
-      style: {
-        marginTop: '90px',
-      },
-    });
   };
 
   const handleEditCancel = () => {
@@ -141,13 +127,6 @@ const ManageAdmin = () => {
 
   const handleDelete = () => {
     setIsDeleteModalVisible(false);
-    toast.error('Data has been deleted', {
-      position: 'top-right',
-      autoClose: 2000,
-      style: {
-        marginTop: '90px',
-      },
-    });
   };
 
   const handleCancelDelete = () => {
@@ -169,10 +148,10 @@ const ManageAdmin = () => {
         <div className="px-6 py-3 rounded-lg shadow mt-6">
           <Tables data={{ items: data, totalCount: adminData?.total_data || 0 }} columns={columns} pagination={true} initialPageSize={10} isLoading={isLoading} onPageChange={handlePageChange} />
         </div>
-        <Modal open={isAddModalVisible} onCancel={handleAddCancel} footer={null} width={730}>
+        <Modal open={isAddModalVisible} closable={false} onCancel={handleAddCancel} footer={null} width={730}>
           <AddAdminForm onAdd={handleAddOk} onCancel={handleAddCancel} />
         </Modal>
-        <Modal open={isEditModalVisible} onCancel={handleEditCancel} footer={null} width={730}>
+        <Modal open={isEditModalVisible} closable={false} onCancel={handleEditCancel} footer={null} width={730}>
           <EditAdminForm admin={selectedAdmin} onEdit={handleEditOk} onCancel={handleEditCancel} />
         </Modal>
         <DeleteModal isVisible={isDeleteModalVisible} onOk={handleDelete} onCancel={handleCancelDelete} admin={selectedAdmin} />

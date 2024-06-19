@@ -6,7 +6,8 @@ import Role from '../../assets/manage.svg';
 import Eye from '../../assets/eye.svg';
 import EyeOff from '../../assets/eye-off.svg';
 import CameraIcon from '../../assets/camera.svg';
-import { usePatchFormData } from '../../hooks/useFetch';
+import { usePatchFormData, useFetch } from '../../hooks/useFetch';
+import { toast } from 'react-toastify';
 
 const EditAdminForm = ({ admin, onEdit, onCancel }) => {
   const [fullName, setFullName] = useState('');
@@ -16,43 +17,47 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
   const [role, setRole] = useState('admin');
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [avatar, setAvatar] = useState(null);
+  const [avatar, setAvatar] = useState('');
   const [image, setImage] = useState(null);
   const { mutateAsync: updateData } = usePatchFormData();
+  const { data } = useFetch(`/admin/${admin.id}`);
 
   useEffect(() => {
-    if (admin) {
-      setFullName(admin.name);
-      setEmail(admin.email);
-      setRole(admin.role);
-      setImage(admin.profile_photo);
-      setAvatar(admin.profile_photo);
-    }
-  }, [admin]);
+    setFullName(data?.data?.name ?? '');
+    setEmail(data?.data?.email ?? '');
+    setRole(data?.data?.role ?? '');
+    setAvatar(data?.data?.profile_photo ?? '');
+  }, [data]);
 
   const handleEdit = async (e) => {
     e.preventDefault();
 
-    const editData = new FormData();
-    editData.append('name', fullName);
-    editData.append('email', email);
-    editData.append('old_password', oldPassword);
-    editData.append('new_password', newPassword);
-    editData.append('role', role);
-    if (image) {
-      editData.append('profile_photo', image);
-    }
+    const editData = {
+      name: fullName,
+      email: email,
+      old_password: oldPassword,
+      new_password: newPassword,
+      role: role,
+      profile_photo: image,
+    };
+
+    console.log(data);
+
+    toast.loading('Sedang Memperbarui Data');
 
     try {
       await updateData({ endpoint: `/admin/${admin.id}`, updatedData: editData });
-      console.log('sukses');
+      toast.dismiss();
+      toast.success('Data saved successfully');
       onEdit();
 
       setOldPassword('');
       setNewPassword('');
       setRole('admin');
     } catch (error) {
-      console.error('Error edit admin:', error);
+      toast.dismiss();
+      toast.error('Terjadi Kesalahan Ketika Menambahkan Data');
+      console.error('Error adding admin:', error);
     }
   };
 
@@ -81,13 +86,7 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
         <div className="flex justify-start items-center gap-[90px]">
           <div className="flex justify-start items-start gap-2.5">
             <div className="relative w-[149px] h-[149px] rounded-xl overflow-hidden bg-neutral-200 flex items-center justify-center">
-              {avatar ? (
-                <img className="w-full h-full object-cover" src={avatar} alt="Admin Avatar" />
-              ) : (
-                <div className="flex flex-col items-center justify-center">
-                  <img className="w-10 h-10" src={CameraIcon} alt="Camera Icon" />
-                </div>
-              )}
+              {avatar && <img className="w-full h-full object-cover" src={avatar} alt="Admin Avatar" />}
               <input type="file" accept="image/*" onChange={handleAvatarChange} className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
               <button
                 type="button"
@@ -161,8 +160,8 @@ const EditAdminForm = ({ admin, onEdit, onCancel }) => {
                   required
                   className="pl-10 pr-10 w-[306px] py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed appearance-none cursor-pointer"
                 >
-                  <option value="super admin">super admin</option>
-                  <option value="admin">admin</option>
+                  <option value="super admin">Super Admin</option>
+                  <option value="admin">Admin</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                   <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

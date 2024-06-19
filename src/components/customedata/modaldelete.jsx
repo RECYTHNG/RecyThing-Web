@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
 import DeleteImage from '/assets/images/DeleteImage.png';
 import { useDeleteData } from '../../hooks/useFetch';
+import { toast } from 'react-toastify';
 
 export const DeleteModal = ({ isVisible, onOk, onCancel, admin }) => {
   const { mutateAsync: deleteData } = useDeleteData();
@@ -8,16 +9,22 @@ export const DeleteModal = ({ isVisible, onOk, onCancel, admin }) => {
   const handleDelete = async (e) => {
     e.preventDefault();
 
+    toast.loading('Sedang Menghapus Data');
+
     try {
       await deleteData({ endpoint: `/custom-data/${admin.id}` });
-      onOk(); // Notify the parent component that the deletion was successful
+      toast.dismiss();
+      onOk();
+      toast.error('Data berhasil dihapus!');
     } catch (error) {
+      toast.dismiss();
+      toast.error('Terjadi Kesalahan Ketika Menghapus Data');
       console.error('Error deleting data:', error);
     }
   };
 
   return (
-    <Modal open={isVisible} onCancel={onCancel} width={569} footer={null}>
+    <Modal open={isVisible} onCancel={onCancel} closable={false} width={569} footer={null}>
       <div className="flex flex-col p-2 gap-2 justify-center items-center">
         <div className="w-[307px]">
           <img src={DeleteImage} alt="Delete Image" />

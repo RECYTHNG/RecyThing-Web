@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { usePostData } from '../../hooks/useFetch';
+import { toast } from 'react-toastify';
 
 const AddDataForm = ({ onCancel, onAdd }) => {
   const [topic, setTopic] = useState('');
@@ -15,15 +16,19 @@ const AddDataForm = ({ onCancel, onAdd }) => {
       topic: topic,
       description: description,
     };
-    console.log(customData);
+
+    toast.loading('Sedang Menambahkan Data');
 
     try {
       await postData({ endpoint: '/custom-data', newData: customData });
-      console.log('sukses');
+      toast.dismiss();
+      toast.success('Data berhasil ditambah!');
       onAdd();
       setTopic('');
       setDescription('');
     } catch (error) {
+      toast.dismiss();
+      toast.error('Terjadi Kesalahan Ketika Menambahkan Data');
       console.error('Erro add data:', error);
     }
   };
