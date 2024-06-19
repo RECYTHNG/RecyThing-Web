@@ -1,65 +1,83 @@
-import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {
+  AddCircleIcon,
+  AddImageIcon,
+} from "../../../components/global/Icons/icons";
 import { toast } from "react-toastify";
-import { AddImageIcon } from "../../../components/global/Icons/icons";
-import { articles } from "./dummyData.json";
-import { Modal } from "antd";
+import { useParams } from "react-router";
 import ContentLayout from "../../../layouts/ContentLayout";
-import DeleteModalChildren from "../../../components/Content/DeleteModalChild";
 import { FaCheck } from "react-icons/fa";
-
-const categories = [
-  "Organik",
-  "Plastik",
-  "Kertas",
-  "Kaca",
-  "Tekstil",
-  "Kaleng",
-  "Elektronik",
-  "Lainnya",
-];
+import { useDeleteData, useFetch } from "../../../hooks/useFetch";
+import { Link, useNavigate } from "react-router-dom";
+import { Modal } from "antd";
+import DeleteModalChildren from "../../../components/Content/DeleteModalChild";
 
 export default function EditContentArticle() {
-  const { id } = useParams();
-  const article = articles.find((article) => article.id === Number(id));
+  const { id } = useParams(); 
+  const { data: articleData, error } = useFetch(`/article/${id}`);
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [judul, setJudul] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
+  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState('');
+  const [subJuduls, setSubJuduls] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isFocused, setIsFocused] = useState({});
 
-  const [judul, setJudul] = useState(article ? article.title : "");
-  const [deskripsi, setDeskripsi] = useState(article ? article.desc : "");
-  const [thumbnail, setThumbnail] = useState(article ? article.thumbnail : "");
-  const [selectedCategories, setSelectedCategories] = useState(
-    article ? article.category : []
-  );
-  const [isFocused, setIsFocused] = useState({
-    judul: false,
-    deskripsi: false,
-  });
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const { data } = useFetch("/categories", "categories");
+
   const navigate = useNavigate();
 
-  const handleFocus = (field) => {
-    setIsFocused({ ...isFocused, [field]: true });
-  };
+  const rubbishCategories = data?.data?.waste_categories || [];
+  const contentCategories = data?.data?.content_categories || [];
 
-  const handleBlur = (field) => {
-    setIsFocused({ ...isFocused, [field]: false });
-  };
+  const { mutateAsync: deleteArticle } = useDeleteData();
 
+  useEffect(() => {
+    if (articleData && articleData.code === 200) {
+      const data = articleData.data;
+      setJudul(data.title);
+      setDeskripsi(data.description);
+      setThumbnailPreview(data.thumbnail_url);
+      setSubJuduls(data.sections.map(section => ({
+        subJudul: section.title,
+        deskripsi: section.description,
+        imagePreview: section.image_url
+      })));
+      setSelectedCategories([...data.waste_categories.map(cat => cat.name), ...data.content_categories.map(cat => cat.name)]);
+    } else if (error) {
+      toast.error("Failed to fetch article data");
+    }
+  }, [articleData, error]);
+
+  const handleFocus = (field) => setIsFocused({ ...isFocused, [field]: true });
+  const handleBlur = (field) => setIsFocused({ ...isFocused, [field]: false });
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setThumbnail(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+    setThumbnail(file);
+    setThumbnailPreview(URL.createObjectURL(file));
+  };
+
+  const handleSubJudulChange = (index, field, value) => {
+    const updatedSubJuduls = [...subJuduls];
+    updatedSubJuduls[index][field] = value;
+    setSubJuduls(updatedSubJuduls);
+  };
+
+  const handleSubJudulImageChange = (index, e) => {
+    const file = e.target.files[0];
+    const updatedSubJuduls = [...subJuduls];
+    updatedSubJuduls[index].imagePreview = URL.createObjectURL(file);
+    setSubJuduls(updatedSubJuduls);
+  };
+
+  const addSubJudul = () => {
+    setSubJuduls([...subJuduls, { subJudul: '', deskripsi: '', imagePreview: '' }]);
   };
 
   const handleCategoryChange = (category) => {
     if (selectedCategories.includes(category)) {
-      setSelectedCategories(
-        selectedCategories.filter((item) => item !== category)
-      );
+      setSelectedCategories(selectedCategories.filter(item => item !== category));
     } else {
       setSelectedCategories([...selectedCategories, category]);
     }
@@ -67,36 +85,48 @@ export default function EditContentArticle() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Updated Article: ", {
-      id,
-      judul,
-      deskripsi,
-      thumbnail,
-      selectedCategories,
-    });
-    toast.success("Artikel berhasil diperbarui!");
-    navigate("/content");
+    // Submit logic
   };
 
   const handleDelete = () => {
     setIsModalVisible(true);
   };
 
-  const handleConfirmDelete = () => {
-    console.log("Item deleted");
-    setIsModalVisible(false);
-    toast.success("Artikel berhasil dihapus!");
-    navigate("/content");
+  const handleConfirmDelete = async () => {
+    const toastId = toast.loading("Sedang menghapus artikel...");
+  
+    deleteArticle(
+      { endpoint: `/article/${articleData.data.id}` },
+      {
+        onSuccess: () => {
+          toast.update(toastId, {
+            render: "Artikel berhasil dihapus!",
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+          });
+          navigate("/admin/content");
+        },
+        onError: () => {
+          toast.update(toastId, {
+            render: "Gagal menghapus artikel.",
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+          });
+        }
+      }
+    );
   };
-
+  
   const handleCancelDelete = () => {
     setIsModalVisible(false);
   };
 
   return (
-    <ContentLayout title={"Edit Artikel"}>
+    <ContentLayout title={"Tambah Artikel"}>
       <section>
-        <div className="p-[30px] bg-[#F9FAFB] h-[calc(100vh-80px)]">
+        <div className="p-[30px] bg-[#F9FAFB] h-auto">
           <form className="grid grid-cols-4 gap-5" onSubmit={handleSubmit}>
             {/* LEFT INPUT */}
             <div className="col-span-3 flex flex-col">
@@ -121,18 +151,17 @@ export default function EditContentArticle() {
                   </label>
                 </div>
               </div>
-              <div className="bg-white px-4 py-5 rounded-b-lg shadow-md">
+              <div className="bg-white px-4 shadow-md">
                 <div className="relative bg-inherit">
                   <textarea
                     id="deskripsi"
                     name="deskripsi"
-                    className="w-full peer bg-transparent h-[621px] rounded-lg text-gray-700 ring-1 px-3 py-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
+                    className="w-full peer bg-transparent h-[118px] rounded-lg text-gray-700 ring-1 px-3 py-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
                     placeholder={isFocused.deskripsi ? "Masukan Deskripsi" : ""}
                     onFocus={() => handleFocus("deskripsi")}
                     onBlur={() => handleBlur("deskripsi")}
                     onChange={(e) => setDeskripsi(e.target.value)}
                     value={deskripsi}
-                    rows={10}
                   />
                   <label
                     htmlFor="deskripsi"
@@ -141,6 +170,114 @@ export default function EditContentArticle() {
                     Deskripsi
                   </label>
                 </div>
+              </div>
+              <p className="body-m text-primary-500 font-semibold bg-white px-4 pt-4 shadow-md">
+                Bagian (Opsional)
+              </p>
+              {subJuduls.map((subJudul, index) => (
+                <div
+                  key={index}
+                  className="flex gap-[10px] w-full bg-white shadow-md"
+                >
+                  <p className="font-bold pl-4 pt-5">{index + 1}.</p>
+                  <div className="flex flex-col w-full">
+                    <div className="bg-white px-4 py-5 w-full">
+                      <div className="relative bg-inherit">
+                        <input
+                          type="text"
+                          id={`subJudul-${index}`}
+                          name={`subJudul-${index}`}
+                          className="w-full peer bg-transparent h-10 rounded-lg text-gray-700 ring-1 px-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600"
+                          placeholder={
+                            isFocused[`subJudul-${index}`]
+                              ? "Masukan Sub Judul"
+                              : ""
+                          }
+                          onFocus={() => handleFocus(`subJudul-${index}`)}
+                          onBlur={() => handleBlur(`subJudul-${index}`)}
+                          onChange={(e) =>
+                            handleSubJudulChange(
+                              index,
+                              "subJudul",
+                              e.target.value
+                            )
+                          }
+                          value={subJudul.subJudul}
+                        />
+                        <label
+                          htmlFor={`subJudul-${index}`}
+                          className="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary-500 peer-focus:text-sm transition-all"
+                        >
+                          Sub Judul Artikel
+                        </label>
+                      </div>
+                    </div>
+                    <div className="bg-white px-4">
+                      <div className="relative bg-inherit">
+                        <textarea
+                          id={`deskripsi-${index}`}
+                          name={`deskripsi-${index}`}
+                          className="w-full peer bg-transparent h-[118px] rounded-lg text-gray-700 ring-1 px-3 py-3 ring-gray-300 focus:ring-primary-500 focus:outline-none focus:border-rose-600 mt-2"
+                          placeholder={
+                            isFocused[`deskripsi-${index}`]
+                              ? "Masukan Deskripsi"
+                              : ""
+                          }
+                          onFocus={() => handleFocus(`deskripsi-${index}`)}
+                          onBlur={() => handleBlur(`deskripsi-${index}`)}
+                          onChange={(e) =>
+                            handleSubJudulChange(
+                              index,
+                              "deskripsi",
+                              e.target.value
+                            )
+                          }
+                          value={subJudul.deskripsi}
+                          rows={5}
+                        />
+                        <label
+                          htmlFor={`deskripsi-${index}`}
+                          className="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-primary-500 peer-focus:text-sm transition-all"
+                        >
+                          Deskripsi
+                        </label>
+                      </div>
+                    </div>
+                    <div className="px-4 py-5 self-start">
+                      <div className="border-2 border-dashed border-gray-300 h-[203px] w-[306px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
+                        {subJudul.imagePreview ? (
+                          <img
+                            src={subJudul.imagePreview}
+                            alt={`Sub Judul ${index + 1} Image Preview`}
+                            className="rounded-md h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="text-center text-gray-500">
+                            <AddImageIcon />
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          id={`subJudulImage-${index}`}
+                          name={`subJudulImage-${index}`}
+                          accept="image/*"
+                          onChange={(e) => handleSubJudulImageChange(index, e)}
+                          className="opacity-0 absolute inset-0 cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="bg-white px-4 pb-5 w-full rounded-b-lg shadow-md">
+                <button
+                  type="button"
+                  className="btn-l py-3 px-[22px] rounded-[5px] w-full text-start bg-primary-500 text-white font-bold inline-flex items-center gap-2"
+                  onClick={addSubJudul}
+                >
+                  <AddCircleIcon />
+                  Tambah Bagian
+                </button>
               </div>
               <div className="self-start mt-5 bg-transparent">
                 <button
@@ -153,73 +290,126 @@ export default function EditContentArticle() {
               </div>
             </div>
             {/* RIGHT INPUT */}
-            <div className="flex flex-col justify-between">
-              <div className="flex flex-col gap-5">
-                <div className="bg-white py-5 px-4 rounded-lg boxShadow">
-                  <div>
-                    <label
-                      className="block text-gray-700 body-l font-bold mb-5"
-                      htmlFor="thumbnail"
-                    >
-                      Thumbnail
-                    </label>
-                    <div className="border-2 border-dashed border-gray-300 h-[203px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
-                      {thumbnail ? (
-                        <img
-                          src={thumbnail}
-                          alt="Thumbnail Preview"
-                          className="rounded-md w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-center text-gray-500">
-                          <AddImageIcon />
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        id="thumbnail"
-                        name="thumbnail"
-                        accept="image/*"
-                        onChange={handleThumbnailChange}
-                        className="opacity-0 absolute inset-0 cursor-pointer"
+            <div className="flex flex-col gap-5">
+              <div className="bg-white py-5 px-4 rounded-lg shadow-md">
+                <div>
+                  <label
+                    className="block text-gray-700 body-l font-bold mb-5"
+                    htmlFor="thumbnail"
+                  >
+                    Thumbnail
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 h-[203px] rounded-lg cursor-pointer flex flex-col items-center justify-center hover:border-gray-400 relative">
+                    {thumbnailPreview ? (
+                      <img
+                        src={thumbnailPreview}
+                        alt="Thumbnail Preview"
+                        className="rounded-md w-full h-full object-cover"
                       />
+                    ) : (
+                      <div className="text-center text-gray-500">
+                        <AddImageIcon />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="thumbnail"
+                      name="thumbnail"
+                      accept="image/*"
+                      onChange={handleThumbnailChange}
+                      className="opacity-0 absolute inset-0 cursor-pointer"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white py-5 px-4 rounded-lg shadow-md">
+                  <div>
+                    <label className="block text-gray-700 body-l font-bold mb-5">
+                      Kategori Sampah
+                    </label>
+                    <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
+                      {rubbishCategories.map((category) => (
+                        <div
+                          key={category.id}
+                          className="flex gap-2 items-center"
+                        >
+                          <div className="inline-flex items-center">
+                            <label
+                              className="relative flex items-center p-3 rounded-full cursor-pointer"
+                              htmlFor={category.name}
+                            >
+                              <input
+                                type="checkbox"
+                                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
+                                id={category.name}
+                                value={category.name}
+                                checked={selectedCategories.includes(category.name)}
+                                onChange={() =>
+                                  handleCategoryChange(category.name, true)
+                                }
+                              />
+                              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                                <FaCheck className="h-3.5 w-3.5" />
+                              </span>
+                            </label>
+                            <label
+                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                              htmlFor={category.name}
+                            >
+                              {category.name}
+                            </label>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
                 <div className="bg-white py-5 px-4 rounded-lg shadow-md">
                   <div>
                     <label className="block text-gray-700 body-l font-bold mb-5">
-                      Kategori
+                      Kategori Konten
                     </label>
                     <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
-                      {categories.map((category) => (
-                        <div key={category} className="flex gap-2 items-center">
-                          <input
-                            id={category}
-                            name={category}
-                            type="checkbox"
-                            value={category}
-                            checked={selectedCategories.includes(category)}
-                            onChange={() => handleCategoryChange(category)}
-                            className="relative peer shrink-0 appearance-none w-4 h-4 border-2 border-primary-500 rounded-sm bg-white mt-1 checked:bg-primary-500 checked:border-0"
-                          />
-                          <label
-                            className="body-m cursor-pointer"
-                            htmlFor={category}
-                          >
-                            {category}
-                          </label>
-                          <FaCheck className="absolute w-4 h-4 text-white hidden peer-checked:block" />
+                      {contentCategories.map((category) => (
+                        <div
+                          key={category.id}
+                          className="flex gap-2 items-center"
+                        >
+                          <div className="inline-flex items-center">
+                            <label
+                              className="relative flex items-center p-3 rounded-full cursor-pointer"
+                              htmlFor={category.name}
+                            >
+                              <input
+                                type="checkbox"
+                                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
+                                id={category.name}
+                                value={category.name}
+                                checked={selectedCategories.includes(category.name)}
+                                onChange={() =>
+                                  handleCategoryChange(category.name)
+                                }
+                              />
+                              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                                <FaCheck className="h-3.5 w-3.5" />
+                              </span>
+                            </label>
+                            <label
+                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                              htmlFor={category.name}
+                            >
+                              {category.name}
+                            </label>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex gap-2 px-5">
-                <Link to={"/content"} className="flex-1">
+              <div className="flex gap-2 px-5 pt-5">
+                <Link to={"/admin/content"} className="flex-1">                
                   <button
-                    type="button"
+                    type="reset"
                     className="w-full rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4"
                   >
                     Batal
@@ -228,7 +418,6 @@ export default function EditContentArticle() {
                 <button
                   type="submit"
                   className="flex-1 rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4"
-                  onClick={handleSubmit}
                 >
                   Simpan
                 </button>
@@ -236,20 +425,13 @@ export default function EditContentArticle() {
             </div>
           </form>
         </div>
-        <Modal
-          open={isModalVisible}
-          onOk={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-          width={518}
-          footer={null}
-        >
-          <DeleteModalChildren
-            onOk={handleConfirmDelete}
-            onCancel={handleCancelDelete}
-            type="artikel"
-          />
-        </Modal>
       </section>
+      <Modal
+        open={isModalVisible}
+        footer={null}
+      >
+        <DeleteModalChildren onOk={handleConfirmDelete} onCancel={handleCancelDelete} type="artikel"/>
+      </Modal>
     </ContentLayout>
   );
 }

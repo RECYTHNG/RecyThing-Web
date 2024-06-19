@@ -1,21 +1,34 @@
 import { useMemo, useState, useEffect } from "react";
 import ContentLayout from "../../layouts/ContentLayout";
-import { Dropdown, Tag, Avatar, Modal, Button } from "antd";
+import { Dropdown, Tag, Avatar, Modal, Button, message } from "antd";
 import Tables from "../../components/global/Table";
 import { ApproveModalChildren, DetailModal, DisapproveModalChildren } from "../../components/Mission/Approval/ModalChild";
 import HorizontalDotsIcon from "../../assets/moreicons";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetch, useUpdateData } from "../../hooks/useFetch";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 const getStatusColor = (status) => {
   switch (status) {
     case "Menunggu":
       return "bg-warning-500 text-white";
-    case "Tolak":
+    case "Tidak Setuju":
       return "bg-danger-500 text-white";
     case "Setuju":
       return "bg-success-500 text-white";
     default:
       return "";
+  }
+};
+
+const mapStatus = (status) => {
+  switch (status) {
+    case 'accept':
+      return 'Setuju';
+    case 'reject':
+      return 'Tidak Setuju';
+    default:
+      return "Menunggu";
   }
 };
 
@@ -30,9 +43,8 @@ export default function ManageApprovalTask() {
 
   const photosPerPage = 3;
 
-const { data, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPage}&limit=${pageSize}`, [], [currentPage, pageSize], 'approvalTasks');
-
-  console.log(data)
+  const { data, isLoading, isError } = useFetch('/approval-tasks', 'approvalTasks');
+  const updateData = useUpdateData();
 
   useEffect(() => {
     if (data) {
@@ -40,32 +52,18 @@ const { data, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPag
     }
   }, [data]);
 
-  const parsedData = useMemo(() => {
-    if (data && Array.isArray(data.data)) {
-      return data.data.map((item) => ({
-        id: item.id,
-        namaMisi: item.task.title,
-        pelaksana: item.user.name,
-        batasAkhir: item.task.end_date,
-        status: item.status_accept,
-        profilePic: "https://randomuser.me/api/portraits/men/1.jpg", 
-        waktuUpload: item.task.start_date,
-        keterangan: "Default description",
-        photos: [
-          "https://via.placeholder.com/500/92c952",
-          "https://via.placeholder.com/150/771796",
-          "https://via.placeholder.com/150/24f355",
-          "https://via.placeholder.com/150/d32776",
-          "https://via.placeholder.com/500/f66b97",
-          "https://via.placeholder.com/150/56a8c2",
-          "https://via.placeholder.com/150/b0f7cc",
-          "https://via.placeholder.com/150/54176f",
-          "https://via.placeholder.com/150/51aa97",
-        ],
-      }));
-    }
-    return [];
-  }, [data]);
+  const transformData = (data) => {
+    return data.map((item) => ({
+      id: item.id,
+      namaMisi: item.task.title,
+      pelaksana: item.user.name,
+      profilePic: item.user.profile,
+      batasAkhir: dayjs(item.task.end_date).format("DD MMMM YYYY"),
+      status: mapStatus(item.status_accept),
+    }));
+  };
+
+  const approvalData = useMemo(() => (data ? transformData(data.data.data) : []), [data]);
 
   const showSetujuModal = (record) => {
     setSelectedRecord(record);
@@ -77,13 +75,32 @@ const { data, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPag
     setIsTolakModalVisible(true);
   };
 
-  const handleSetuju = () => {
-    setIsSetujuModalVisible(false);
+  const handleSetuju = async () => {
+    try {
+      await updateData.mutateAsync({
+        endpoint: `/approve-tasks/${selectedRecord.id}`,
+        updatedData: {},
+      });
+      toast.success('Berhasil Menyetujui Tugas!');
+    } catch (error) {
+      toast.error('Gagal Menyetujui Tugas');
+    } finally {
+      setIsSetujuModalVisible(false);
+    }
   };
 
-  const handleTolak = (reason) => {
-    console.log("Reason for rejection:", reason);
-    setIsTolakModalVisible(false);
+  const handleTolak = async (reason) => {
+    try {
+      await updateData.mutateAsync({
+        endpoint: `/reject-tasks/${selectedRecord.id}`,
+        updatedData: { reason },
+      });
+      toast.error("Berhasil Menolak Tugas!")
+    } catch (error) {
+      toast.error("Gagal Menolak Tugas!")
+    } finally {
+      setIsTolakModalVisible(false);
+    }
   };
 
   const showDetailModal = (record) => {
@@ -159,41 +176,42 @@ const { data, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPag
         key: "action",
         align: 'center',
         render: (_, record) => {
-          if (record.status === "Menunggu") {
-            const menuItems = [
-              {
-                label: <span type="text">Setuju</span>,
-                key: 'approve',
-                onClick: (e) => {
-                  e.domEvent.stopPropagation();
-                  handleMenuItemClick('approve', record);
-                },
+          const menuItems = [
+            {
+              label: <span type="text">Setuju</span>,
+              key: 'Setuju',
+              onClick: (e) => {
+                e.domEvent.stopPropagation();
+                handleMenuItemClick('approve', record);
               },
-              {
-                label: <span type="text">Tolak</span>,
-                key: 'disapprove',
-                onClick: (e) => {
-                  e.domEvent.stopPropagation();
-                  handleMenuItemClick('disapprove', record);
-                },
+            },
+            {
+              label: <span type="text">Tolak</span>,
+              key: 'Tidak Setuju',
+              onClick: (e) => {
+                e.domEvent.stopPropagation();
+                handleMenuItemClick('disapprove', record);
               },
-            ];
-
-            const menuProps = {
-              items: menuItems,
-              onClick: handleMenuClick,
-            };
-
-            return (
-              <Dropdown menu={menuProps} trigger={['click']} overlayClassName='btn-m text-center'>
-                <div className='cursor-pointer' onClick={handleIconClick}>
-                  <Button icon={<HorizontalDotsIcon />} />
-                </div>
-              </Dropdown>
-            );
-          } else {
-            return null;
-          }
+            },
+          ];
+  
+          const menuProps = {
+            items: menuItems,
+            onClick: handleMenuClick,
+          };
+  
+          return (
+            <Dropdown
+              menu={menuProps}
+              trigger={['click']}
+              overlayClassName='btn-m text-center'
+              disabled={record.status !== "Menunggu"}
+            >
+              <div className='cursor-pointer' onClick={handleIconClick}>
+                <Button icon={<HorizontalDotsIcon />} />
+              </div>
+            </Dropdown>
+          );
         }
       },
     ],
@@ -205,7 +223,7 @@ const { data, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPag
       <div className="px-4 py-4 bg-[#F9FAFB]">
         <div className="p-6 bg-white rounded-[10px] shadow-lg">
           <Tables
-            data={{items: parsedData, totalCount: data?.data?.total || 0 }}
+            data={{ items: approvalData, totalCount: data?.data.total_data || 0 }}
             columns={columns}
             pagination={true}
             enableRowClick

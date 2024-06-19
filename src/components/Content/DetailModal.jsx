@@ -94,13 +94,13 @@ export const ArticleDetailModal = ({ articleId, isVisible, onOk, onCancel }) => 
             {article.sections &&
               article.sections.map((section, index) => (
                 <div key={index} className="mt-4">
-                  <h3 className="h6 font-bold">{section.title}</h3>
-                  <p className="body-s">{section.description}</p>
+                  <h3 className="h6 font-bold pb-4">{section.title}</h3>
+                  <p className="body-s pb-4">{section.description}</p>
                   {section.image_url && (
                     <img
                       src={section.image_url}
                       alt={section.title}
-                      className="w-full h-full object-cover object-center rounded-lg mt-2"
+                      className="w-full h-full object-cover object-center rounded-lg mt-2 pb-4"
                     />
                   )}
                 </div>
@@ -115,7 +115,7 @@ export const ArticleDetailModal = ({ articleId, isVisible, onOk, onCancel }) => 
             >
               Kembali
             </button>
-            <Link to={`/content/edit-article/${article.id}`} className="flex-1">
+            <Link to={`/admin/content/edit-article/${article.id}`} className="flex-1">
               <button
                 type="submit"
                 className="w-full rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4"

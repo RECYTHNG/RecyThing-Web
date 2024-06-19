@@ -1,6 +1,8 @@
 import { useState } from "react";
-import ApproveImage from "/assets/images/ApproveImage.png"
-import DisapproveImage from "/assets/images/DisapproveImage.png"
+import ApproveImage from "/assets/images/ApproveImage.png";
+import DisapproveImage from "/assets/images/DisapproveImage.png";
+import { useFetch } from "../../../hooks/useFetch";
+import dayjs from "dayjs";
 
 export const ApproveModalChildren = ({ onOk, onCancel }) => (
   <div className="flex flex-col gap-5 justify-center items-center">
@@ -96,6 +98,19 @@ export const DetailModal = ({
   nextPhotos,
   setIsDetailModalVisible,
 }) => {
+  const { data, isLoading, isError } = useFetch(
+    `/user-task/${selectedRecord?.id}`,
+    `userTask-${selectedRecord?.id}`,
+    {
+      enabled: !!selectedRecord,
+    }
+  );
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading data...</p>;
+
+  const detailData = data?.data;
+
   return (
     <div className="flex flex-col gap-10">
       <h4 className="h4 font-bold">Detail Misi</h4>
@@ -103,33 +118,33 @@ export const DetailModal = ({
         <div className="flex flex-col gap-[14px]">
           <p className="sub-m font-bold text-[#616161]">Misi</p>
           <h5 className="h5 font-bold text-primary-500">
-            {selectedRecord?.namaMisi}
+            {detailData?.title_task}
           </h5>
           <p className="h6">
             by{" "}
             <span className="font-semibold text-[#118E45]">
-              {selectedRecord?.pelaksana}
+              {detailData?.user_name}
             </span>
           </p>
         </div>
         <div className="flex flex-col gap-[14px]">
           <p className="sub-m font-bold text-[#616161]">Batas Akhir</p>
           <h5 className="h5 font-bold text-primary-500">
-            {selectedRecord?.batasAkhir}
+            {dayjs(detailData?.end_date).format("DD MMMM YYYY")}
           </h5>
         </div>
       </div>
       <div className="flex">
         <h4 className="h4 font-bold mr-24">{currentPage}</h4>
         <div className="grid grid-cols-3 gap-10">
-          {selectedRecord?.photos
+          {detailData?.images
             .slice(currentPhotoIndex, currentPhotoIndex + photosPerPage)
             .map((photo, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative w-full h-40">
                 <img
-                  src={photo}
+                  src={photo.image_url}
                   alt={`Photo ${index}`}
-                  className="w-full h-full rounded-md"
+                  className="w-full h-full object-cover rounded-md"
                 />
               </div>
             ))}
@@ -138,13 +153,15 @@ export const DetailModal = ({
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-[10px]">
           <p className="text-primary-500 btn-m font-semibold">Keterangan</p>
-          <p className="body-s">{selectedRecord?.keterangan}</p>
+          <p className="body-s">{detailData?.description_image}</p>
         </div>
         <div className="flex flex-col gap-[10px] text-end">
           <p className="text-primary-500 btn-m font-semibold">
             Waktu Pengunggahan Bukti
           </p>
-          <p className="body-s">{selectedRecord?.waktuUpload}</p>
+          <p className="body-s">
+            {dayjs(detailData?.images[currentPhotoIndex].uploaded_at).format("DD MMMM YYYY")}
+          </p>
         </div>
       </div>
       <div className="flex justify-end gap-[10px] mt-4">
@@ -161,12 +178,12 @@ export const DetailModal = ({
           type="button"
           className="rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4 px-6"
           onClick={
-            currentPhotoIndex + photosPerPage >= selectedRecord?.photos.length
+            currentPhotoIndex + photosPerPage >= detailData?.images.length
               ? () => setIsDetailModalVisible(false)
               : nextPhotos
           }
         >
-          {currentPhotoIndex + photosPerPage >= selectedRecord?.photos.length
+          {currentPhotoIndex + photosPerPage >= detailData?.images.length
             ? "Tutup"
             : "Berikutnya"}
         </button>
