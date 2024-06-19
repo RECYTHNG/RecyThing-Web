@@ -13,16 +13,20 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [errorEmail, setErrorEmail] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { mutateAsync, isPending, isError, isLoading } = useLogin();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+    setErrorEmail(''); // Clear email error when email changes
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    setErrorPassword(''); // Clear password error when password changes
   };
 
   const togglePasswordVisibility = () => {
@@ -32,18 +36,26 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setErrorEmail('');
+    setErrorPassword('');
 
-    // Basic validation
-    if (!email || !password) {
-      setError('Both fields are required');
-      return;
-    }
-
-    mutateAsync({ endpoint: '/admin/login', loginData: { email, password } }).then((res) => {
-      console.log(res.data.token);
-      localStorage.setItem('token', res.data.token);
-      navigate('/admin/dashboard');
-    });
+    mutateAsync({ endpoint: '/admin/login', loginData: { email, password } })
+      .then((res) => {
+        console.log(res.data.token);
+        localStorage.setItem('token', res.data.token);
+        navigate('/admin/dashboard');
+      })
+      .catch((error) => {
+        if (error.response) {
+          const { status } = error.response;
+          if (status === 401) {
+            setErrorEmail('Email Not Found');
+            setErrorPassword('Password is wrong');
+          }
+        } else {
+          setError('Something went wrong. Please try again.');
+        }
+      });
   };
 
   return (
@@ -67,6 +79,7 @@ const LoginPage = () => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col">
               <input type="email" placeholder="Email Address" value={email} onChange={handleEmailChange} className="py-3 px-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              {errorEmail && <div className="text-red-500 text-sm">{errorEmail}</div>}
             </div>
             <div className="flex flex-col relative">
               <input
@@ -79,6 +92,7 @@ const LoginPage = () => {
               <button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <img src={showPassword ? EyeOff : Eye} alt="Toggle Password Visibility" />
               </button>
+              {errorPassword && <div className="text-red-500 text-sm">{errorPassword}</div>}
             </div>
           </div>
           {error && <div className="text-red-500 text-sm">{error}</div>}

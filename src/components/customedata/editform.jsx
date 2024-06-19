@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUpdateData } from '../../hooks/useFetch';
+import { toast } from 'react-toastify';
 
 const EditDataForm = ({ admin, onEdit, onCancel }) => {
   const [topic, setTopic] = useState('');
@@ -22,11 +23,16 @@ const EditDataForm = ({ admin, onEdit, onCancel }) => {
       description: description,
     };
 
+    toast.loading('Sedang Memperbarui Data');
+
     try {
       await updateData({ endpoint: `/custom-data/${admin.id}`, updatedData: editData });
-      console.log('sukses');
+      toast.dismiss();
       onEdit();
+      toast.error('Data berhasil diubah!');
     } catch (error) {
+      toast.dismiss();
+      toast.error('Terjadi Kesalahan Ketika Menghapus Data');
       console.log('Error edit data', error);
     }
   };

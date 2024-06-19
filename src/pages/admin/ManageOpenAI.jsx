@@ -115,13 +115,6 @@ const ManageOpenAI = () => {
 
   const handleDelete = async () => {
     setIsDeleteModalVisible(false);
-    toast.success('Data berhasil dihapus!', {
-      position: 'top-right',
-      autoClose: 2000,
-      style: {
-        marginTop: '90px',
-      },
-    });
     refetch();
   };
 
@@ -148,25 +141,11 @@ const ManageOpenAI = () => {
 
   const handleEditSubmit = () => {
     setIsEditModalVisible(false);
-    toast.success('Data berhasil diubah!', {
-      position: 'top-right',
-      autoClose: 2000,
-      style: {
-        marginTop: '90px',
-      },
-    });
     refetch();
   };
 
   const handleAddSubmit = () => {
     setIsAddModalVisible(false);
-    toast.success('Data berhasil ditambah!', {
-      position: 'top-right',
-      autoClose: 2000,
-      style: {
-        marginTop: '90px',
-      },
-    });
     refetch();
   };
 
@@ -185,10 +164,10 @@ const ManageOpenAI = () => {
           <Tables data={{ items: data, totalCount: customData?.data?.total || 0 }} columns={columns} pagination={true} initialPageSize={10} onPageChange={handlePageChange} isLoading={isLoading} />
         </div>
       </div>
-      <Modal open={isAddModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null} width={640}>
+      <Modal open={isAddModalVisible} closable={false} onOk={handleOk} onCancel={handleCancel} footer={null} width={640}>
         <AddDataForm onCancel={handleCancel} onAdd={handleAddSubmit} />
       </Modal>
-      <Modal open={isEditModalVisible} onCancel={handleCancel} footer={null} width={640}>
+      <Modal open={isEditModalVisible} closable={false} onCancel={handleCancel} footer={null} width={640}>
         <EditDataForm admin={editData} onEdit={handleEditSubmit} onCancel={handleCancel} />
       </Modal>
       <DetailModal open={isDetailModalVisible} onCancel={handleCancel} data={detailData} />

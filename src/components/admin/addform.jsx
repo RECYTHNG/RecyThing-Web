@@ -7,6 +7,7 @@ import Role from '../../assets/manage.svg';
 import Eye from '../../assets/eye.svg';
 import EyeOff from '../../assets/eye-off.svg';
 import CameraIcon from '../../assets/camera.svg';
+import { toast } from 'react-toastify';
 
 const AddAdminForm = ({ onAdd, onCancel }) => {
   const [fullName, setFullName] = useState('');
@@ -38,11 +39,14 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
       profile_photo: image,
     };
 
+    toast.loading('Sedang Menambahkan Data');
+
     try {
       await postData({ endpoint: '/admin', newData: adminData });
-      console.log('Success');
+      toast.dismiss();
+      toast.success('Data add successfully');
       onAdd();
-
+      setAvatar('');
       setFullName('');
       setEmail('');
       setPassword('');
@@ -50,6 +54,8 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
       setRole('admin');
       setErrorMessage('');
     } catch (error) {
+      toast.dismiss();
+      toast.error('Terjadi Kesalahan Ketika Menambahkan Data');
       console.error('Error adding admin:', error);
     }
   };
@@ -149,6 +155,7 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
                 </button>
               </div>
             </div>
+            {errorMessage && <div className="text-red-500">{errorMessage}</div>}
             <div className="flex flex-col justify-start items-start gap-[5px]">
               <label className="text-neutral-700 text-[15px] font-normal leading-normal">Role</label>
               <div className="relative">
@@ -159,8 +166,8 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
                   className="pl-10 pr-10 w-[306px] py-2.5 rounded-[7px] border border-neutral-400 text-neutral-500 text-base font-normal leading-relaxed appearance-none cursor-pointer"
                   required
                 >
-                  <option value="super admin">super admin</option>
-                  <option value="admin">admin</option>
+                  <option value="super admin">Super Admin</option>
+                  <option value="admin">Admin</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                   <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -171,7 +178,6 @@ const AddAdminForm = ({ onAdd, onCancel }) => {
             </div>
           </div>
         </div>
-        {errorMessage && <div className="text-red-500">{errorMessage}</div>}
         <div className="flex gap-[9px]">
           <button type="submit" className="w-[306px] h-[38px] px-2 py-1.5 bg-sky-900 rounded-[7px]">
             <div className="text-white text-base font-normal leading-relaxed">Add Data</div>
