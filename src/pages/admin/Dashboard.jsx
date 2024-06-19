@@ -5,6 +5,9 @@ import PieChart from "../../components/Dashboard/PieChart";
 import BarChart from "../../components/Dashboard/BarChart";
 import LineChart from "../../components/Dashboard/LineChart";
 import user from "/assets/svg/dashboard/user.svg";
+import challange from "/assets/svg/dashboard/challange.svg";
+import content from "/assets/svg/dashboard/content.svg";
+import report from "/assets/svg/dashboard/report.svg";
 import StatisticInformation from "../../components/Dashboard/StatisticInformation";
 import { useFetch } from "../../hooks/useFetch";
 
@@ -23,21 +26,21 @@ const Dashboard = () => {
     {
       name: "Report",
       description: "since yesterday",
-      icon: user,
+      icon: report,
       total: dashboardData?.report?.total_report,
       updatedData: dashboardData?.report?.addition_report_since_yesterday ?? 0,
     },
     {
       name: "Challange",
       description: "Last week",
-      icon: user,
+      icon: challange,
       total: dashboardData?.challenge?.total_challenge,
       updatedData: dashboardData?.challenge?.addition_challenge_since_last_week ?? 0,
     },
     {
       name: "Content",
       description: "Today",
-      icon: user,
+      icon: content,
       total: dashboardData?.content?.total_content,
       updatedData: dashboardData?.content?.addition_content_today ?? 0,
     },

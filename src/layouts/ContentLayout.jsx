@@ -7,10 +7,6 @@ import { useFetch } from '../hooks/useFetch';
 const ContentLayout = ({ children, title }) => {
   const { data: adminData, isLoading, isError } = useFetch('/admin/profile');
 
-  const handleSearchChange = (e) => {
-    setSearchValue(e.target.value);
-  };
-
   return (
     <>
       {!isLoading ?
@@ -25,7 +21,6 @@ const ContentLayout = ({ children, title }) => {
               <div className='flex flex-col'>
                 <div className='flex items-center gap-6'>
                   <span className='body-m font-medium'>{adminData.data.name}</span>
-                  <FaChevronDown className='text-sm' />
                 </div>
                 <span className='body-s text-[#737791]'>{adminData.data.role}</span>
               </div>
