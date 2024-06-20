@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router";
 import ContentLayout from "../../../layouts/ContentLayout";
 import { FaCheck } from "react-icons/fa";
-import { useDeleteData, useFetch } from "../../../hooks/useFetch";
+import { useDeleteData, useFetch, usePostFormData, useUpdateData } from "../../../hooks/useFetch";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "antd";
 import DeleteModalChildren from "../../../components/Content/DeleteModalChild";
@@ -32,6 +32,8 @@ export default function EditContentArticle() {
   const contentCategories = data?.data?.content_categories || [];
 
   const { mutateAsync: deleteArticle } = useDeleteData();
+  const { mutateAsync: updateDataImage } = usePostFormData();
+  const { mutateAsync: updateData } = useUpdateData();
 
   useEffect(() => {
     if (articleData && articleData.code === 200) {
@@ -52,6 +54,7 @@ export default function EditContentArticle() {
 
   const handleFocus = (field) => setIsFocused({ ...isFocused, [field]: true });
   const handleBlur = (field) => setIsFocused({ ...isFocused, [field]: false });
+
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
     setThumbnail(file);
@@ -83,11 +86,103 @@ export default function EditContentArticle() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Submit logic
-  };
+  
+    let thumbnailUrl = thumbnailPreview; 
+    const sectionImageUrls = [...subJuduls.map((section) => section.imagePreview)];
 
+    if (thumbnail instanceof File) {
+      try {
+        const thumbnailFormData = new FormData();
+        thumbnailFormData.append("image", thumbnail);
+        const toastUploadImage = toast.loading("Mengunggah gambar...")
+        const thumbnailResponse = await updateDataImage({
+          endpoint: "/article/upload",
+          newData: thumbnailFormData,
+        });
+
+  
+        toast.update(toastUploadImage, {
+          render: "Thumbnail berhasil diunggah!",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        thumbnailUrl = thumbnailResponse.data.image_url;
+      } catch (error) {
+        toast.update(toastUploadImage, {
+          render: "Gagal mengunggah thumbnail.",
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        return;
+      }
+    }
+  
+    for (let i = 0; i < subJuduls.length; i++) {
+      if (subJuduls[i].imagePreview instanceof File) {
+        try {
+          const sectionFormData = new FormData();
+          sectionFormData.append("image", subJuduls[i].imagePreview);
+          const sectionImageResponse = await updateDataImage({
+            endpoint: "/article/upload",
+            newData: sectionFormData,
+          });
+  
+          toast.update(toastUploadImage, {
+            render: `Gambar untuk section ${i + 1} berhasil diunggah!`,
+            type: "success",
+            isLoading: false,
+            autoClose: 2000,
+          });
+
+          sectionImageUrls[i] = sectionImageResponse.data.image_url;
+
+        } catch (error) {
+          toast.update(toastUploadImage, {
+            render: `Gagal mengunggah gambar untuk sub judul ${i + 1}.`,
+            type: "error",
+            isLoading: false,
+            autoClose: 2000,
+          });
+          return;
+        }
+      }
+    }
+  
+    const payload = {
+      title: judul,
+      description: deskripsi,
+      thumbnail_url: thumbnailUrl,
+      waste_categories: selectedCategories.filter(category =>
+        rubbishCategories.some(rubbish => rubbish.name === category)
+      ),
+      content_categories: selectedCategories.filter(category =>
+        contentCategories.some(content => content.name === category)
+      ),
+      sections: subJuduls.map(section => ({
+        title: section.subJudul,
+        description: section.deskripsi,
+        image_url: section.imagePreview
+      })),
+    };
+
+    try {
+      const response = await updateData({
+        endpoint: `/article/${id}`,
+        updatedData: payload
+      });
+
+      toast.success("Article updated successfully!");
+      navigate("/admin/content");
+
+    } catch (error) {
+      toast.error("Failed to update article");
+    }
+  };
+  
   const handleDelete = () => {
     setIsModalVisible(true);
   };
