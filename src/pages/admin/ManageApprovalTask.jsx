@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import ContentLayout from "../../layouts/ContentLayout";
-import { Dropdown, Tag, Avatar, Modal, Button, message } from "antd";
+import { Dropdown, Tag, Avatar, Modal, Button } from "antd";
 import Tables from "../../components/global/Table";
 import { ApproveModalChildren, DetailModal, DisapproveModalChildren } from "../../components/Mission/Approval/ModalChild";
 import HorizontalDotsIcon from "../../assets/moreicons";
@@ -43,27 +43,25 @@ export default function ManageApprovalTask() {
 
   const photosPerPage = 3;
 
-  const { data, isLoading, isError } = useFetch('/approval-tasks', 'approvalTasks');
+  const { data: approvalData, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPage}&limit=${pageSize}`, 'approvalTasks');
   const updateData = useUpdateData();
 
-  useEffect(() => {
-    if (data) {
-      console.log("Fetched data:", data);
-    }
-  }, [data]);
-
-  const transformData = (data) => {
-    return data.map((item) => ({
+  const data = useMemo(() => {
+    const mappedData = approvalData?.data?.data?.map((item) => ({
       id: item.id,
       namaMisi: item.task.title,
       pelaksana: item.user.name,
       profilePic: item.user.profile,
       batasAkhir: dayjs(item.task.end_date).format("DD MMMM YYYY"),
       status: mapStatus(item.status_accept),
-    }));
-  };
+    })) || [];
 
-  const approvalData = useMemo(() => (data ? transformData(data.data.data) : []), [data]);
+    return mappedData.sort((a, b) => {
+      if (a.status === "Menunggu" && b.status !== "Menunggu") return -1;
+      if (a.status !== "Menunggu" && b.status === "Menunggu") return 1;
+      return 0;
+    });
+  }, [approvalData]);
 
   const showSetujuModal = (record) => {
     setSelectedRecord(record);
@@ -194,12 +192,12 @@ export default function ManageApprovalTask() {
               },
             },
           ];
-  
+
           const menuProps = {
             items: menuItems,
             onClick: handleMenuClick,
           };
-  
+
           return (
             <Dropdown
               menu={menuProps}
@@ -223,12 +221,12 @@ export default function ManageApprovalTask() {
       <div className="px-4 py-4 bg-[#F9FAFB]">
         <div className="p-6 bg-white rounded-[10px] shadow-lg">
           <Tables
-            data={{ items: approvalData, totalCount: data?.data.total_data || 0 }}
+            data={{ items: data, totalCount: approvalData?.data.total_data || 0 }}
             columns={columns}
+            onPageChange={handlePageChange}
             pagination={true}
             enableRowClick
             onRowClick={showDetailModal}
-            onPageChange={handlePageChange}
             isLoading={isLoading}
           />
         </div>
