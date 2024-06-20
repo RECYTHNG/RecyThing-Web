@@ -175,11 +175,11 @@ export default function EditContentArticle() {
         updatedData: payload
       });
 
-      toast.success("Article updated successfully!");
+      toast.success("Artikel berhasil diedit!");
       navigate("/admin/content");
 
     } catch (error) {
-      toast.error("Failed to update article");
+      toast.error("Gagal mengedit artikel");
     }
   };
   
@@ -219,7 +219,7 @@ export default function EditContentArticle() {
   };
 
   return (
-    <ContentLayout title={"Tambah Artikel"}>
+    <ContentLayout title={"Edit Artikel"}>
       <section>
         <div className="p-[30px] bg-[#F9FAFB] h-auto">
           <form className="grid grid-cols-4 gap-5" onSubmit={handleSubmit}>
@@ -448,7 +448,7 @@ export default function EditContentArticle() {
                               </span>
                             </label>
                             <label
-                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                              className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
                               htmlFor={category.name}
                             >
                               {category.name}
@@ -490,7 +490,7 @@ export default function EditContentArticle() {
                               </span>
                             </label>
                             <label
-                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                              className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
                               htmlFor={category.name}
                             >
                               {category.name}
