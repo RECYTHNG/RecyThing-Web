@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FaChevronDown } from "react-icons/fa6";
 import { Avatar, Input } from 'antd';
 import { IoPersonSharp } from 'react-icons/io5';
@@ -6,6 +6,12 @@ import { useFetch } from '../hooks/useFetch';
 
 const ContentLayout = ({ children, title }) => {
   const { data: adminData, isLoading, isError } = useFetch('/admin/profile');
+
+  useEffect(() => {
+    if(adminData){
+      localStorage.setItem('role', adminData.data.role)
+    }
+  },[adminData])
 
   return (
     <>

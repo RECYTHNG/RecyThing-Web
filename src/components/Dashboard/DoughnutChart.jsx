@@ -39,7 +39,7 @@ const DoughnutChart = ({ data }) => {
 
   return (
     <section className="py-[22.5px] px-[28px] bg-white rounded-[10px] flex flex-col items-center gap-5 lg:min-w-[370px] w-full lg:w-fit">
-      <h2 className="h5 text-black font-semibold">User Achievment</h2>
+      <h2 className="h5 text-black font-semibold">User Achievement</h2>
       <div className="w-[172px] aspect-square relative flex items-center justify-center">
         <Doughnut data={chartData} options={options} />
         <div className="absolute flex flex-col items-center justify-center">

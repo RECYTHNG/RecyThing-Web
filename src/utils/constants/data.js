@@ -17,7 +17,7 @@ import adminWhite from "/assets/svg/sidebar/adminWhite.svg"
 import achievmentWhite from "/assets/svg/sidebar/achievmentWhite.svg"
 import openaiWhite from "/assets/svg/sidebar/openaiWhite.svg"
 
-export const nav_item = [
+export const nav_item_super_admin = [
   {
     name: "Dashboard",
     url: "/admin/dashboard",
@@ -65,6 +65,63 @@ export const nav_item = [
     url: "/admin/admin",
     iconActive: adminWhite,
     icon: admin,
+  },
+  {
+    name: "Manajemen Pencapaian",
+    url: "/admin/achievement",
+    iconActive: achievmentWhite,
+    icon: achievment,
+  },
+  {
+    name: "Manajemen OpenAI",
+    url: "/admin/openai",
+    iconActive: openaiWhite,
+    icon: openai,
+  },
+]
+
+export const nav_item_admin = [
+  {
+    name: "Dashboard",
+    url: "/admin/dashboard",
+    iconActive: missionWhite,
+    icon: mission,
+  },
+  {
+    name: "Manajemen Pelaporan",
+    url: "/admin/report",
+    iconActive: reportWhite,
+    icon: report,
+  },
+  {
+    name: "Manajemen Misi",
+    iconActive: missionWhite,
+    url: "/admin/mission",
+    icon: mission,
+    children: [
+      {
+        name: "Daftar Misi",
+        url: "/admin/mission/list",
+        icon: missionList,
+      },
+      {
+        name: "Persetujuan Misi",
+        url: "/admin/mission/approval",
+        icon: missionApproval,
+      },
+    ]
+  },
+  {
+    name: "Manajemen Konten",
+    url: "/admin/content",
+    iconActive: contentWhite,
+    icon: content,
+  },
+  {
+    name: "Manajemen Pengguna",
+    url: "/admin/user",
+    iconActive: userWhite,
+    icon: user,
   },
   {
     name: "Manajemen Pencapaian",

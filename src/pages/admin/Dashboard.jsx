@@ -14,7 +14,7 @@ import { useFetch } from "../../hooks/useFetch";
 const Dashboard = () => {
   const { data: dashboard, isLoading, isError } = useFetch("/dashboards", "dashboard");
   const dashboardData = dashboard?.data;
-  console.log(dashboardData);
+
   const dataStatistic = [
     {
       name: "User",
@@ -31,7 +31,7 @@ const Dashboard = () => {
       updatedData: dashboardData?.report?.addition_report_since_yesterday ?? 0,
     },
     {
-      name: "Challange",
+      name: "Challenge",
       description: "Last week",
       icon: challange,
       total: dashboardData?.challenge?.total_challenge,

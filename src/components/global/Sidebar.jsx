@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { nav_item } from '../../utils/constants/data';
+import { nav_item_admin, nav_item_super_admin } from '../../utils/constants/data';
 import logo from '/assets/svg/logo.svg';
 import { MdOutlineLogout } from 'react-icons/md';
 import { FaChevronDown } from 'react-icons/fa';
@@ -11,15 +11,20 @@ const Sidebar = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
+  const role = localStorage.getItem('role');
+
+  const navItems = role === 'super admin' ? nav_item_super_admin : nav_item_admin;
+
   function handleLogout(){
     localStorage.removeItem('token')
+    localStorage.removeItem('role')
     navigate('/login')
   }
   return (
     <nav className="h-screen min-w-[290px] flex flex-col px-[14px] pt-[37px] pb-[27px] text-[#737791] overflow-y-auto bg-white">
       <img src={logo} alt="logo" className="text-center h-[34px]" />
       <div className="flex flex-col gap-4 mt-11 sub-m">
-        {nav_item.map((nav) => {
+        {navItems.map((nav) => {
           const isActive = location.pathname === nav.url;
           const isParentActive = location.pathname.includes(nav.url);
           return (
