@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Card from "../../../components/global/Card";
 import { useFetch } from "../../../hooks/useFetch";
-import { DetailVideoModal } from "../../../components/Content/DetailModal"
+import { DetailVideoModal } from "../../../components/Content/DetailModal";
 
 function VideoPagination({
   currentPage,
@@ -56,14 +56,11 @@ function VideoPagination({
 }
 
 export default function ManageContent() {
-  const { data: responseData, isLoading, error } = useFetch('/videos/data', 'videosData');
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [videosPerPage, setVideosPerPage] = useState(6);
-
-  const indexOfLastVideo = currentPage * videosPerPage;
-  const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
+  const { data: responseData, isLoading, error } = useFetch(`/videos/data?page=${currentPage}&limit=${videosPerPage}`, 'videosData');
 
   const paginate = (pageNumber, perPage = videosPerPage) => {
     setCurrentPage(pageNumber);
@@ -84,11 +81,12 @@ export default function ManageContent() {
   };
 
   const videosData = responseData?.data || [];
+  const totalVideos = responseData?.total_data || 0;
 
   return (
     <div className="px-8 py-6 shadow-md flex flex-col gap-[30px] rounded-lg bg-white">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-[52px] gap-y-8 place-items-center">
-        {videosData.slice(indexOfFirstVideo, indexOfLastVideo).map((video) => (
+        {videosData.map((video) => (
           <Card
             key={video.id}
             image={video.url_thumbnail}
@@ -99,7 +97,7 @@ export default function ManageContent() {
       </div>
       <VideoPagination
         currentPage={currentPage}
-        totalVideos={videosData.length}
+        totalVideos={totalVideos}
         videosPerPage={videosPerPage}
         paginate={paginate}
       />
