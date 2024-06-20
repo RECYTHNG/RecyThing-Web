@@ -15,11 +15,11 @@ export const DeleteModal = ({ isVisible, onOk, onCancel, admin }) => {
       await deleteData({ endpoint: `/custom-data/${admin.id}` });
       toast.dismiss();
       onOk();
-      toast.error('Data berhasil dihapus!');
+      toast.success('Data berhasil dihapus!');
     } catch (error) {
       toast.dismiss();
       toast.error('Terjadi Kesalahan Ketika Menghapus Data');
-      console.error('Error deleting data:', error);
+      console.log(error);
     }
   };
 
