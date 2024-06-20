@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Dropdown, Menu, Tooltip, Modal } from 'antd';
+import dayjs from 'dayjs';
 import Tables from '../../components/global/Table';
 import ContentLayout from '../../layouts/ContentLayout';
 import Edit from '../../assets/edit.svg';
@@ -9,7 +10,6 @@ import Eye from '../../assets/eye2.svg';
 import AddDataForm from '../../components/customedata/addform';
 import EditDataForm from '../../components/customedata/editform';
 import DetailModal from '../../components/customedata/detailmodal';
-import { toast } from 'react-toastify';
 import { DeleteModal } from '../../components/customedata/modaldelete';
 import AddButton from '../../components/global/button/AddButton';
 import { useFetch } from '../../hooks/useFetch';
@@ -34,19 +34,19 @@ const ManageOpenAI = () => {
 
   const data = useMemo(
     () =>
-      customData?.data?.['custom_datas']?.map((admin) => ({
+      customData?.data?.['custom_datas']?.map((admin, index) => ({
         id: admin.id,
         topic: admin.topic,
         description: admin.description,
-        created_at: new Date(admin.created_at).toLocaleDateString('id-ID'),
-        updated_at: new Date(admin.updated_at).toLocaleDateString('id-ID'),
+        created_at: dayjs(admin.updated_at ?? admin.created_at).format('DD/MM/YYYY'),
+        index: (currentPage - 1) * pageSize + index + 1,
       })) || [],
-    [customData]
+    [customData, currentPage, pageSize]
   );
 
   const columns = useMemo(
     () => [
-      { title: 'No', dataIndex: 'id', key: 'id' },
+      { title: 'No', dataIndex: 'index', key: 'index' },
       { title: 'Tanggal', dataIndex: 'created_at', key: 'created_at' },
       { title: 'Topik', dataIndex: 'topic', key: 'topic' },
       {

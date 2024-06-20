@@ -29,7 +29,7 @@ const EditDataForm = ({ admin, onEdit, onCancel }) => {
       await updateData({ endpoint: `/custom-data/${admin.id}`, updatedData: editData });
       toast.dismiss();
       onEdit();
-      toast.error('Data berhasil diubah!');
+      toast.success('Data berhasil diubah!');
     } catch (error) {
       toast.dismiss();
       toast.error('Terjadi Kesalahan Ketika Menghapus Data');
