@@ -67,19 +67,19 @@ const ManageOpenAI = () => {
           <Dropdown
             overlay={
               <Menu className="w-26 px-4 p-2.5 bg-white rounded-[5px] shadow flex-col justify-start items-center inline-flex ">
-                <Menu.Item key="edit" onClick={() => handleEdit(record)}>
+                <Menu.Item key="edit" onClick={() => handleEdit(record)} className="custom-menu-item-edit">
                   <div className="w-[80px] h-[30px] px-1.5 py-0.5 rounded gap-2.5 inline-flex items-center">
                     <img src={Edit} alt="Edit" className="w-4 h-4" />
                     <div className="text-black text-base font-normal leading-relaxed">Edit</div>
                   </div>
                 </Menu.Item>
-                <Menu.Item key="detail" onClick={() => handleDetail(record)}>
+                <Menu.Item key="detail" onClick={() => handleDetail(record)} className="custom-menu-item-detail">
                   <div className="w-[80px] h-[30px] px-1.5 py-0.5 rounded gap-2.5 inline-flex items-center">
                     <img src={Eye} alt="Detail" className="w-4 h-4" />
                     <div className="text-black text-base font-normal leading-relaxed">Detail</div>
                   </div>
                 </Menu.Item>
-                <Menu.Item key="delete" onClick={() => confirmDelete(record)}>
+                <Menu.Item key="delete" onClick={() => confirmDelete(record)} className="custom-menu-item-delete">
                   <div className="w-[80px] h-[30px] px-1.5 py-0.5 rounded gap-2.5 inline-flex items-center">
                     <img src={Delete} alt="Delete" className="w-4 h-4" />
                     <div className="text-black text-base font-normal leading-relaxed">Hapus</div>
