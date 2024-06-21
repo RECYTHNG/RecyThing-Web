@@ -24,3 +24,19 @@ div:hover::-webkit-scrollbar-thumb {
 .ant-upload-btn {
   padding: 0px !important; /* Use !important to force the padding */
 }
+
+.custom-menu-item-edit:hover {
+  background-color: #f9a600 !important;
+}
+
+.custom-menu-item-delete:hover {
+  background-color: #d62845 !important;
+}
+
+.custom-menu-item-detail:hover {
+  background-color: #0290e2 !important;
+}
+
+.custom-menu-item-approve:hover {
+  background-color: #118e45 !important;
+}
