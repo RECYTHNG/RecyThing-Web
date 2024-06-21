@@ -85,6 +85,7 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
   };
 
   const handleSubmit = async () => {
+    toast.loading("Sedang Membuat Task");
     const formData = new FormData();
 
     formData.append('json_data', JSON.stringify({
@@ -106,9 +107,9 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
     addTask({ endpoint: '/tasks', newData: formData })
     .then((data) => {
       onClose()
-      console.log(data)
+      toast.success("Data Berhasil Ditambah");
     }).catch((err) => {
-      console.log(err)
+      toast.error("Gagal Menambahkan Task")
     })
   };
   

@@ -27,16 +27,24 @@ div:hover::-webkit-scrollbar-thumb {
 
 .custom-menu-item-edit:hover {
   background-color: #f9a600 !important;
+  color: white !important;
 }
 
 .custom-menu-item-delete:hover {
   background-color: #d62845 !important;
+  color: white !important;
 }
 
 .custom-menu-item-detail:hover {
   background-color: #0290e2 !important;
+  color: white !important;
 }
 
 .custom-menu-item-approve:hover {
   background-color: #118e45 !important;
+  color: white !important;
+}
+
+.ant-dropdown-menu {
+  padding: 0 !important;
 }

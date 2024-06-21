@@ -72,21 +72,24 @@ const MissionList = () => {
         render: (_, record) => {
           const menuItems = [
             {
-              label: <span type="text">Edit</span>,
-              icon: <EditOutlined />,
+              label: <span className='text-base ml-1'>Edit</span>,
+              icon: <EditOutlined className='!text-base'/>,
               key: 'edit',
+              className: "custom-menu-item-edit !px-5",
               onClick: () => handleEdit(record),
             },
             {
-              label: <span type="text">Detail</span>,
-              icon: <EyeOutlined />,
+              label: <span className='text-base ml-1'>Detail</span>,
+              icon: <EyeOutlined className='!text-base'/>,
               key: 'detail',
+              className: "custom-menu-item-detail !px-5",
               onClick: () => handleDetail(record),
             },
             {
-              label: <span type="text">Hapus</span>,
-              icon: <DeleteOutlined />,
+              label: <span className='text-base ml-1'>Hapus</span>,
+              icon: <DeleteOutlined className='!text-base'/>,
               key: 'delete',
+              className: "custom-menu-item-delete !px-5",
               onClick: () => handleDelete(record.id),
             },
           ];
