@@ -31,7 +31,7 @@ const MissionList = () => {
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const { data: taskData, isLoading, isError } = useFetch(`/tasks?page=${currentPage}&limit=${pageSize}`, 'task')
+  const { data: taskData, isLoading, isError } = useFetch(`/tasks?page=${currentPage}&limit=${pageSize}&end-date=desc`, 'task')
   const { mutateAsync: deleteTask } = useDeleteData()
 
   const data = useMemo(
