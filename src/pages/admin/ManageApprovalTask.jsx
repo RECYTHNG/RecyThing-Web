@@ -43,25 +43,21 @@ export default function ManageApprovalTask() {
 
   const photosPerPage = 3;
 
-  const { data: approvalData, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPage}&limit=${pageSize}`, 'approvalTasks');
+  const { data: approvalData, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPage}&limit=${pageSize}&sort_by=id&sort_type=desc`, 'approvalTasks');
   const updateData = useUpdateData();
 
-  const data = useMemo(() => {
-    const mappedData = approvalData?.data?.data?.map((item) => ({
-      id: item.id,
-      namaMisi: item.task.title,
-      pelaksana: item.user.name,
-      profilePic: item.user.profile,
-      batasAkhir: dayjs(item.task.end_date).format("DD MMMM YYYY"),
-      status: mapStatus(item.status_accept),
-    })) || [];
-
-    return mappedData.sort((a, b) => {
-      if (a.status === "Menunggu" && b.status !== "Menunggu") return -1;
-      if (a.status !== "Menunggu" && b.status === "Menunggu") return 1;
-      return 0;
-    });
-  }, [approvalData]);
+  const data = useMemo(
+    () =>
+      approvalData?.data?.data?.map((item) => ({
+        id: item.id,
+        namaMisi: item.task.title,
+        pelaksana: item.user.name,
+        profilePic: item.user.profile,
+        batasAkhir: dayjs(item.task.end_date).format("DD MMMM YYYY"),
+        status: mapStatus(item.status_accept),
+        })) || [],
+      [approvalData]
+    );
 
   const showSetujuModal = (record) => {
     setSelectedRecord(record);
@@ -225,6 +221,7 @@ export default function ManageApprovalTask() {
             columns={columns}
             onPageChange={handlePageChange}
             pagination={true}
+            initialPageSize={15}
             enableRowClick
             onRowClick={showDetailModal}
             isLoading={isLoading}
