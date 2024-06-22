@@ -106,9 +106,11 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
   
     addTask({ endpoint: '/tasks', newData: formData })
     .then((data) => {
+      toast.dismiss();
       onClose()
       toast.success("Data Berhasil Ditambah");
     }).catch((err) => {
+      toast.dismiss();
       toast.error("Gagal Menambahkan Task")
     })
   };
