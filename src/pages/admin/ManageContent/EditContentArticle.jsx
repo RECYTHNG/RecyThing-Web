@@ -112,9 +112,9 @@ export default function EditContentArticle() {
     let sectionImageUrls = [
       ...subJuduls.map((section) => section.imagePreview),
     ];
-    const toastUploadImage = toast.loading("Mengunggah gambar...");
 
     if (thumbnail instanceof File) {
+      const toastUploadImage = toast.loading("Mengunggah gambar thumbnail...");
       try {
         const thumbnailFormData = new FormData();
         thumbnailFormData.append("image", thumbnail);
@@ -143,6 +143,7 @@ export default function EditContentArticle() {
 
     for (let i = 0; i < subJuduls.length; i++) {
       if (subJuduls[i].image instanceof File) {
+        const toastUploadImageSection = toast.loading("Mengunggah gambar section...");
         try {
           const sectionFormData = new FormData();
           sectionFormData.append("image", subJuduls[i].image);
@@ -151,7 +152,7 @@ export default function EditContentArticle() {
             newData: sectionFormData,
           });
 
-          toast.update(toastUploadImage, {
+          toast.update(toastUploadImageSection, {
             render: `Gambar untuk section ${i + 1} berhasil diunggah!`,
             type: "success",
             isLoading: false,
@@ -160,7 +161,7 @@ export default function EditContentArticle() {
 
           sectionImageUrls[i] = sectionImageResponse.data.image_url;
         } catch (error) {
-          toast.update(toastUploadImage, {
+          toast.update(toastUploadImageSection, {
             render: `Gagal mengunggah gambar untuk sub judul ${i + 1}.`,
             type: "error",
             isLoading: false,
