@@ -1,8 +1,8 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import ContentLayout from "../../layouts/ContentLayout";
 import { Dropdown, Tag, Avatar, Modal, Button } from "antd";
 import Tables from "../../components/global/Table";
-import { ApproveModalChildren, DetailModal, DisapproveModalChildren } from "../../components/Mission/Approval/ModalChild";
+import { ApproveModalChildren, DisapproveModalChildren, DetailModal } from "../../components/Mission/Approval/ModalChild";
 import HorizontalDotsIcon from "../../assets/moreicons";
 import { useFetch, useUpdateData } from "../../hooks/useFetch";
 import dayjs from "dayjs";
@@ -37,11 +37,8 @@ export default function ManageApprovalTask() {
   const [isTolakModalVisible, setIsTolakModalVisible] = useState(false);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
-  const photosPerPage = 3;
+  const [pageSize, setPageSize] = useState(15);
 
   const { data: approvalData, isLoading, isError } = useFetch(`/approval-tasks?page=${currentPage}&limit=${pageSize}&sort_by=id&sort_type=desc`, 'approvalTasks');
   const updateData = useUpdateData();
@@ -53,7 +50,7 @@ export default function ManageApprovalTask() {
         namaMisi: item.task.title,
         pelaksana: item.user.name,
         profilePic: item.user.profile,
-        batasAkhir: dayjs(item.task.end_date).format("DD MMMM YYYY"),
+        batasAkhir: dayjs(item.task.end_date).format("DD/MM/YYYY"),
         status: mapStatus(item.status_accept),
         })) || [],
       [approvalData]
@@ -99,19 +96,7 @@ export default function ManageApprovalTask() {
 
   const showDetailModal = (record) => {
     setSelectedRecord(record);
-    setCurrentPhotoIndex(0);
-    setCurrentPage(1);
     setIsDetailModalVisible(true);
-  };
-
-  const nextPhotos = () => {
-    setCurrentPhotoIndex((prevIndex) => prevIndex + photosPerPage);
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  const prevPhotos = () => {
-    setCurrentPhotoIndex((prevIndex) => prevIndex - photosPerPage);
-    setCurrentPage((prevPage) => prevPage - 1);
   };
 
   const handleMenuClick = (e) => {
@@ -256,11 +241,6 @@ export default function ManageApprovalTask() {
       >
         <DetailModal
           selectedRecord={selectedRecord}
-          currentPhotoIndex={currentPhotoIndex}
-          photosPerPage={photosPerPage}
-          currentPage={currentPage}
-          prevPhotos={prevPhotos}
-          nextPhotos={nextPhotos}
           setIsDetailModalVisible={setIsDetailModalVisible}
         />
       </Modal>

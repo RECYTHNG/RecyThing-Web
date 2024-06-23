@@ -7,20 +7,27 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router";
 import ContentLayout from "../../../layouts/ContentLayout";
 import { FaCheck } from "react-icons/fa";
-import { useDeleteData, useFetch, usePostFormData, useUpdateData } from "../../../hooks/useFetch";
+import {
+  useDeleteData,
+  useFetch,
+  usePostFormData,
+  useUpdateData,
+} from "../../../hooks/useFetch";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "antd";
 import DeleteModalChildren from "../../../components/Content/DeleteModalChild";
 
 export default function EditContentArticle() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const { data: articleData, error } = useFetch(`/article/${id}`);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [judul, setJudul] = useState('');
-  const [deskripsi, setDeskripsi] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [judul, setJudul] = useState("");
+  const [deskripsi, setDeskripsi] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState('');
-  const [subJuduls, setSubJuduls] = useState([]);
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
+  const [subJuduls, setSubJuduls] = useState([
+    { subJudul: "", deskripsi: "", image: null, imagePreview: null },
+  ]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isFocused, setIsFocused] = useState({});
 
@@ -41,12 +48,18 @@ export default function EditContentArticle() {
       setJudul(data.title);
       setDeskripsi(data.description);
       setThumbnailPreview(data.thumbnail_url);
-      setSubJuduls(data.sections.map(section => ({
-        subJudul: section.title,
-        deskripsi: section.description,
-        imagePreview: section.image_url
-      })));
-      setSelectedCategories([...data.waste_categories.map(cat => cat.name), ...data.content_categories.map(cat => cat.name)]);
+      setSubJuduls(
+        data.sections.map((section) => ({
+          subJudul: section.title,
+          deskripsi: section.description,
+          image: null,
+          imagePreview: section.image_url,
+        }))
+      );
+      setSelectedCategories([
+        ...data.waste_categories.map((cat) => cat.name),
+        ...data.content_categories.map((cat) => cat.name),
+      ]);
     } else if (error) {
       toast.error("Failed to fetch article data");
     }
@@ -70,17 +83,23 @@ export default function EditContentArticle() {
   const handleSubJudulImageChange = (index, e) => {
     const file = e.target.files[0];
     const updatedSubJuduls = [...subJuduls];
+    updatedSubJuduls[index].image = file;
     updatedSubJuduls[index].imagePreview = URL.createObjectURL(file);
     setSubJuduls(updatedSubJuduls);
   };
 
   const addSubJudul = () => {
-    setSubJuduls([...subJuduls, { subJudul: '', deskripsi: '', imagePreview: '' }]);
+    setSubJuduls([
+      ...subJuduls,
+      { subJudul: "", deskripsi: "", imagePreview: "" },
+    ]);
   };
 
   const handleCategoryChange = (category) => {
     if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter(item => item !== category));
+      setSelectedCategories(
+        selectedCategories.filter((item) => item !== category)
+      );
     } else {
       setSelectedCategories([...selectedCategories, category]);
     }
@@ -88,21 +107,22 @@ export default function EditContentArticle() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    let thumbnailUrl = thumbnailPreview; 
-    const sectionImageUrls = [...subJuduls.map((section) => section.imagePreview)];
+
+    let thumbnailUrl = thumbnailPreview;
+    let sectionImageUrls = [
+      ...subJuduls.map((section) => section.imagePreview),
+    ];
+    const toastUploadImage = toast.loading("Mengunggah gambar...");
 
     if (thumbnail instanceof File) {
       try {
         const thumbnailFormData = new FormData();
         thumbnailFormData.append("image", thumbnail);
-        const toastUploadImage = toast.loading("Mengunggah gambar...")
         const thumbnailResponse = await updateDataImage({
           endpoint: "/article/upload",
           newData: thumbnailFormData,
         });
 
-  
         toast.update(toastUploadImage, {
           render: "Thumbnail berhasil diunggah!",
           type: "success",
@@ -120,17 +140,17 @@ export default function EditContentArticle() {
         return;
       }
     }
-  
+
     for (let i = 0; i < subJuduls.length; i++) {
-      if (subJuduls[i].imagePreview instanceof File) {
+      if (subJuduls[i].image instanceof File) {
         try {
           const sectionFormData = new FormData();
-          sectionFormData.append("image", subJuduls[i].imagePreview);
+          sectionFormData.append("image", subJuduls[i].image);
           const sectionImageResponse = await updateDataImage({
             endpoint: "/article/upload",
             newData: sectionFormData,
           });
-  
+
           toast.update(toastUploadImage, {
             render: `Gambar untuk section ${i + 1} berhasil diunggah!`,
             type: "success",
@@ -139,7 +159,6 @@ export default function EditContentArticle() {
           });
 
           sectionImageUrls[i] = sectionImageResponse.data.image_url;
-
         } catch (error) {
           toast.update(toastUploadImage, {
             render: `Gagal mengunggah gambar untuk sub judul ${i + 1}.`,
@@ -151,45 +170,44 @@ export default function EditContentArticle() {
         }
       }
     }
-  
+
     const payload = {
       title: judul,
       description: deskripsi,
       thumbnail_url: thumbnailUrl,
-      waste_categories: selectedCategories.filter(category =>
-        rubbishCategories.some(rubbish => rubbish.name === category)
+      waste_categories: selectedCategories.filter((category) =>
+        rubbishCategories.some((rubbish) => rubbish.name === category)
       ),
-      content_categories: selectedCategories.filter(category =>
-        contentCategories.some(content => content.name === category)
+      content_categories: selectedCategories.filter((category) =>
+        contentCategories.some((content) => content.name === category)
       ),
-      sections: subJuduls.map(section => ({
+      sections: subJuduls.map((section, index) => ({
         title: section.subJudul,
         description: section.deskripsi,
-        image_url: section.imagePreview
+        image_url: sectionImageUrls[index],
       })),
     };
 
     try {
       const response = await updateData({
         endpoint: `/article/${id}`,
-        updatedData: payload
+        updatedData: payload,
       });
 
       toast.success("Artikel berhasil diedit!");
-      navigate("/admin/content");
-
+      navigate("/admin/content")
     } catch (error) {
       toast.error("Gagal mengedit artikel");
     }
   };
-  
+
   const handleDelete = () => {
     setIsModalVisible(true);
   };
 
   const handleConfirmDelete = async () => {
     const toastId = toast.loading("Sedang menghapus artikel...");
-  
+
     deleteArticle(
       { endpoint: `/article/${articleData.data.id}` },
       {
@@ -209,11 +227,11 @@ export default function EditContentArticle() {
             isLoading: false,
             autoClose: 5000,
           });
-        }
+        },
       }
     );
   };
-  
+
   const handleCancelDelete = () => {
     setIsModalVisible(false);
   };
@@ -418,91 +436,95 @@ export default function EditContentArticle() {
                 </div>
               </div>
               <div className="bg-white py-5 px-4 rounded-lg shadow-md">
-                  <div>
-                    <label className="block text-gray-700 body-l font-bold mb-5">
-                      Kategori Sampah
-                    </label>
-                    <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
-                      {rubbishCategories.map((category) => (
-                        <div
-                          key={category.id}
-                          className="flex gap-2 items-center"
-                        >
-                          <div className="inline-flex items-center">
-                            <label
-                              className="relative flex items-center p-3 rounded-full cursor-pointer"
-                              htmlFor={category.name}
-                            >
-                              <input
-                                type="checkbox"
-                                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
-                                id={category.name}
-                                value={category.name}
-                                checked={selectedCategories.includes(category.name)}
-                                onChange={() =>
-                                  handleCategoryChange(category.name, true)
-                                }
-                              />
-                              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                                <FaCheck className="h-3.5 w-3.5" />
-                              </span>
-                            </label>
-                            <label
-                              className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
-                              htmlFor={category.name}
-                            >
-                              {category.name}
-                            </label>
-                          </div>
+                <div>
+                  <label className="block text-gray-700 body-l font-bold mb-5">
+                    Kategori Sampah
+                  </label>
+                  <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
+                    {rubbishCategories.map((category) => (
+                      <div
+                        key={category.id}
+                        className="flex gap-2 items-center"
+                      >
+                        <div className="inline-flex items-center">
+                          <label
+                            className="relative flex items-center p-3 rounded-full cursor-pointer"
+                            htmlFor={category.name}
+                          >
+                            <input
+                              type="checkbox"
+                              className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
+                              id={category.name}
+                              value={category.name}
+                              checked={selectedCategories.includes(
+                                category.name
+                              )}
+                              onChange={() =>
+                                handleCategoryChange(category.name, true)
+                              }
+                            />
+                            <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                              <FaCheck className="h-3.5 w-3.5" />
+                            </span>
+                          </label>
+                          <label
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
+                            htmlFor={category.name}
+                          >
+                            {category.name}
+                          </label>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="bg-white py-5 px-4 rounded-lg shadow-md">
-                  <div>
-                    <label className="block text-gray-700 body-l font-bold mb-5">
-                      Kategori Konten
-                    </label>
-                    <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
-                      {contentCategories.map((category) => (
-                        <div
-                          key={category.id}
-                          className="flex gap-2 items-center"
-                        >
-                          <div className="inline-flex items-center">
-                            <label
-                              className="relative flex items-center p-3 rounded-full cursor-pointer"
-                              htmlFor={category.name}
-                            >
-                              <input
-                                type="checkbox"
-                                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
-                                id={category.name}
-                                value={category.name}
-                                checked={selectedCategories.includes(category.name)}
-                                onChange={() =>
-                                  handleCategoryChange(category.name)
-                                }
-                              />
-                              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
-                                <FaCheck className="h-3.5 w-3.5" />
-                              </span>
-                            </label>
-                            <label
-                              className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
-                              htmlFor={category.name}
-                            >
-                              {category.name}
-                            </label>
-                          </div>
+              </div>
+              <div className="bg-white py-5 px-4 rounded-lg shadow-md">
+                <div>
+                  <label className="block text-gray-700 body-l font-bold mb-5">
+                    Kategori Konten
+                  </label>
+                  <div className="grid grid-cols-2 gap-x-[30px] gap-y-5 cursor-pointer">
+                    {contentCategories.map((category) => (
+                      <div
+                        key={category.id}
+                        className="flex gap-2 items-center"
+                      >
+                        <div className="inline-flex items-center">
+                          <label
+                            className="relative flex items-center p-3 rounded-full cursor-pointer"
+                            htmlFor={category.name}
+                          >
+                            <input
+                              type="checkbox"
+                              className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
+                              id={category.name}
+                              value={category.name}
+                              checked={selectedCategories.includes(
+                                category.name
+                              )}
+                              onChange={() =>
+                                handleCategoryChange(category.name)
+                              }
+                            />
+                            <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                              <FaCheck className="h-3.5 w-3.5" />
+                            </span>
+                          </label>
+                          <label
+                            className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
+                            htmlFor={category.name}
+                          >
+                            {category.name}
+                          </label>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              </div>
               <div className="flex gap-2 px-5 pt-5">
-                <Link to={"/admin/content"} className="flex-1">                
+                <Link to={"/admin/content"} className="flex-1">
                   <button
                     type="reset"
                     className="w-full rounded-[5px] bg-transparent border border-primary-500 btn-l font-bold py-4"
@@ -521,11 +543,12 @@ export default function EditContentArticle() {
           </form>
         </div>
       </section>
-      <Modal
-        open={isModalVisible}
-        footer={null}
-      >
-        <DeleteModalChildren onOk={handleConfirmDelete} onCancel={handleCancelDelete} type="artikel"/>
+      <Modal open={isModalVisible} footer={null}>
+        <DeleteModalChildren
+          onOk={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+          type="artikel"
+        />
       </Modal>
     </ContentLayout>
   );

@@ -324,7 +324,7 @@ export default function EditContentVideo() {
                               </span>
                             </label>
                             <label
-                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                              className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
                               htmlFor={category.name}
                             >
                               {category.name}
@@ -368,7 +368,7 @@ export default function EditContentVideo() {
                               </span>
                             </label>
                             <label
-                              className="mt-px font-light text-gray-700 cursor-pointer select-none"
+                              className="mt-px font-light text-gray-700 cursor-pointer select-none capitalize"
                               htmlFor={category.name}
                             >
                               {category.name}
