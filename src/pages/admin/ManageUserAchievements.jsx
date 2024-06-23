@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Dropdown } from "antd";
-import { toast } from "react-toastify";
 import { EditOutlined } from '@ant-design/icons';
-import GoldBadge from "/assets/images/GoldBadge.png";
-import SilverBadge from "/assets/images/SilverBadge.png";
-import ClassicBadge from "/assets/images/ClassicBadge.png";
 import Tables from "../../components/global/Table";
 import { formatNumber } from "../../utils/formatNumbers";
 import ContentLayout from "../../layouts/ContentLayout";
