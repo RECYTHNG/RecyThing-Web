@@ -91,13 +91,12 @@ export const DisapproveModalChildren = ({ onOk, onCancel }) => {
 
 export const DetailModal = ({
   selectedRecord,
-  currentPhotoIndex,
-  photosPerPage,
-  currentPage,
-  prevPhotos,
-  nextPhotos,
   setIsDetailModalVisible,
 }) => {
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const photosPerPage = 3;
+
   const { data, isLoading, isError } = useFetch(
     `/user-task/${selectedRecord?.id}`,
     `userTask-${selectedRecord?.id}`,
@@ -105,6 +104,24 @@ export const DetailModal = ({
       enabled: !!selectedRecord,
     }
   );
+
+  console.log(data)
+
+  const nextPhotos = () => {
+    setCurrentPhotoIndex((prevIndex) => prevIndex + photosPerPage);
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const prevPhotos = () => {
+    setCurrentPhotoIndex((prevIndex) => prevIndex - photosPerPage);
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+  const closeModal = () => {
+    setCurrentPhotoIndex(0);
+    setCurrentPage(1);
+    setIsDetailModalVisible(false);
+  };
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error loading data...</p>;
@@ -179,7 +196,7 @@ export const DetailModal = ({
           className="rounded-[5px] bg-primary-500 text-white btn-l font-bold py-4 px-6"
           onClick={
             currentPhotoIndex + photosPerPage >= detailData?.images.length
-              ? () => setIsDetailModalVisible(false)
+              ? closeModal
               : nextPhotos
           }
         >
