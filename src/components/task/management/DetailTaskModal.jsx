@@ -1,6 +1,5 @@
 import { Modal } from 'antd';
 import pointIcon from '/assets/svg/task/pointIcon.svg';
-import stepLine from '/assets/svg/task/stepLine.svg';
 import closeIcon from '/assets/svg/task/closeIcon.svg';
 
 const DetailTaskModal = ({ isOpen, onClose, selectedTask }) => {
@@ -31,10 +30,10 @@ const DetailTaskModal = ({ isOpen, onClose, selectedTask }) => {
               {selectedTask?.point} Poin
             </div>
           </div>
-          <div className='flex flex-row items-center gap-20'>
+          <div className='flex flex-row items-start gap-10'>
             <div className='flex-1'>
               <span className='sub-m text-primary-500 font-semibold mb-[10px]'>Deskripsi</span>
-              <p className='body-s'>{selectedTask?.description}</p>
+              <p className='body-s text-justify'>{selectedTask?.description}</p>
             </div>
             <div>
               <span className='sub-m text-primary-500 font-semibold mb-[10px]'>Tanggal</span>
@@ -51,7 +50,7 @@ const DetailTaskModal = ({ isOpen, onClose, selectedTask }) => {
                       {idx + 1}
                     </div>
                     {idx < selectedTask?.stages.length - 1 && (
-                      <img src={stepLine} alt="stepline" className="mt-1" />
+                      <div className='mt-1 flex-1 min-h-[20px] h-full w-[2px] bg-primary-300 rounded-full'></div>
                     )}
                   </div>
                   <div className="ml-4 pb-5">
