@@ -142,7 +142,7 @@ const AddTaskModal = ({ isOpen, onClose, selectedTask }) => {
         <Form.Item>
           <Upload.Dragger
             name="files"
-            accept=".jpg,.png"
+            accept=".jpg,.jpeg,.png"
             maxCount={1}
             showUploadList={false}
             beforeUpload={() => false}
