@@ -59,9 +59,10 @@ export default function ManageUserAchievements() {
       render: (_, record) => {
         const menuItems = [
           {
-            label: <span type="text">Edit</span>,
-            icon: <EditOutlined />,
+            label: <span type="text" className="text-base ml-1">Edit</span>,
+            icon: <EditOutlined className="!text-base"/>,
             key: 'approve',
+            className: "custom-menu-item-edit !px-5",
             onClick: () => handleEdit(record),
           },
         ];
@@ -71,7 +72,7 @@ export default function ManageUserAchievements() {
         };
 
         return (
-          <Dropdown menu={menuProps} trigger={['click']} overlayClassName='btn-m text-center'>
+          <Dropdown menu={menuProps} trigger={['click']} overlayClassName='text-lg'>
             <div className='cursor-pointer'>
               <Button icon={<HorizontalDotsIcon />} />
             </div>
