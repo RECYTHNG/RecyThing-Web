@@ -34,18 +34,16 @@ const features = [
 
 export default function CardFunction() {
   return (
-    <div className="flex px-[110px]">
-      <div className="cardd space-x-6">
-        {features.map((feature, index) => (
-          <div key={index} className="items p-8 shadow-md flex flex-col justify-center items-center">
-            <img src={feature.img} alt={feature.title} />
-            <div className="pt-4">
-              <h1 className="text-secondary-500 font-bold text-[24px]">{feature.title}</h1>
-              <p className="text-[18px] text-dark-800">{feature.description}</p>
-            </div>
+    <div className="flex flex-wrap justify-center gap-6 py-8 md:px-[110px]">
+      {features.map((feature, index) => (
+        <div key={index} className="flex flex-col items-center p-4 shadow-md rounded-lg w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] xl:w-[calc(25%-1rem)] mb-6">
+          <img src={feature.img} alt={feature.title} className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32" />
+          <div className="pt-4 text-center">
+            <h1 className="text-secondary-500 font-bold text-[18px] md:text-[24px]">{feature.title}</h1>
+            <p className="text-[14px] md:text-[18px] text-dark-800">{feature.description}</p>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
