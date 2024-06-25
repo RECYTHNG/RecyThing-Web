@@ -44,29 +44,29 @@ export default function FAQ() {
 
   return (
     <section id="faq" className="bg-[#E6F4FC]">
-      <div className="flex p-[85px] space-x-36">
-        <div className="w-1/3 flex justify-center items-center">
-          <h1 className="text-[54px] text-secondary-500 font-bold">
+      <div className="flex flex-col md:flex-row p-4 md:p-[85px] md:space-x-36 space-y-8 md:space-y-0">
+        <div className="w-full md:w-1/3 flex justify-center md:justify-start items-center">
+          <h1 className="text-[32px] md:text-[54px] text-secondary-500 font-bold text-center md:text-left">
             Pertanyaan Umum <span className="text-primary-500">tentang Recy</span>Thing
           </h1>
         </div>
-        <div className="wrapper">
+        <div className="wrapper w-full">
           <div className="accordion">
             {data.map((item, i) => (
               <div
-                className={`item px-9 py-7 mb-5 rounded-[10px] cursor-pointer transition-colors duration-300 ${
+                className={`item p-4 md:px-9 md:py-7 mb-3 md:mb-5 rounded-[10px] cursor-pointer transition-colors duration-300 ${
                   selected.includes(i) ? "bg-primary-500 text-white" : "bg-white hover:bg-primary-500 hover:text-white"
                 }`}
                 key={i}
                 onClick={() => toggle(i)}
               >
-                <div className="title flex text-[24px] justify-between items-center">
+                <div className="title flex text-[20px] md:text-[24px] justify-between items-center">
                   <p className="font-bold w-full flex items-center">
                     {item.question}
                   </p>
                   <span>{selected.includes(i) ? <img src={arrowUp} alt="Arrow Up" /> : <img src={arrowDown} alt="Arrow Down" />}</span>
                 </div>
-                <div className={selected.includes(i) ? "content show text-[20px] mt-6" : "content text-[20px]"}>{item.answer}</div>
+                <div className={selected.includes(i) ? "content show text-[16px] md:text-[20px] mt-4 md:mt-6" : "content text-[16px] md:text-[20px]"}>{item.answer}</div>
               </div>
             ))}
           </div>
