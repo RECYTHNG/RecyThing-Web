@@ -159,6 +159,7 @@ export default function ManageApprovalTask() {
             {
               label: <span type="text">Setuju</span>,
               key: 'Setuju',
+              className: "custom-menu-item-approve !px-5",
               onClick: (e) => {
                 e.domEvent.stopPropagation();
                 handleMenuItemClick('approve', record);
@@ -167,6 +168,7 @@ export default function ManageApprovalTask() {
             {
               label: <span type="text">Tolak</span>,
               key: 'Tidak Setuju',
+              className: "custom-menu-item-delete !px-5",
               onClick: (e) => {
                 e.domEvent.stopPropagation();
                 handleMenuItemClick('disapprove', record);
