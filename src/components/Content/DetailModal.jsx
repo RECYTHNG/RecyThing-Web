@@ -2,6 +2,7 @@ import { Modal } from "antd";
 import { Link } from "react-router-dom";
 import { useFetch } from "../../hooks/useFetch";
 import dayjs from "dayjs";
+import { formatWatches } from "../../utils/formatNumbers";
 
 export const DetailVideoModal = ({ videoId, isVisible, onOk, onCancel }) => {
   const { data: videoData, isLoading, error } = useFetch(
@@ -34,7 +35,7 @@ export const DetailVideoModal = ({ videoId, isVisible, onOk, onCancel }) => {
             />
           </div>
           <h2 className="h4 font-bold">{video.title}</h2>
-          <p className="text-gray-500">{video.viewer} rb ditonton</p>
+          <p className="text-gray-500">{formatWatches(video.viewer)} ditonton</p>
           <div className="h-[231px] overflow-scroll">
             <p className="text-left body-s">{video.description}</p>
           </div>
