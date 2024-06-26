@@ -44,6 +44,7 @@ const Tables = ({ data, columns, onRowClick, initialPageSize = 10, pagination, e
           pagination={paginationConfig}
           scroll={{ x: 'max-content' }}
           rowKey="id"
+          rowClassName={enableRowClick ? 'cursor-pointer' : 'cursor-default'}
           onRow={enableRowClick ?
             (record) => ({
               onClick: () => {
