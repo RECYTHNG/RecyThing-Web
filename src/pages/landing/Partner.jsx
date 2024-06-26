@@ -12,19 +12,21 @@ import excelso from "../../assets/image/partner-excelso.png";
 export default function Partner() {
   return (
     <section id="partner">
-      <div className="px-[244px] py-[115px]">
-        <h1 className="flex justify-center pb-10 text-[54px] text-secondary-500 font-bold ">Partner&nbsp;<span className="text-primary-500">Kami</span></h1>
-        <div className="gap-[62px]" style={{display:"flex", justifyContent:"center", alignItems:"center", flexWrap:"wrap"}}>
-            <img src={alterra} alt="alterra" />
-            <img src={sayurbox} alt="sayurbox" />
-            <img src={segari} alt="segari" />
-            <img src={kopken} alt="kopken" />
-            <img src={indomie} alt="indomie" />
-            <img src={abc} alt="abc" />
-            <img src={shopee} alt="shopee" />
-            <img src={unilever} alt="unilever" />
-            <img src={hokben} alt="hokben" />
-            <img src={excelso} alt="excelso" />
+      <div className="px-4 md:px-[244px] py-10 md:py-[115px]">
+        <h1 className="flex justify-center pb-5 md:pb-10 text-[32px] md:text-[54px] text-secondary-500 font-bold text-center">
+          Partner&nbsp;<span className="text-primary-500">Kami</span>
+        </h1>
+        <div className="flex justify-center items-center flex-wrap gap-4 md:gap-[62px]">
+          <img src={alterra} alt="alterra" className="w-[70px] h-auto md:w-auto" />
+          <img src={sayurbox} alt="sayurbox" className="w-[70px] h-auto md:w-auto" />
+          <img src={segari} alt="segari" className="w-[70px] h-auto md:w-auto" />
+          <img src={kopken} alt="kopken" className="w-[70px] h-auto md:w-auto" />
+          <img src={indomie} alt="indomie" className="w-[70px] h-auto md:w-auto" />
+          <img src={abc} alt="abc" className="w-[70px] h-auto md:w-auto" />
+          <img src={shopee} alt="shopee" className="w-[70px] h-auto md:w-auto" />
+          <img src={unilever} alt="unilever" className="w-[70px] h-auto md:w-auto" />
+          <img src={hokben} alt="hokben" className="w-[70px] h-auto md:w-auto" />
+          <img src={excelso} alt="excelso" className="w-[70px] h-auto md:w-auto" />
         </div>
       </div>
     </section>
